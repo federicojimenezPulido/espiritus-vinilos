@@ -1,18 +1,23 @@
 import { useState, useMemo } from 'react'
-import { useQuery } from '@tanstack/react-query'
-import { getVinyls, getRums, getWhiskies } from '../services/api'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { getVinyls, getRums, getWhiskies, bulkFetchCovers } from '../services/api'
 import KpiBar    from './KpiBar'
 import SearchBar from './SearchBar'
 import Sidebar   from './Sidebar'
 import Modal     from './Modal'
+import AdminForm from './AdminForm'
 import styles    from './Dashboard.module.css'
 
 const FETCHERS = { vinyl: getVinyls, rum: getRums, whisky: getWhiskies }
 
 export default function Dashboard({ coll }) {
-  const [search,   setSearch]   = useState('')
-  const [filters,  setFilters]  = useState({})
-  const [selected, setSelected] = useState(null) // item abierto en modal  // { agrupador: 'Salsa/Latina', genero: null, ... }
+  const [search,      setSearch]      = useState('')
+  const [filters,     setFilters]     = useState({})
+  const [selected,    setSelected]    = useState(null)
+  const [adminItem,   setAdminItem]   = useState(undefined)
+  const [bulkLoading, setBulkLoading] = useState(false)
+  const [bulkMsg,     setBulkMsg]     = useState('')
+  const qc = useQueryClient() // undefined=cerrado, null=nuevo, obj=editar  // { agrupador: 'Salsa/Latina', genero: null, ... }
 
   // Cuando cambia la colección, limpiar búsqueda y filtros
   // useQuery re-fetcha automáticamente cuando cambia queryKey
@@ -29,6 +34,24 @@ export default function Dashboard({ coll }) {
   function clearAll() {
     setSearch('')
     setFilters({})
+  }
+
+  async function handleBulkCovers() {
+    if (!localStorage.getItem('discogs_token')) {
+      setBulkMsg('⚠ Primero guardá tu token Discogs (ícono 🔑 arriba)')
+      return
+    }
+    setBulkLoading(true)
+    setBulkMsg('Buscando portadas... puede tardar un minuto')
+    try {
+      const result = await bulkFetchCovers()
+      setBulkMsg(`✅ ${result.updated} portadas nuevas · ${result.skipped} ya tenían`)
+      qc.invalidateQueries({ queryKey: ['vinyl'] })
+    } catch {
+      setBulkMsg('⚠ Error al buscar portadas')
+    } finally {
+      setBulkLoading(false)
+    }
   }
 
   // useMemo — solo recalcula cuando cambian data, search o filters
@@ -61,9 +84,30 @@ export default function Dashboard({ coll }) {
 
   const activeFilters = Object.values(filters).some(Boolean) || search
 
+  // Encontrar el índice real del item en el array original (necesario para PUT/DELETE)
+  function findIndex(item) {
+    if (!data || !item) return -1
+    return data.findIndex(r => JSON.stringify(r) === JSON.stringify(item))
+  }
+
   return (
     <>
-      {selected && <Modal item={selected} coll={coll} onClose={() => setSelected(null)} />}
+      {selected && (
+        <Modal
+          item={selected} coll={coll}
+          onClose={() => setSelected(null)}
+          onEdit={() => { setSelected(null); setAdminItem(selected) }}
+        />
+      )}
+      {adminItem !== undefined && (
+        <AdminForm
+          coll={coll}
+          item={adminItem}
+          index={findIndex(adminItem)}
+          data={data}
+          onClose={() => setAdminItem(undefined)}
+        />
+      )}
       <KpiBar data={data} coll={coll} />
       <div className={styles.layout}>
         <Sidebar data={data} coll={coll} filters={filters} setFilter={setFilter} />
@@ -75,7 +119,21 @@ export default function Dashboard({ coll }) {
                 Limpiar filtros
               </button>
             )}
+            <button className={`${styles.addBtn} ${styles[coll]}`} onClick={() => setAdminItem(null)}>
+              + Agregar
+            </button>
+            {coll === 'vinyl' && (
+              <button
+                className={styles.bulkBtn}
+                onClick={handleBulkCovers}
+                disabled={bulkLoading}
+                title="Buscar portadas en Discogs para todos los vinilos"
+              >
+                {bulkLoading ? '⏳ Buscando...' : '🎵 Portadas'}
+              </button>
+            )}
           </div>
+          {bulkMsg && <div className={styles.bulkMsg}>{bulkMsg}</div>}
           <div className={styles.meta}>
             {filtered.length} de {data.length} registros
           </div>
@@ -104,8 +162,12 @@ function Card({ item, coll, onClick }) {
     <div className={`${styles.card} ${styles[coll]}`} onClick={onClick}>
       <div className={styles.cardArt}>
         {coll === 'vinyl'
-          ? <VinylDisc artista={item.artista} agrupador={item.agrupador} />
-          : <div className={styles.bottle}>🥃</div>
+          ? item.cover_url
+            ? <img src={item.cover_url} alt={item.album} loading="lazy" />
+            : <VinylDisc artista={item.artista} agrupador={item.agrupador} />
+          : item.cover_url
+            ? <img src={item.cover_url} alt={item.brand} loading="lazy" />
+            : <div className={styles.bottle}>🥃</div>
         }
         {coll === 'vinyl' && (
           <span className={`${styles.dot} ${item.fuera ? styles.dotRed : styles.dotGreen}`} />

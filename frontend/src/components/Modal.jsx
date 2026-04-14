@@ -3,7 +3,7 @@ import styles from './Modal.module.css'
 
 // Cerrar con Escape — useEffect con cleanup
 // Analogía: como un trigger que se activa y se desactiva
-export default function Modal({ item, coll, onClose }) {
+export default function Modal({ item, coll, onClose, onEdit }) {
   useEffect(() => {
     const handler = e => { if (e.key === 'Escape') onClose() }
     window.addEventListener('keydown', handler)
@@ -46,19 +46,26 @@ export default function Modal({ item, coll, onClose }) {
 
           {/* Acciones */}
           <div className={styles.actions}>
-            {url && (
-              <a href={url} target="_blank" rel="noreferrer" className={`${styles.btn} ${styles.btnPrimary} ${styles[coll]}`}>
-                🌐 Sitio oficial
-              </a>
-            )}
-            {coll === 'vinyl' && item.discogs && (
-              <a
-                href={`https://www.discogs.com/search/?q=${encodeURIComponent(`${item.artista} ${item.album}`)}&type=master`}
-                target="_blank" rel="noreferrer"
-                className={`${styles.btn} ${styles.btnSecondary}`}
-              >
-                🔗 Ver en Discogs
-              </a>
+            {coll === 'vinyl'
+              ? (
+                  <a
+                    href={url || `https://www.discogs.com/search/?q=${encodeURIComponent(`${item.artista} ${item.album}`)}&type=master`}
+                    target="_blank" rel="noreferrer"
+                    className={`${styles.btn} ${styles.btnSecondary}`}
+                  >
+                    🔗 Ver en Discogs
+                  </a>
+                )
+              : url && (
+                  <a href={url} target="_blank" rel="noreferrer" className={`${styles.btn} ${styles.btnPrimary} ${styles[coll]}`}>
+                    🌐 Sitio oficial
+                  </a>
+                )
+            }
+            {onEdit && (
+              <button className={`${styles.btn} ${styles.btnPrimary} ${styles[coll]}`} onClick={onEdit}>
+                ✏ Editar
+              </button>
             )}
             <button className={`${styles.btn} ${styles.btnSecondary}`} onClick={onClose}>
               Cerrar

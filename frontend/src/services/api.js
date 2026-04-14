@@ -30,3 +30,28 @@ export const getCover = (type, q) => {
     headers: token ? { 'x-discogs-token': token } : {},
   }).then(r => r.data)
 }
+
+// Scrapea og:image de la URL del licor y guarda cover_url en el JSON
+export const fetchAndSaveCover = (coll, index, url) =>
+  api.post('/api/covers/fetch', { coll, index, url }).then(r => r.data)
+
+// Raspa og:image de cualquier URL (sin guardar) — para input manual
+export const scrapeUrl = (url) =>
+  api.get('/api/covers/scrape', { params: { url } }).then(r => r.data)
+
+// Fetchea portadas Discogs para TODOS los vinilos sin cover_url de una vez
+export const bulkFetchCovers = () => {
+  const token = localStorage.getItem('discogs_token')
+  return api.post('/api/covers/bulk-discogs', {}, {
+    headers: token ? { 'x-discogs-token': token } : {},
+    timeout: 120000, // puede tardar varios minutos con 100+ vinilos
+  }).then(r => r.data)
+}
+
+// Busca portada en Discogs y la persiste en el vinilo
+export const fetchAndSaveDiscogsCover = (index, q) => {
+  const token = localStorage.getItem('discogs_token')
+  return api.post('/api/covers/fetch-discogs', { index, q }, {
+    headers: token ? { 'x-discogs-token': token } : {},
+  }).then(r => r.data)
+}

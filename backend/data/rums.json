@@ -15,41 +15,44 @@
   {
     "brand": "Gobernador",
     "name": "12 Años",
-    "abv": 35.0,
+    "abv": 35,
     "blend": "Si",
     "age_low": null,
     "age_max": null,
     "type": "Premium Rum",
     "region": "Cartagena, Colombia",
     "country": "Colombia",
-    "scale": 3.0,
-    "url": "http://www.rongobernador.com/inicio/#social"
+    "scale": 3,
+    "url": "https://lalicorera.com/productos/ron/ron-gobernador?srsltid=AfmBOorWZaPJO_8hDscvX4fbGQAiIPdECE1prCSv9cVyUQWItPR3gjBq",
+    "cover_url": ""
   },
   {
     "brand": "Hechicera",
     "name": "Hechicera",
-    "abv": 40.0,
+    "abv": 40,
     "blend": "Si",
     "age_low": 12,
     "age_max": 21,
     "type": "Gold Rum",
     "region": "Barranquilla, Atlantico",
     "country": "Colombia",
-    "scale": 4.0,
-    "url": "http://www.lahechicera.co/?age-verified=18cfbf9d8e"
+    "scale": 4,
+    "url": "http://www.lahechicera.co/?age-verified=18cfbf9d8e",
+    "cover_url": "https://www.lahechicera.co/wp-content/uploads/2023/02/RF2_new-min.png"
   },
   {
     "brand": "Medellin",
     "name": "19 Años",
-    "abv": 40.0,
+    "abv": 40,
     "blend": "Si",
     "age_low": 8,
     "age_max": 18,
     "type": "Premium Rum",
     "region": "Medellin, Antioquia",
     "country": "Colombia",
-    "scale": 3.0,
-    "url": "https://ronmedellinanejo.com/ediciones-especiales/"
+    "scale": 3,
+    "url": "https://licoresmedellin.com/en/products/ron-medellin-gran-solera-19-anos-botella-750ml?srsltid=AfmBOopl8p29fiRNrTJSTIjM95VCMKNFEye4GdnC9S8t-JmMLugxIZ4M",
+    "cover_url": "http://licoresmedellin.com/cdn/shop/files/ron-medellin-gran-solera-19-anos-botella-750mlron-medellin-gran-solera-19-anos-botella-750mlron-medellinlicores-medellin-3546502.jpg?crop=center&height=1200&v=1763177532&width=1200"
   },
   {
     "brand": "Parce",

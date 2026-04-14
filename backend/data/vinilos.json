@@ -11,7 +11,8 @@
     "cat_num": "LPG-3039",
     "origen": "Coleccion Amparo Montoya",
     "discogs": true,
-    "fuera": true
+    "fuera": true,
+    "cover_url": "https://i.discogs.com/_Ba8AE-rxTXAUQXxNuVCNCU2qJ0hBu-Z91wBfRPxxRw/rs:fit/g:sm/q:90/h:606/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTg3MTgx/MjctMTUwNDczMDA5/NS03NTc3LmpwZWc.jpeg"
   },
   {
     "artista": "Julio Iglesias",
@@ -25,7 +26,8 @@
     "cat_num": "14-1206",
     "origen": "Coleccion Amparo Montoya",
     "discogs": true,
-    "fuera": true
+    "fuera": true,
+    "cover_url": "https://i.discogs.com/XTpHlpBgCnOO-sX4YWoHPVaAs750yI3_eFQIHZ05jgw/rs:fit/g:sm/q:90/h:600/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTg1MDY4/OS0xMjQ3OTMzNjk5/LmpwZWc.jpeg"
   },
   {
     "artista": "Oscar Golden",
@@ -39,7 +41,8 @@
     "cat_num": "DCA 862",
     "origen": "Coleccion Amparo Montoya",
     "discogs": true,
-    "fuera": true
+    "fuera": true,
+    "cover_url": "https://i.discogs.com/svhf4i-13Bb9gtiH7qjZ82uqr_IxxUUwrRqR553dgMY/rs:fit/g:sm/q:90/h:614/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTM3MzE0/MDgtMTQ4NTMwMjAw/MS04NDE4LmpwZWc.jpeg"
   },
   {
     "artista": "Sasha Distel",
@@ -53,7 +56,8 @@
     "cat_num": "",
     "origen": "Coleccion Amparo Montoya",
     "discogs": false,
-    "fuera": true
+    "fuera": true,
+    "cover_url": ""
   },
   {
     "artista": "Teddy Trinidad",
@@ -81,7 +85,8 @@
     "cat_num": "CL 4106",
     "origen": "Coleccion Amparo Montoya",
     "discogs": true,
-    "fuera": true
+    "fuera": true,
+    "cover_url": "https://i.discogs.com/7KPxZq9rtvGjf5EmsK5-DclZGyl4B8_txdb6rzGyHcg/rs:fit/g:sm/q:90/h:600/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTE5MTc3/NDAtMTU4MzAwMzI4/NS0xNTc0LmpwZWc.jpeg"
   },
   {
     "artista": "Bert Kaempfert & His Orchestra",
@@ -207,7 +212,8 @@
     "cat_num": "",
     "origen": "Sindicato del Vinilo",
     "discogs": false,
-    "fuera": true
+    "fuera": true,
+    "cover_url": "https://i.discogs.com/3RaexDmZ7q15N-mfPMymQ9nxb_wz92CWXzsayaONff0/rs:fit/g:sm/q:90/h:600/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTQxMDQx/OS0xMjIxMzAxMzAz/LmpwZWc.jpeg"
   },
   {
     "artista": "Snoop Dog",
@@ -333,7 +339,9 @@
     "cat_num": "OBS E 25199",
     "origen": "Sindicato del Vinilo",
     "discogs": true,
-    "fuera": false
+    "fuera": false,
+    "cover_url": "",
+    "url": "https://www.discogs.com/es/master/859148-Angel-Canales-El-Sentimiento-Del-Latino-En-Nueva-York"
   },
   {
     "artista": "Celia Cruz",
@@ -347,7 +355,8 @@
     "cat_num": "LPS-99254",
     "origen": "Discos Cosmos",
     "discogs": true,
-    "fuera": false
+    "fuera": false,
+    "cover_url": "https://i.discogs.com/JLObCxaRB2tLnOAYvNvj3Y4Kc-gMIg19nCpzIYTwiUM/rs:fit/g:sm/q:90/h:602/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTk2NDIw/NTYtMTQ4NDA3ODQ3/NC04OTk5LmpwZWc.jpeg"
   },
   {
     "artista": "Celia Cruz & Johnny Pacheco",
@@ -361,7 +370,8 @@
     "cat_num": "DSI-88030",
     "origen": "Discos Cosmos",
     "discogs": true,
-    "fuera": false
+    "fuera": false,
+    "cover_url": "https://i.discogs.com/LpNgdOe9xDgJYfwbytLJQ5XaeEEypT-XOA0tlw7UCgo/rs:fit/g:sm/q:90/h:587/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTI1NDQ0/MjEtMTQ5NTA2NzI5/NS05OTE2LmpwZWc.jpeg"
   },
   {
     "artista": "Charlie Palmieri & Menique",
@@ -375,7 +385,9 @@
     "cat_num": "6346822",
     "origen": "Sindicato del Vinilo",
     "discogs": true,
-    "fuera": false
+    "fuera": false,
+    "cover_url": "https://i.discogs.com/__j2hhNbRlLq-yIc0AZuM28AYejN2EvfWr9wkQHW5Ho/rs:fit/g:sm/q:90/h:604/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTQ0OTgx/OTAtMTczNjgyMTIx/Ny0yMTI3LmpwZWc.jpeg",
+    "url": "https://www.discogs.com/es/master/602177-Charlie-Palmieri-And-Me%C3%B1ique-Con-Salsa-Y-Sabor"
   },
   {
     "artista": "Cheo Feliciano",
@@ -389,7 +401,8 @@
     "cat_num": "LPS-99216",
     "origen": "Sindicato del Vinilo",
     "discogs": true,
-    "fuera": false
+    "fuera": false,
+    "cover_url": "https://i.discogs.com/4rt7Um8-rmEyOn4VHNWG0b0CITNi1GsUzcjpcX34--I/rs:fit/g:sm/q:90/h:590/w:598/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTI0NDg1/NTAtMTM3NzA0NDY1/My0yMzQwLmpwZWc.jpeg"
   },
   {
     "artista": "Cheo Feliciano",
@@ -403,7 +416,8 @@
     "cat_num": "23021158",
     "origen": "Discos Cosmos",
     "discogs": true,
-    "fuera": false
+    "fuera": false,
+    "cover_url": "https://i.discogs.com/oDNTNzH3RivgmTZQHx1homL_LyuipfRFe2VNxJ1BU8E/rs:fit/g:sm/q:90/h:597/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTgwNzc0/NDktMTc1MDM3MTMw/NS0yNjU2LmpwZWc.jpeg"
   },
   {
     "artista": "Eddie Palmieri",
@@ -417,7 +431,8 @@
     "cat_num": "LP-1122",
     "origen": "Sindicato del Vinilo",
     "discogs": true,
-    "fuera": false
+    "fuera": false,
+    "cover_url": "https://i.discogs.com/VGPqTc7qca5RFCfwWwevBpvUjpxnpKLY9dD374gWZZ4/rs:fit/g:sm/q:90/h:598/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTQyNjk1/MTctMTUwMzYwNDI3/MS0zMDUxLmpwZWc.jpeg"
   },
   {
     "artista": "Ernie Agosto & La conspiracion",
@@ -431,7 +446,8 @@
     "cat_num": "110002514",
     "origen": "Sindicato del Vinilo",
     "discogs": true,
-    "fuera": false
+    "fuera": false,
+    "url": "https://www.discogs.com/es/release/5784899-Orquesta-La-Conspiracion-Ernies-Conspiracy"
   },
   {
     "artista": "Hector Lavoe",
@@ -445,7 +461,8 @@
     "cat_num": "LPS-88402",
     "origen": "Sindicato del Vinilo",
     "discogs": true,
-    "fuera": false
+    "fuera": false,
+    "cover_url": "https://i.discogs.com/ugpRPHBAsvJos2kYygZr3LivTVUEtHmhTTzBMTecjCA/rs:fit/g:sm/q:90/h:600/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTE4NzE3/MjQtMTUzMDM5NDkz/NC0yODg1LmpwZWc.jpeg"
   },
   {
     "artista": "Hector Lavoe",
@@ -459,7 +476,8 @@
     "cat_num": "JM-598",
     "origen": "Sindicato del Vinilo",
     "discogs": true,
-    "fuera": false
+    "fuera": false,
+    "cover_url": "https://i.discogs.com/AtQzE9AyJ2JLYONoD0ai5Gwq-STPjoqauG9Afq9CcII/rs:fit/g:sm/q:90/h:610/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTE4MDMz/MzMtMTYxNTMxNDcz/NC01ODg4LmpwZWc.jpeg"
   },
   {
     "artista": "Hector Lavoe & Willie Colon",
@@ -473,7 +491,8 @@
     "cat_num": "SIS-70066",
     "origen": "Sindicato del Vinilo",
     "discogs": true,
-    "fuera": false
+    "fuera": false,
+    "cover_url": "https://i.discogs.com/PWghks6agcaYMbag9dhE-jYAHKcM6fPdz-haXBMv1Yo/rs:fit/g:sm/q:90/h:571/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTE1NzQx/OTAtMTM0OTA2NjY5/Ny03NTE2LmpwZWc.jpeg"
   },
   {
     "artista": "Hector Lavoe & Willie Colon",
@@ -487,7 +506,8 @@
     "cat_num": "LP 7594",
     "origen": "Sindicato del Vinilo",
     "discogs": true,
-    "fuera": false
+    "fuera": false,
+    "cover_url": "https://i.discogs.com/Rkuchnygwj68VWPgMAam58eDMLR5DylL2rFcTHwXu10/rs:fit/g:sm/q:90/h:600/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTE1OTY3/MDg1LTE2MDEwNTk4/MTgtMjIzMS5qcGVn.jpeg"
   },
   {
     "artista": "Henry Fiol",
@@ -515,7 +535,8 @@
     "cat_num": "SIS-047",
     "origen": "Sindicato del Vinilo",
     "discogs": true,
-    "fuera": false
+    "fuera": false,
+    "cover_url": "https://i.discogs.com/r4yT3NTZkkWt2yW6tJ_afmBOx6DMsC4bGBSARs6lMnI/rs:fit/g:sm/q:90/h:590/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTEyMjMw/MzctMTUzMzA2NTI5/NS01NTQ3LmpwZWc.jpeg"
   },
   {
     "artista": "Henry Fiol",
@@ -529,7 +550,8 @@
     "cat_num": "SIS-064",
     "origen": "Discos Cosmos",
     "discogs": true,
-    "fuera": false
+    "fuera": false,
+    "cover_url": "https://i.discogs.com/U2jxZ4J8pBehBf73Ay2KxzBF7bHC9DK-X22L2VTiwqg/rs:fit/g:sm/q:90/h:609/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTI1MDQ4/NjItMTUzODg2OTA0/OC0yMzM4LmpwZWc.jpeg"
   },
   {
     "artista": "Ismael Miranda",
@@ -879,7 +901,8 @@
     "cat_num": "JM-613",
     "origen": "Discos Cosmos",
     "discogs": true,
-    "fuera": false
+    "fuera": false,
+    "cover_url": "https://i.discogs.com/uOJF3nyGHoaeQFIwQ2qRYCF2azbfuDHWjg2OB_WNzwQ/rs:fit/g:sm/q:90/h:535/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTgxOTE4/NTUtMTQ1Njg1MzQ3/Ny00NTYzLmpwZWc.jpeg"
   },
   {
     "artista": "Ruben Blades",
@@ -1257,7 +1280,8 @@
     "cat_num": "LPS 200.2298",
     "origen": "Sindicato del Vinilo",
     "discogs": true,
-    "fuera": false
+    "fuera": false,
+    "cover_url": "https://i.discogs.com/hsdQ9YBDaAJXm4ZVTnOayPJcG0_dw1X9YGG4QAWXEyY/rs:fit/g:sm/q:90/h:600/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTI0NjE3/OTYtMTY2NTA4OTQw/Ni0zOTk2LmpwZWc.jpeg"
   },
   {
     "artista": "Aretha Franklin",
@@ -1271,7 +1295,8 @@
     "cat_num": "D-8186",
     "origen": "Coleccion Amparo Montoya",
     "discogs": true,
-    "fuera": false
+    "fuera": false,
+    "cover_url": "https://i.discogs.com/IU3JXx-nWlddcvQwTLdY76u9YDyKhF6mGxl4sGpV0L4/rs:fit/g:sm/q:90/h:600/w:595/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTgxMzk5/MC0xMjg5NTk2NDI4/LmpwZWc.jpeg"
   },
   {
     "artista": "Carlos Gardel",

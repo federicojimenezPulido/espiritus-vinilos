@@ -28,7 +28,7 @@
   {
     "brand": "Nikka",
     "version": "Gold & Gold",
-    "abv": 40.0,
+    "abv": 40,
     "years": null,
     "region": "Osaka",
     "country": "Japan",
@@ -36,12 +36,13 @@
     "origin": "Japanese",
     "distillery": "Yoichi Distillery",
     "scale": null,
-    "url": "https://www.nikka.com/eng/products/blended/index.html"
+    "url": "https://www.ebay.com/itm/388869082276?chn=ps&mkevt=1&mkcid=28&google_free_listing_action=view_item",
+    "cover_url": "https://i.ebayimg.com/images/g/b5AAAeSwhddoqKS9/s-l400.jpg"
   },
   {
     "brand": "The Chita",
     "version": "The Chita",
-    "abv": 43.0,
+    "abv": 43,
     "years": null,
     "region": "Osaka",
     "country": "Japan",
@@ -49,7 +50,7 @@
     "origin": "Japanese",
     "distillery": "Chita Distillery (Suntory)",
     "scale": null,
-    "url": "https://whisky.suntory.com/en/na/products/thechita/"
+    "url": "https://spiritscol.com/producto/hibiki-harmony/"
   },
   {
     "brand": "Aberfeldy",
