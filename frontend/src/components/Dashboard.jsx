@@ -17,9 +17,10 @@ export default function Dashboard({ coll }) {
   const [filters,     setFilters]     = useState({})
   const [selected,    setSelected]    = useState(null)
   const [adminItem,   setAdminItem]   = useState(undefined)
-  const [pinAction,   setPinAction]   = useState(null) // { label, onSuccess }
+  const [adminIndex,  setAdminIndex]  = useState(-1)   // índice capturado al abrir — no se recalcula
+  const [pinAction,   setPinAction]   = useState(null)
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [view,        setView]        = useState('collection') // 'collection' | 'stats'
+  const [view,        setView]        = useState('collection')
 
   const { data, isLoading, isError } = useQuery({
     queryKey: [coll],
@@ -82,16 +83,16 @@ export default function Dashboard({ coll }) {
         <Modal
           item={selected} coll={coll}
           onClose={() => setSelected(null)}
-          onEdit={() => { setSelected(null); setAdminItem(selected) }}
+          onEdit={() => { setAdminIndex(findIndex(selected)); setSelected(null); setAdminItem(selected) }}
         />
       )}
       {adminItem !== undefined && (
         <AdminForm
           coll={coll}
           item={adminItem}
-          index={findIndex(adminItem)}
+          index={adminItem === null ? -1 : adminIndex}
           data={data}
-          onClose={() => setAdminItem(undefined)}
+          onClose={() => { setAdminItem(undefined); setAdminIndex(-1) }}
           onRequestPin={(label, cb) => requirePin(label, cb)}
         />
       )}
