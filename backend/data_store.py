@@ -16,14 +16,14 @@ DATABASE_URL = os.environ.get("DATABASE_URL")
 
 # Mapeo nombre de colección → tabla SQL
 TABLES = {
-    "vinyls":   "vinyls",
+    "vinilos":  "vinyls",    # el router usa "vinilos", la tabla SQL se llama "vinyls"
     "rums":     "rums",
     "whiskies": "whiskies",
 }
 
 # Columnas por tabla (para INSERT/UPDATE ordenado)
 COLUMNS = {
-    "vinyls":   ["artista","album","genero","agrupador","anio","pais",
+    "vinilos":  ["artista","album","genero","agrupador","anio","pais",
                  "sello","pais_sello","cat_num","origen","fuera",
                  "discogs","cover_url","url"],
     "rums":     ["brand","name","type","country","abv","blend",
