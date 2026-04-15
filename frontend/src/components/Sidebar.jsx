@@ -40,12 +40,10 @@ export default function Sidebar({ data, coll, filters, setFilter }) {
 
 function getSections(data, coll) {
   if (coll === 'vinyl') {
-    const active = data.filter(r => !r.fuera)
     return [
-      { title: '🎵 Categoría', key: 'agrupador', entries: countBy(active, 'agrupador') },
-      { title: '🎼 Género',    key: 'genero',    entries: countBy(active, 'genero') },
-      { title: '🌍 País',      key: 'pais',      entries: countBy(active, 'pais') },
-      { title: '📀 Origen',    key: 'origen',    entries: countBy(active, 'origen') },
+      { title: '🎵 Categoría', key: 'agrupador', entries: countBy(data, 'agrupador') },
+      { title: '🎼 Género',    key: 'genero',    entries: countBy(data, 'genero') },
+      { title: '🌍 País',      key: 'pais',      entries: countBy(data, 'pais') },
     ]
   }
   if (coll === 'rum') {

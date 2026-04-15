@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { getVinyls, getRums, getWhiskies, bulkFetchCovers } from '../services/api'
+import { useQuery } from '@tanstack/react-query'
+import { getVinyls, getRums, getWhiskies } from '../services/api'
 import KpiBar    from './KpiBar'
 import SearchBar from './SearchBar'
 import Sidebar   from './Sidebar'
@@ -11,22 +11,16 @@ import styles    from './Dashboard.module.css'
 const FETCHERS = { vinyl: getVinyls, rum: getRums, whisky: getWhiskies }
 
 export default function Dashboard({ coll }) {
-  const [search,      setSearch]      = useState('')
-  const [filters,     setFilters]     = useState({})
-  const [selected,    setSelected]    = useState(null)
-  const [adminItem,   setAdminItem]   = useState(undefined)
-  const [bulkLoading, setBulkLoading] = useState(false)
-  const [bulkMsg,     setBulkMsg]     = useState('')
-  const qc = useQueryClient() // undefined=cerrado, null=nuevo, obj=editar  // { agrupador: 'Salsa/Latina', genero: null, ... }
+  const [search,    setSearch]    = useState('')
+  const [filters,   setFilters]   = useState({})
+  const [selected,  setSelected]  = useState(null)
+  const [adminItem, setAdminItem] = useState(undefined)
 
-  // Cuando cambia la colección, limpiar búsqueda y filtros
-  // useQuery re-fetcha automáticamente cuando cambia queryKey
   const { data, isLoading, isError } = useQuery({
     queryKey: [coll],
     queryFn: FETCHERS[coll],
   })
 
-  // setFilter — activa o desactiva un filtro individual
   function setFilter(key, value) {
     setFilters(prev => ({ ...prev, [key]: value }))
   }
@@ -36,36 +30,12 @@ export default function Dashboard({ coll }) {
     setFilters({})
   }
 
-  async function handleBulkCovers() {
-    if (!localStorage.getItem('discogs_token')) {
-      setBulkMsg('⚠ Primero guardá tu token Discogs (ícono 🔑 arriba)')
-      return
-    }
-    setBulkLoading(true)
-    setBulkMsg('Buscando portadas... puede tardar un minuto')
-    try {
-      const result = await bulkFetchCovers()
-      setBulkMsg(`✅ ${result.updated} portadas nuevas · ${result.skipped} ya tenían`)
-      qc.invalidateQueries({ queryKey: ['vinyl'] })
-    } catch {
-      setBulkMsg('⚠ Error al buscar portadas')
-    } finally {
-      setBulkLoading(false)
-    }
-  }
-
-  // useMemo — solo recalcula cuando cambian data, search o filters
-  // Análogo a una vista materializada que se refresca solo cuando cambian los datos
   const filtered = useMemo(() => {
     if (!data) return []
     let result = data
-
-    // Aplicar filtros de sidebar
     Object.entries(filters).forEach(([key, val]) => {
       if (val) result = result.filter(r => r[key] === val)
     })
-
-    // Aplicar búsqueda
     if (search.trim()) {
       const s = search.toLowerCase()
       result = result.filter(r => {
@@ -75,16 +45,15 @@ export default function Dashboard({ coll }) {
         return fields.some(f => (f || '').toLowerCase().includes(s))
       })
     }
-
     return result
   }, [data, search, filters, coll])
 
   if (isLoading) return <div className={styles.state}>Cargando...</div>
-  if (isError)   return <div className={styles.state}>⚠ Error conectando al backend (puerto 8000)</div>
+  if (isError)   return <div className={styles.state}>⚠ Error conectando al backend</div>
 
-  const activeFilters = Object.values(filters).some(Boolean) || search
+  const activeFilters = Object.entries(filters).filter(([, v]) => v)
+  const hasActive     = activeFilters.length > 0 || search.trim()
 
-  // Encontrar el índice real del item en el array original (necesario para PUT/DELETE)
   function findIndex(item) {
     if (!data || !item) return -1
     return data.findIndex(r => JSON.stringify(r) === JSON.stringify(item))
@@ -112,31 +81,42 @@ export default function Dashboard({ coll }) {
       <div className={styles.layout}>
         <Sidebar data={data} coll={coll} filters={filters} setFilter={setFilter} />
         <main className={styles.content}>
+
+          {/* Top bar */}
           <div className={styles.topBar}>
             <SearchBar search={search} setSearch={setSearch} coll={coll} />
-            {activeFilters && (
+            {hasActive && (
               <button className={styles.clearBtn} onClick={clearAll}>
-                Limpiar filtros
+                Limpiar
               </button>
             )}
             <button className={`${styles.addBtn} ${styles[coll]}`} onClick={() => setAdminItem(null)}>
               + Agregar
             </button>
-            {coll === 'vinyl' && (
-              <button
-                className={styles.bulkBtn}
-                onClick={handleBulkCovers}
-                disabled={bulkLoading}
-                title="Buscar portadas en Discogs para todos los vinilos"
-              >
-                {bulkLoading ? '⏳ Buscando...' : '🎵 Portadas'}
-              </button>
-            )}
           </div>
-          {bulkMsg && <div className={styles.bulkMsg}>{bulkMsg}</div>}
+
+          {/* Migas de pan — filtros activos */}
+          {hasActive && (
+            <div className={styles.crumbs}>
+              {activeFilters.map(([key, val]) => (
+                <span key={key} className={`${styles.crumb} ${styles[coll]}`}>
+                  {val}
+                  <button onClick={() => setFilter(key, null)}>✕</button>
+                </span>
+              ))}
+              {search.trim() && (
+                <span className={`${styles.crumb} ${styles[coll]}`}>
+                  "{search}"
+                  <button onClick={() => setSearch('')}>✕</button>
+                </span>
+              )}
+            </div>
+          )}
+
           <div className={styles.meta}>
             {filtered.length} de {data.length} registros
           </div>
+
           {filtered.length === 0
             ? <div className={styles.empty}>🔍 Sin resultados</div>
             : <div className={styles.grid}>
@@ -169,9 +149,8 @@ function Card({ item, coll, onClick }) {
             ? <img src={item.cover_url} alt={item.brand} loading="lazy" />
             : <div className={styles.bottle}>🥃</div>
         }
-        {coll === 'vinyl' && (
-          <span className={`${styles.dot} ${item.fuera ? styles.dotRed : styles.dotGreen}`} />
-        )}
+        {/* Dot: verde = tiene imagen · rojo = sin imagen */}
+        <span className={`${styles.dot} ${item.cover_url ? styles.dotGreen : styles.dotRed}`} />
       </div>
       <div className={styles.cardBody}>
         <div className={styles.cardTitle}>{title}</div>
