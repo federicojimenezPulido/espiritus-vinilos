@@ -14,11 +14,31 @@ export default function Header({ coll, setColl }) {
   const [showToken, setShowToken] = useState(false)
   const [tokenInput, setTokenInput] = useState('')
   const [showAbout, setShowAbout] = useState(false)
+  const [showPin,   setShowPin]   = useState(false)
+  const [pinInput,  setPinInput]  = useState('')
+  const [pinInput2, setPinInput2] = useState('')
+  const [pinMsg,    setPinMsg]    = useState('')
   const hasToken = !!localStorage.getItem('discogs_token')
+  const hasPin   = !!localStorage.getItem('admin_pin')
 
   useEffect(() => {
     if (showToken) setTokenInput(localStorage.getItem('discogs_token') || '')
   }, [showToken])
+
+  function savePin() {
+    if (!pinInput) {
+      localStorage.removeItem('admin_pin')
+      setPinMsg('PIN eliminado')
+    } else if (pinInput !== pinInput2) {
+      setPinMsg('Los PINs no coinciden')
+      return
+    } else {
+      localStorage.setItem('admin_pin', pinInput)
+      setPinMsg('✅ PIN guardado')
+    }
+    setPinInput(''); setPinInput2('')
+    setTimeout(() => { setShowPin(false); setPinMsg('') }, 1200)
+  }
 
   function saveToken() {
     if (tokenInput.trim()) {
@@ -49,6 +69,41 @@ export default function Header({ coll, setColl }) {
       >
         📖
       </button>
+
+      {/* PIN de admin */}
+      {showPin
+        ? <div className={styles.tokenRow}>
+            <input
+              className={styles.tokenInput}
+              type="password"
+              placeholder="PIN nuevo..."
+              value={pinInput}
+              onChange={e => { setPinInput(e.target.value); setPinMsg('') }}
+              style={{ width: 120 }}
+            />
+            <input
+              className={styles.tokenInput}
+              type="password"
+              placeholder="Confirmar..."
+              value={pinInput2}
+              onChange={e => { setPinInput2(e.target.value); setPinMsg('') }}
+              onKeyDown={e => e.key === 'Enter' && savePin()}
+              style={{ width: 120 }}
+            />
+            <button className={styles.tokenBtn} onClick={savePin}>
+              {pinInput ? 'Guardar' : 'Quitar PIN'}
+            </button>
+            <button className={styles.tokenBtn} onClick={() => { setShowPin(false); setPinMsg(''); setPinInput(''); setPinInput2('') }}>✕</button>
+            {pinMsg && <span style={{ fontSize: '.72rem', color: 'var(--text3)' }}>{pinMsg}</span>}
+          </div>
+        : <button
+            className={`${styles.tokenIcon} ${hasPin ? styles.tokenOk : styles.tokenMissing}`}
+            onClick={() => setShowPin(true)}
+            title={hasPin ? 'PIN admin configurado — click para cambiar' : 'Sin PIN admin — click para configurar'}
+          >
+            ⚙
+          </button>
+      }
 
       {/* Token Discogs */}
       <div className={styles.tokenWrap}>

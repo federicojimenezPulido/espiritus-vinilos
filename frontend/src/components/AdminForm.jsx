@@ -5,7 +5,7 @@ import styles from './AdminForm.module.css'
 
 // item = null → nuevo registro | item = {...} → editar
 // index = posición en el array del backend (necesario para PUT/DELETE)
-export default function AdminForm({ coll, item, index, data, onClose }) {
+export default function AdminForm({ coll, item, index, data, onClose, onRequestPin }) {
   const { add, update, remove } = useCrud(coll)
   const isEdit = item !== null && index !== undefined
 
@@ -64,10 +64,13 @@ export default function AdminForm({ coll, item, index, data, onClose }) {
     onClose()
   }
 
-  async function handleDelete() {
+  function handleDelete() {
     if (!confirm(`¿Eliminar este registro? Esta acción no se puede deshacer.`)) return
-    await remove.mutateAsync(index)
-    onClose()
+    const doDelete = async () => { await remove.mutateAsync(index); onClose() }
+    const pin = localStorage.getItem('admin_pin')
+    if (!pin) { doDelete(); return }
+    // Delegar la verificación al PinModal — pasamos el callback al padre via onRequestPin
+    onRequestPin?.('Eliminar registro', doDelete)
   }
 
   // Buscar portada manualmente (botón) — vinilos: Discogs | licores: og:image

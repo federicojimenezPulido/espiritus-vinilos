@@ -6,6 +6,7 @@ import SearchBar from './SearchBar'
 import Sidebar   from './Sidebar'
 import Modal     from './Modal'
 import AdminForm from './AdminForm'
+import PinModal  from './PinModal'
 import styles    from './Dashboard.module.css'
 
 const FETCHERS = { vinyl: getVinyls, rum: getRums, whisky: getWhiskies }
@@ -15,6 +16,7 @@ export default function Dashboard({ coll }) {
   const [filters,   setFilters]   = useState({})
   const [selected,  setSelected]  = useState(null)
   const [adminItem, setAdminItem] = useState(undefined)
+  const [pinAction, setPinAction] = useState(null) // { label, onSuccess }
 
   const { data, isLoading, isError } = useQuery({
     queryKey: [coll],
@@ -59,8 +61,20 @@ export default function Dashboard({ coll }) {
     return data.findIndex(r => JSON.stringify(r) === JSON.stringify(item))
   }
 
+  function requirePin(label, onSuccess) {
+    if (!localStorage.getItem('admin_pin')) { onSuccess(); return }
+    setPinAction({ label, onSuccess })
+  }
+
   return (
     <>
+      {pinAction && (
+        <PinModal
+          action={pinAction.label}
+          onSuccess={() => { pinAction.onSuccess(); setPinAction(null) }}
+          onCancel={() => setPinAction(null)}
+        />
+      )}
       {selected && (
         <Modal
           item={selected} coll={coll}
@@ -75,6 +89,7 @@ export default function Dashboard({ coll }) {
           index={findIndex(adminItem)}
           data={data}
           onClose={() => setAdminItem(undefined)}
+          onRequestPin={(label, cb) => requirePin(label, cb)}
         />
       )}
       <KpiBar data={data} coll={coll} />
@@ -90,7 +105,7 @@ export default function Dashboard({ coll }) {
                 Limpiar
               </button>
             )}
-            <button className={`${styles.addBtn} ${styles[coll]}`} onClick={() => setAdminItem(null)}>
+            <button className={`${styles.addBtn} ${styles[coll]}`} onClick={() => requirePin('Agregar nuevo registro', () => setAdminItem(null))}>
               + Agregar
             </button>
           </div>
