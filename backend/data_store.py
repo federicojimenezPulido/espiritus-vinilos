@@ -15,17 +15,20 @@ from contextlib import contextmanager
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
 # Mapeo nombre de colección → tabla SQL
+_VINYL_COLS = ["artista","album","genero","agrupador","anio","pais",
+               "sello","pais_sello","cat_num","origen","fuera",
+               "discogs","cover_url","url"]
+
 TABLES = {
-    "vinilos":  "vinyls",    # el router usa "vinilos", la tabla SQL se llama "vinyls"
+    "vinilos":  "vinyls",   # vinyls.py usa "vinilos"
+    "vinyls":   "vinyls",   # covers.py usa "vinyls"
     "rums":     "rums",
     "whiskies": "whiskies",
 }
 
-# Columnas por tabla (para INSERT/UPDATE ordenado)
 COLUMNS = {
-    "vinilos":  ["artista","album","genero","agrupador","anio","pais",
-                 "sello","pais_sello","cat_num","origen","fuera",
-                 "discogs","cover_url","url"],
+    "vinilos":  _VINYL_COLS,
+    "vinyls":   _VINYL_COLS,
     "rums":     ["brand","name","type","country","abv","blend",
                  "age_low","age_max","region","scale","url","cover_url"],
     "whiskies": ["brand","version","type","origin","country","abv",
