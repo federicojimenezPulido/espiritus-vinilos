@@ -25,14 +25,12 @@ function unique(arr, key) {
 
 function getKpis(data, coll) {
   if (coll === 'vinyl') {
-    const active = data.filter(r => !r.fuera)
     return [
-      { label: 'Total',    value: data.length,                   color: 'var(--v-gold)' },
-      { label: 'Activos',  value: active.length,                 color: '#22c55e' },
-      { label: 'Fuera',    value: data.filter(r=>r.fuera).length,color: '#ef4444' },
-      { label: 'Artistas', value: unique(active, 'artista'),     color: '#a78bfa' },
-      { label: 'Géneros',  value: unique(active, 'genero'),      color: '#4ea8de' },
-      { label: 'Discogs',  value: active.filter(r=>r.discogs).length, color: 'var(--v-gold)' },
+      { label: 'Total',        value: data.length,                              color: 'var(--v-gold)' },
+      { label: 'Artistas',     value: unique(data, 'artista'),                  color: '#a78bfa' },
+      { label: 'Géneros',      value: unique(data, 'genero'),                   color: '#4ea8de' },
+      { label: 'Discogs',      value: data.filter(r => r.discogs).length,       color: 'var(--v-gold)' },
+      { label: 'Con imagen',   value: data.filter(r => r.cover_url).length,     color: '#22c55e' },
     ]
   }
   if (coll === 'rum') {
