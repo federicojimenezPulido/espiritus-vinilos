@@ -113,7 +113,7 @@ function VinylStats({ data, onBarClick }) {
       <BarChart title="Géneros principales" entries={genres}     accent="var(--v-acc2)" filterKey="agrupador" onBarClick={onBarClick} />
       <BarChart title="Categorías"          entries={categories} accent="var(--v-gold)" filterKey="genero"    onBarClick={onBarClick} />
       <BarChart title="Países"              entries={countries}  accent="var(--v-acc)"  filterKey="pais"      onBarClick={onBarClick} />
-      <BarChart title="Por Década"          entries={decades}    accent="var(--v-acc2)"  />
+      <BarChart title="Por Década"          entries={decades}    accent="var(--v-acc2)" filterKey="decade" onBarClick={onBarClick} />
     </>
   )
 }

@@ -67,7 +67,17 @@ export default function Dashboard({ coll }) {
   }
 
   function handleBarClick(filterKey, value) {
-    const items = (data || []).filter(r => r[filterKey] === value)
+    let items
+    if (filterKey === 'decade') {
+      // value = "1970s" → filtrar anio >= 1970 && < 1980
+      const decade = parseInt(value)
+      items = (data || []).filter(r => {
+        const y = parseInt(r.anio)
+        return !isNaN(y) && y >= decade && y < decade + 10
+      })
+    } else {
+      items = (data || []).filter(r => r[filterKey] === value)
+    }
     setStatsDetail({ title: value, filterKey, value, items })
   }
 
