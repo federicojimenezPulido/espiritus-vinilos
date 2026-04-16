@@ -94,7 +94,8 @@ export default function AdminForm({ coll, item, index, data, onClose, onRequestP
         setShowManualUrl(true)
       }
     } catch {
-      setCoverMsg('⚠ Error al buscar imagen')
+      setCoverMsg('⚠ Error al buscar imagen — pegá la URL manualmente')
+      setShowManualUrl(true)
     } finally {
       setFetchingCover(false)
     }
