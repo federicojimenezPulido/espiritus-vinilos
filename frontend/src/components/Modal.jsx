@@ -1,14 +1,50 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { fetchSpotifyId } from '../services/api'
 import styles from './Modal.module.css'
 
 // Cerrar con Escape — useEffect con cleanup
 // Analogía: como un trigger que se activa y se desactiva
-export default function Modal({ item, coll, onClose, onEdit }) {
+export default function Modal({ item, coll, index, onClose, onEdit }) {
+  const [spotifyId,      setSpotifyId]      = useState(item?.spotify_id || null)
+  const [showPlayer,     setShowPlayer]     = useState(false)
+  const [fetchingSpot,   setFetchingSpot]   = useState(false)
+  const [spotifyMsg,     setSpotifyMsg]     = useState('')
+
   useEffect(() => {
     const handler = e => { if (e.key === 'Escape') onClose() }
     window.addEventListener('keydown', handler)
-    return () => window.removeEventListener('keydown', handler) // cleanup
+    return () => window.removeEventListener('keydown', handler)
   }, [onClose])
+
+  // Resetear estado al cambiar de item
+  useEffect(() => {
+    setSpotifyId(item?.spotify_id || null)
+    setShowPlayer(false)
+    setSpotifyMsg('')
+  }, [item])
+
+  async function handleSpotify() {
+    if (spotifyId) {
+      setShowPlayer(p => !p)
+      return
+    }
+    setFetchingSpot(true)
+    setSpotifyMsg('Buscando en Spotify...')
+    try {
+      const result = await fetchSpotifyId(index)
+      if (result.spotify_id) {
+        setSpotifyId(result.spotify_id)
+        setShowPlayer(true)
+        setSpotifyMsg('')
+      } else {
+        setSpotifyMsg('⚠ No encontrado en Spotify')
+      }
+    } catch {
+      setSpotifyMsg('⚠ Error conectando con Spotify')
+    } finally {
+      setFetchingSpot(false)
+    }
+  }
 
   if (!item) return null
 
@@ -44,8 +80,33 @@ export default function Modal({ item, coll, onClose, onEdit }) {
             ))}
           </div>
 
+          {/* Player Spotify */}
+          {coll === 'vinyl' && showPlayer && spotifyId && (
+            <div className={styles.spotifyWrap}>
+              <iframe
+                src={`https://open.spotify.com/embed/album/${spotifyId}?utm_source=generator&theme=0`}
+                width="100%"
+                height="152"
+                frameBorder="0"
+                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                loading="lazy"
+                className={styles.spotifyFrame}
+              />
+            </div>
+          )}
+          {spotifyMsg && <p className={styles.spotifyMsg}>{spotifyMsg}</p>}
+
           {/* Acciones */}
           <div className={styles.actions}>
+            {coll === 'vinyl' && (
+              <button
+                className={`${styles.btn} ${showPlayer ? styles.btnSpotifyActive : styles.btnSpotify}`}
+                onClick={handleSpotify}
+                disabled={fetchingSpot}
+              >
+                {fetchingSpot ? '⏳ Buscando...' : showPlayer ? '⏹ Cerrar player' : spotifyId ? '▶ Escuchar álbum' : '🎵 Buscar en Spotify'}
+              </button>
+            )}
             {coll === 'vinyl'
               ? (
                   <a

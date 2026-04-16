@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import vinyls, rums, whiskies, covers
+from routers import vinyls, rums, whiskies, covers, spotify
 
 app = FastAPI(title="Espíritus & Vinilos API", version="1.0.0")
 
@@ -21,6 +21,7 @@ app.include_router(vinyls.router,    prefix="/api/vinyls",    tags=["Vinyls"])
 app.include_router(rums.router,      prefix="/api/rums",      tags=["Rums"])
 app.include_router(whiskies.router,  prefix="/api/whiskies",  tags=["Whiskies"])
 app.include_router(covers.router,    prefix="/api/covers",    tags=["Covers"])
+app.include_router(spotify.router,   prefix="/api/spotify",   tags=["Spotify"])
 
 @app.get("/")
 def root():

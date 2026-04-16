@@ -88,6 +88,42 @@
 }
 .btnSecondary:hover { border-color: var(--v-acc2); color: var(--text); }
 
+/* ── Spotify player ── */
+.spotifyWrap {
+  margin-bottom: 14px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(30,215,96,.25);
+  animation: fadeIn .2s ease;
+}
+
+.spotifyFrame {
+  display: block;
+  border-radius: 12px;
+}
+
+.spotifyMsg {
+  font-size: .75rem;
+  color: var(--text3);
+  margin: 0 0 10px;
+}
+
+.btnSpotify {
+  background: #1DB954;
+  color: #000;
+  border: none;
+  font-weight: 600;
+}
+.btnSpotify:hover { filter: brightness(1.1); }
+
+.btnSpotifyActive {
+  background: var(--bg4);
+  color: #1DB954;
+  border: 1px solid #1DB954;
+  font-weight: 600;
+}
+.btnSpotifyActive:hover { background: rgba(29,185,84,.1); }
+
 /* ── Responsive: mobile ── */
 @media (max-width: 767px) {
   .box {

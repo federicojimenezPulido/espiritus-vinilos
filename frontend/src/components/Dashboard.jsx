@@ -120,6 +120,7 @@ export default function Dashboard({ coll }) {
       {selected && (
         <Modal
           item={selected} coll={coll}
+          index={findIndex(selected)}
           onClose={() => setSelected(null)}
           onEdit={() => { setAdminIndex(findIndex(selected)); setSelected(null); setAdminItem(selected) }}
         />

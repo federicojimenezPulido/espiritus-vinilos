@@ -48,6 +48,10 @@ export const bulkFetchCovers = () => {
   }).then(r => r.data)
 }
 
+// Busca álbum en Spotify y persiste el spotify_id en el vinilo
+export const fetchSpotifyId = (index) =>
+  api.post(`/api/spotify/${index}`).then(r => r.data)
+
 // Busca portada en Discogs y la persiste en el vinilo
 export const fetchAndSaveDiscogsCover = (index, q) => {
   const token = localStorage.getItem('discogs_token')
