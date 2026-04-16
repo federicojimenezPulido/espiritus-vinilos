@@ -28,7 +28,7 @@ function getKpis(data, coll) {
     return [
       { label: 'Total',        value: data.length,                              color: 'var(--v-gold)' },
       { label: 'Artistas',     value: unique(data, 'artista'),                  color: '#a78bfa' },
-      { label: 'Géneros',      value: unique(data, 'genero'),                   color: '#4ea8de' },
+      { label: 'Categorías',   value: unique(data, 'agrupador'),                color: '#4ea8de' },
       { label: 'Discogs',      value: data.filter(r => r.discogs).length,       color: 'var(--v-gold)' },
       { label: 'Con imagen',   value: data.filter(r => r.cover_url).length,     color: '#22c55e' },
     ]
