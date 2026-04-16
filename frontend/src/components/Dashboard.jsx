@@ -7,8 +7,9 @@ import Sidebar   from './Sidebar'
 import Modal     from './Modal'
 import AdminForm from './AdminForm'
 import PinModal  from './PinModal'
-import StatsView from './StatsView'
-import styles    from './Dashboard.module.css'
+import StatsView      from './StatsView'
+import SpotifyModal   from './SpotifyModal'
+import styles         from './Dashboard.module.css'
 
 const FETCHERS = { vinyl: getVinyls, rum: getRums, whisky: getWhiskies }
 
@@ -21,7 +22,8 @@ export default function Dashboard({ coll }) {
   const [pinAction,   setPinAction]   = useState(null)
   const [sidebarOpen,  setSidebarOpen]  = useState(false)
   const [view,         setView]         = useState('collection')
-  const [statsDetail,  setStatsDetail]  = useState(null) // { title, filterKey, value, items }
+  const [statsDetail,  setStatsDetail]  = useState(null)
+  const [spotifyItem,  setSpotifyItem]  = useState(null) // { item, index }
 
   const { data, isLoading, isError } = useQuery({
     queryKey: [coll],
@@ -88,6 +90,15 @@ export default function Dashboard({ coll }) {
 
   return (
     <>
+      {/* Spotify player modal */}
+      {spotifyItem && (
+        <SpotifyModal
+          item={spotifyItem.item}
+          index={spotifyItem.index}
+          onClose={() => setSpotifyItem(null)}
+        />
+      )}
+
       {/* Stats drill-down modal */}
       {statsDetail && (
         <div className={styles.detailOverlay} onClick={() => setStatsDetail(null)}>
@@ -201,7 +212,11 @@ export default function Dashboard({ coll }) {
                   ? <div className={styles.empty}>🔍 Sin resultados</div>
                   : <div className={styles.grid}>
                       {filtered.map((item, i) => (
-                        <Card key={i} item={item} coll={coll} onClick={() => setSelected(item)} />
+                        <Card
+                          key={i} item={item} coll={coll}
+                          onClick={() => setSelected(item)}
+                          onSpotify={coll === 'vinyl' ? () => setSpotifyItem({ item, index: findIndex(item) }) : null}
+                        />
                       ))}
                     </div>
                 }
@@ -214,7 +229,7 @@ export default function Dashboard({ coll }) {
 }
 
 // ── CARD ─────────────────────────────────────────────────────────────────────
-function Card({ item, coll, onClick }) {
+function Card({ item, coll, onClick, onSpotify }) {
   const title = coll === 'vinyl' ? item.artista : item.brand
   const sub   = coll === 'vinyl' ? item.album   : (item.name || item.version || '')
   const tag   = coll === 'vinyl' ? item.genero  : item.type
@@ -247,6 +262,13 @@ function Card({ item, coll, onClick }) {
         <div className={styles.cardMeta}>
           {tag && <span className={`${styles.pill} ${styles[coll]}`}>{tag}</span>}
           {year && <span className={styles.year}>{year}</span>}
+          {onSpotify && (
+            <button
+              className={styles.spotifyBtn}
+              onClick={e => { e.stopPropagation(); onSpotify() }}
+              title="Escuchar en Spotify"
+            >▶</button>
+          )}
         </div>
       </div>
     </div>

@@ -138,6 +138,23 @@
 
 .year { font-size: .63rem; color: var(--text3); flex-shrink: 0; }
 
+.spotifyBtn {
+  margin-left: auto;
+  background: #1DB954;
+  border: none;
+  color: #000;
+  border-radius: 50%;
+  width: 22px; height: 22px;
+  font-size: .6rem;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: all .15s;
+  opacity: 0;
+}
+.card:hover .spotifyBtn { opacity: 1; }
+.spotifyBtn:hover { transform: scale(1.15); }
+
 /* ── Botón Agregar ── */
 .addBtn {
   margin-left: auto;
