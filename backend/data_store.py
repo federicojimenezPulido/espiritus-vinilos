@@ -64,12 +64,17 @@ def write_collection(name: str, data: list) -> None:
     """
     Reemplaza toda la tabla con los datos nuevos.
     Equivalente a TRUNCATE + INSERT bulk en Oracle.
-    Usa una transacción — si algo falla, hace ROLLBACK.
+    Usa advisory lock para evitar race conditions: si dos requests llegan
+    al mismo tiempo, la segunda espera a que termine la primera.
+    Analogía Oracle: LOCK TABLE ... IN EXCLUSIVE MODE.
     """
-    table = TABLES[name]
-    cols  = COLUMNS[name]
+    table   = TABLES[name]
+    cols    = COLUMNS[name]
+    lock_id = abs(hash(table)) % 2_147_483_647   # lock único por tabla
     with get_conn() as conn:
         with conn.cursor() as cur:
+            # Lock a nivel de transacción — se libera automáticamente al commit/rollback
+            cur.execute("SELECT pg_advisory_xact_lock(%s)", (lock_id,))
             cur.execute(f"DELETE FROM {table}")
             if data:
                 placeholders = ",".join(["%s"] * len(cols))
