@@ -1,7 +1,7 @@
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 import styles from './CrateView.module.css'
 
-/* ── Color por agrupador — mismo mapa que Modal/Dashboard ── */
+/* ── Color por agrupador ── */
 const LABEL_COLORS = {
   'Salsa/Latina':                  '#c0392b',
   'Jazz/Bigband/Sountracks/Swing': '#1a5276',
@@ -17,8 +17,8 @@ function spineColor(item) {
   return LABEL_COLORS[item.agrupador] || '#3a3a3a'
 }
 
-/* ── Un disco individual en el anaquel ── */
-function SpineRecord({ item, index, onClick }) {
+/* ── Disco individual ── */
+function SpineRecord({ item, onClick }) {
   const [hovered, setHovered] = useState(false)
   const color = spineColor(item)
 
@@ -31,7 +31,7 @@ function SpineRecord({ item, index, onClick }) {
       title={`${item.artista} — ${item.album} (${item.anio || '?'})`}
       style={{ '--spine-color': color }}
     >
-      {/* Portada que aparece al sacar el disco */}
+      {/* Portada que emerge al hacer hover */}
       <div className={styles.cover}>
         {item.cover_url
           ? <img src={item.cover_url} alt={item.album} loading="lazy" />
@@ -45,7 +45,7 @@ function SpineRecord({ item, index, onClick }) {
         }
       </div>
 
-      {/* Lomo del disco */}
+      {/* Lomo */}
       <div className={styles.spine}>
         <span className={styles.spineArtist}>{item.artista}</span>
         <span className={styles.spineAlbum}>{item.album}</span>
@@ -55,18 +55,15 @@ function SpineRecord({ item, index, onClick }) {
   )
 }
 
-/* ── Anaquel (una fila de discos) ── */
+/* ── Anaquel (una fila) ── */
 function Shelf({ items, onSelect }) {
   return (
     <div className={styles.shelf}>
-      {/* Madera del anaquel */}
       <div className={styles.shelfBoard} />
-      {/* Discos */}
       <div className={styles.records}>
         {items.map((item, i) => (
-          <SpineRecord key={i} item={item} index={i} onClick={onSelect} />
+          <SpineRecord key={i} item={item} onClick={onSelect} />
         ))}
-        {/* Sujetador final */}
         <div className={styles.bookend} />
       </div>
     </div>
@@ -75,39 +72,73 @@ function Shelf({ items, onSelect }) {
 
 /* ── Vista principal ── */
 export default function CrateView({ data, onSelect }) {
-  const SHELF_SIZE = 18   // discos por anaquel
+  const [activeGenre, setActiveGenre] = useState(null)
 
-  const shelves = []
-  for (let i = 0; i < data.length; i += SHELF_SIZE) {
-    shelves.push(data.slice(i, i + SHELF_SIZE))
-  }
-
-  // Leyenda de colores
-  const legend = Object.entries(LABEL_COLORS).filter(([genre]) =>
+  // Géneros presentes en la colección actual
+  const genres = Object.entries(LABEL_COLORS).filter(([genre]) =>
     data.some(r => r.agrupador === genre)
   )
 
+  // Filtrar por género si hay uno activo
+  const visible = activeGenre
+    ? data.filter(r => r.agrupador === activeGenre)
+    : data
+
+  const SHELF_SIZE = 18
+  const shelves = []
+  for (let i = 0; i < visible.length; i += SHELF_SIZE) {
+    shelves.push(visible.slice(i, i + SHELF_SIZE))
+  }
+
   return (
     <div className={styles.container}>
-      {/* Leyenda */}
+
+      {/* Filtro por género — clic activa/desactiva */}
       <div className={styles.legend}>
-        {legend.map(([genre, color]) => (
-          <span key={genre} className={styles.legendItem}>
-            <span className={styles.legendDot} style={{ background: color }} />
-            {genre}
-          </span>
-        ))}
+        <button
+          className={`${styles.legendItem} ${!activeGenre ? styles.legendActive : ''}`}
+          onClick={() => setActiveGenre(null)}
+        >
+          <span className={styles.legendDot} style={{ background: 'var(--text3)' }} />
+          Todos ({data.length})
+        </button>
+        {genres.map(([genre, color]) => {
+          const count = data.filter(r => r.agrupador === genre).length
+          return (
+            <button
+              key={genre}
+              className={`${styles.legendItem} ${activeGenre === genre ? styles.legendActive : ''}`}
+              style={activeGenre === genre ? { '--active-color': color } : {}}
+              onClick={() => setActiveGenre(g => g === genre ? null : genre)}
+            >
+              <span className={styles.legendDot} style={{ background: color }} />
+              {genre}
+              <span className={styles.legendCount}>{count}</span>
+            </button>
+          )
+        })}
       </div>
+
+      {/* Contador */}
+      <p className={styles.filterInfo}>
+        {activeGenre
+          ? <><strong style={{ color: LABEL_COLORS[activeGenre] }}>{activeGenre}</strong> · {visible.length} discos</>
+          : <>{visible.length} discos en la colección</>
+        }
+      </p>
 
       {/* Anaqueles */}
-      <div className={styles.unit}>
-        {shelves.map((shelf, i) => (
-          <Shelf key={i} items={shelf} onSelect={onSelect} />
-        ))}
-      </div>
+      {visible.length > 0
+        ? <div className={styles.unit}>
+            {shelves.map((shelf, i) => (
+              <Shelf key={i} items={shelf} onSelect={onSelect} />
+            ))}
+          </div>
+        : <div className={styles.empty}>Sin discos en este género</div>
+      }
 
       <p className={styles.hint}>
-        Pasá el cursor sobre un disco para verlo · Hacé clic para ver el detalle
+        Pasá el cursor sobre un disco para ver la portada · Clic para ver el detalle
       </p>
     </div>
   )
