@@ -66,6 +66,36 @@ def search_album(token: str, artista: str, album: str) -> str | None:
     return items2[0]["id"] if items2 else None
 
 
+@router.put("/{index}")
+def save_spotify_id(index: int, body: dict):
+    """Guarda un spotify_id corregido manualmente"""
+    spotify_id = (body.get("spotify_id") or "").strip()
+    data = read_collection("vinilos")
+    if index < 0 or index >= len(data):
+        raise HTTPException(status_code=404, detail="Vinilo no encontrado")
+    data[index]["spotify_id"] = spotify_id or None
+    write_collection("vinilos", data)
+    return {"spotify_id": data[index]["spotify_id"]}
+
+
+@router.post("/{index}/refresh")
+def refresh_spotify(index: int):
+    """Fuerza una nueva búsqueda ignorando el ID guardado"""
+    data = read_collection("vinilos")
+    if index < 0 or index >= len(data):
+        raise HTTPException(status_code=404, detail="Vinilo no encontrado")
+    data[index]["spotify_id"] = None
+    write_collection("vinilos", data)
+    # Reusar la misma lógica de búsqueda
+    vinyl   = data[index]
+    token   = get_access_token()
+    new_id  = search_album(token, vinyl.get("artista",""), vinyl.get("album",""))
+    if new_id:
+        data[index]["spotify_id"] = new_id
+        write_collection("vinilos", data)
+    return {"spotify_id": new_id, "cached": False}
+
+
 @router.post("/{index}")
 def find_and_save_spotify(index: int, body: dict = {}):
     """

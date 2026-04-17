@@ -101,6 +101,18 @@
   border-top: 1px solid rgba(255,255,255,.06);
 }
 
+.footerBtns {
+  display: flex; align-items: center; justify-content: space-between;
+}
+
+.refreshBtn {
+  background: none; border: none;
+  color: rgba(255,255,255,.3);
+  font-size: .7rem; cursor: pointer;
+  padding: 4px 0; transition: color .15s;
+}
+.refreshBtn:hover { color: #1DB954; }
+
 .wrongBtn {
   background: none; border: none;
   color: rgba(255,255,255,.3);

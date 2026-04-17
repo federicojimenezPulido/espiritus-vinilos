@@ -49,8 +49,16 @@ export const bulkFetchCovers = () => {
 }
 
 // Busca álbum en Spotify y persiste el spotify_id en el vinilo
-export const fetchSpotifyId = (index) =>
+export const fetchSpotifyId    = (index) =>
   api.post(`/api/spotify/${index}`).then(r => r.data)
+
+// Guarda un spotify_id corregido manualmente
+export const saveSpotifyId     = (index, spotify_id) =>
+  api.put(`/api/spotify/${index}`, { spotify_id }).then(r => r.data)
+
+// Fuerza nueva búsqueda ignorando el ID cacheado
+export const refreshSpotifyId  = (index) =>
+  api.post(`/api/spotify/${index}/refresh`).then(r => r.data)
 
 // Busca portada en Discogs y la persiste en el vinilo
 export const fetchAndSaveDiscogsCover = (index, q) => {

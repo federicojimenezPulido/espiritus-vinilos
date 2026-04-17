@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { fetchSpotifyId } from '../services/api'
+import { fetchSpotifyId, saveSpotifyId, refreshSpotifyId } from '../services/api'
 import styles from './SpotifyModal.module.css'
 
 export default function SpotifyModal({ item, index, onClose }) {
@@ -42,18 +42,38 @@ export default function SpotifyModal({ item, index, onClose }) {
     }
   }
 
-  function applyManualId() {
-    // Acepta URL completa o solo el ID
-    // https://open.spotify.com/album/3KuXEGcqLcnEYWnn3OEGy0 → 3KuXEGcqLcnEYWnn3OEGy0
-    const raw = manualId.trim()
-    const match = raw.match(/album\/([A-Za-z0-9]+)/)
-    const id = match ? match[1] : raw
-    if (id) {
-      setSpotifyId(id)
-      setShowManual(false)
-      setMsg('')
-      setManualId('')
+  async function doRefresh() {
+    setFetching(true)
+    setMsg('')
+    setShowManual(false)
+    setSpotifyId(null)
+    try {
+      const result = await refreshSpotifyId(index)
+      if (result.spotify_id) {
+        setSpotifyId(result.spotify_id)
+      } else {
+        setMsg('⚠ No se encontró otro álbum — pegá la URL manualmente')
+        setShowManual(true)
+      }
+    } catch {
+      setMsg('⚠ Error al buscar')
+      setShowManual(true)
+    } finally {
+      setFetching(false)
     }
+  }
+
+  async function applyManualId() {
+    const raw   = manualId.trim()
+    const match = raw.match(/album\/([A-Za-z0-9]+)/)
+    const id    = match ? match[1] : raw
+    if (!id) return
+    setSpotifyId(id)
+    setShowManual(false)
+    setMsg('')
+    setManualId('')
+    // Persistir en DB
+    try { await saveSpotifyId(index, id) } catch { /* silencioso */ }
   }
 
   return (
@@ -101,9 +121,14 @@ export default function SpotifyModal({ item, index, onClose }) {
               />
               <div className={styles.footer}>
                 {!showManual
-                  ? <button className={styles.wrongBtn} onClick={() => setShowManual(true)}>
-                      ¿Álbum incorrecto? Corregir
-                    </button>
+                  ? <div className={styles.footerBtns}>
+                      <button className={styles.wrongBtn} onClick={() => setShowManual(true)}>
+                        ¿Álbum incorrecto? Corregir
+                      </button>
+                      <button className={styles.refreshBtn} onClick={doRefresh}>
+                        🔄 Buscar otro
+                      </button>
+                    </div>
                   : <div className={styles.manualRow}>
                       <input
                         className={styles.manualInput}
