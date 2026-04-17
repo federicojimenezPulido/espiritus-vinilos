@@ -24,9 +24,9 @@ export default function Dashboard({ coll }) {
   const [sidebarOpen,  setSidebarOpen]  = useState(false)
   const [view,         setView]         = useState('collection')
   const [statsDetail,  setStatsDetail]  = useState(null)
-  const [spotifyItem,  setSpotifyItem]  = useState(null)
-  const [featuredVer,  setFeaturedVer]  = useState(0)
-  const [shareItem,    setShareItem]    = useState(null)
+  const [spotifyItem,  setSpotifyItem]  = useState(null) // { item, index }
+  const [featuredVer,  setFeaturedVer]  = useState(0)    // bump to re-render banner
+  const [shareItem,    setShareItem]    = useState(null) // { item, index } — ShareView cinematográfica
 
   const { data, isLoading, isError } = useQuery({
     queryKey: [coll],
@@ -46,6 +46,7 @@ export default function Dashboard({ coll }) {
     }
   }, [data, coll])
 
+  // Listen for featured-changed events (clear or set from other components)
   useEffect(() => {
     const handler = () => setFeaturedVer(v => v + 1)
     window.addEventListener('featured-changed', handler)
@@ -112,6 +113,7 @@ export default function Dashboard({ coll }) {
 
   return (
     <>
+      {/* ShareView — vista cinematográfica para links ?v=INDEX */}
       {shareItem && (
         <ShareView
           item={shareItem.item}
@@ -230,7 +232,12 @@ export default function Dashboard({ coll }) {
           </div>
 
           {view === 'stats'
-            ? <StatsView data={filtered.length < data.length ? filtered : data} coll={coll} onBarClick={handleBarClick} />
+            ? <StatsView
+                data={filtered.length < data.length ? filtered : data}
+                coll={coll}
+                onBarClick={handleBarClick}
+                onStatClick={(title, items) => setStatsDetail({ title, items })}
+              />
             : <>
                 {/* Migas de pan — filtros activos */}
                 {hasActive && (

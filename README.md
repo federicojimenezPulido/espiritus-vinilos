@@ -16,6 +16,16 @@ Incluye búsqueda, filtros por categoría, KPIs automáticos, modal de detalle, 
 
 ---
 
+## Sobre el proyecto — En Las Nubes Trepao
+
+**En Las Nubes Trepao** es un proyecto cultural de Federico que vive en TikTok e Instagram, dedicado a artistas que moldearon épocas pero ya no son parte del mainstream. Vinilos que siguen girando, rones que cuentan el paisaje de donde vienen, whiskies de destilerías que trabajan con tiempo.
+
+Esta app es el archivo digital de esas colecciones físicas: una herramienta personal para catalogar, descubrir, filtrar y compartir.
+
+🎵 [TikTok](https://www.tiktok.com/@enlasnubestrepao13) · 📷 [Instagram](https://www.instagram.com/enlasnubestrepao/)
+
+---
+
 ## Arquitectura
 
 ```
@@ -135,7 +145,19 @@ frontend/
 │   │   ├── Modal.module.css
 │   │   ├── AdminForm.jsx    # Modal de alta/edición/borrado + fetch de portadas
 │   │   ├── AdminForm.module.css
-│   │   ├── About.jsx        # Modal informativo: arquitectura, stack, API
+│   │   ├── FeaturedBanner.jsx   # Banner "Descubrimiento del mes" — localStorage
+│   │   ├── FeaturedBanner.module.css
+│   │   ├── ShareView.jsx        # Vista compartible por URL (?v=INDEX)
+│   │   ├── ShareView.module.css
+│   │   ├── SpotifyModal.jsx     # Player Spotify embebido
+│   │   ├── SpotifyModal.module.css
+│   │   ├── StatsView.jsx        # Vista de estadísticas con barras CSS
+│   │   ├── StatsView.module.css
+│   │   ├── PinModal.jsx         # Diálogo de PIN para acciones admin
+│   │   ├── PinModal.module.css
+│   │   ├── WelcomeModal.jsx     # Modal de bienvenida — primera visita
+│   │   ├── WelcomeModal.module.css
+│   │   ├── About.jsx            # Modal informativo: arquitectura, stack, API
 │   │   └── About.module.css
 │   ├── hooks/
 │   │   └── useCrud.js       # Hook reutilizable: add/update/remove con invalidación de cache
@@ -167,6 +189,24 @@ Modal de solo lectura para ver el detalle de un item. Cierra con `Escape` (useEf
 
 **`AdminForm`**
 Modal de escritura. Detecta si es alta (item=null) o edición (item con datos). Tiene auto-fetch de portada Discogs al abrir un vinilo sin cover_url. Para licores usa el endpoint de scraping og:image. Permite pegar URL manual si la búsqueda automática falla, con detección de URLs de release de Discogs para raspar la imagen real.
+
+**`FeaturedBanner`**
+Banner "Descubrimiento del mes" anclado en la parte superior de la colección de vinilos. El vinilo destacado se persiste en `localStorage`. Incluye botón para escuchar en Spotify y botón para copiar la URL compartible.
+
+**`ShareView`**
+Vista de tarjeta diseñada para compartir un vinilo por URL (`?v=INDEX`). Se activa automáticamente al acceder al link. Permite navegar directo a la colección desde esa tarjeta.
+
+**`SpotifyModal`**
+Player de Spotify embebido en modal propio. El `spotify_id` puede corregirse manualmente y persiste en la base de datos para no repetir fetches.
+
+**`StatsView`**
+Vista de estadísticas con gráficos de barras CSS puro (sin librerías externas). Las barras son clickeables — al hacer clic se filtra la colección y se abre un modal con los registros de esa categoría.
+
+**`PinModal`**
+Diálogo de PIN para proteger acciones de escritura (agregar, editar, borrar). El PIN es opcional y se configura desde el Header (botón 🛡️). Se guarda en `localStorage`.
+
+**`WelcomeModal`**
+Modal de bienvenida para primeras visitas. Explica qué es el proyecto, muestra las tres colecciones y las features principales. Se controla con la clave `enlt_welcome_seen` en `localStorage`.
 
 **`About`**
 Modal informativo de solo lectura. Muestra la arquitectura, el stack con analogías SQL, los endpoints de la API, y cómo correr el proyecto localmente. Se abre desde el botón 📖 en el Header.
@@ -417,6 +457,18 @@ Cada `git push` a `main` dispara un re-deploy automático en Render. El free tie
 - Script `npm run deploy` con `gh-pages`
 - `About.jsx`: modal de documentación interna accesible desde el Header (botón 📖)
 - Este README
+
+### Fase 6 — Features avanzadas y UX
+
+- **SpotifyModal**: player de Spotify embebido en modal propio, abierto desde las cards de vinilos. El `spotify_id` o álbum de búsqueda se puede corregir manualmente y persiste en la base de datos para no repetir fetches
+- **FeaturedBanner**: banner "Descubrimiento del mes" anclado en la parte superior de la colección de vinilos. El vinilo destacado se guarda en `localStorage` y persiste entre sesiones. Incluye botón para escuchar en Spotify y botón para copiar URL compartible
+- **ShareView**: vista de tarjeta diseñada para compartir un vinilo vía URL (`?v=INDEX`). Se abre automáticamente al acceder al link. Permite pasar directo a la colección
+- **StatsView**: vista de estadísticas con gráficos de barras CSS (sin librerías externas). Gráficos clickeables — al hacer clic en una barra se filtra la colección y se abre un modal con los registros de esa categoría
+- **PinModal + protección admin**: PIN opcional configurable desde el Header (botón 🛡️). Si está configurado, cualquier acción de escritura (agregar, editar, borrar) requiere ingresarlo. Se guarda en `localStorage`
+- **Responsive mobile**: CSS breakpoints para mobile (`< 768px`). Sidebar oculto por defecto en mobile con toggle "🎚 Filtros". Grid adaptativo. Modales a full-width
+- **WelcomeModal**: modal de bienvenida para primeras visitas que explica el proyecto y sus colecciones
+- **Branding ENLT**: logo `logo-enlt.jpeg`, título "En Las Nubes Trepao", links a redes sociales (TikTok, Instagram), CNAME para dominio personalizado
+- **About modal**: documentación técnica accesible desde el Header (📖) con arquitectura, stack, componentes y endpoints
 
 ---
 

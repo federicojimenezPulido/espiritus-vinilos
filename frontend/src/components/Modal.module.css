@@ -126,17 +126,34 @@
 
 /* ── Responsive: mobile ── */
 @media (max-width: 767px) {
-  .box { width: 95vw; max-height: 90vh; overflow-y: auto; }
+  .box {
+    width: 95vw;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
   .hdr { padding: 12px 14px; }
+
   .icon { width: 56px; height: 56px; font-size: 1.6rem; }
+
   .hdrText h2 { font-size: .95rem; }
   .hdrText p  { font-size: .72rem; }
+
   .body { padding: 14px 16px; }
+
   .detGrid { grid-template-columns: 1fr; }
-  .actions { flex-wrap: wrap; gap: 6px; }
+
+  .actions {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
   .btn {
-    font-size: .75rem; padding: 7px 12px;
-    flex: 1; justify-content: center; text-align: center;
+    font-size: .75rem;
+    padding: 7px 12px;
+    flex: 1;
+    justify-content: center;
+    text-align: center;
     min-width: calc(50% - 6px);
   }
 }

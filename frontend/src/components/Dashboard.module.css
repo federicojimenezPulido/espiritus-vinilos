@@ -292,27 +292,56 @@
 /* ── Responsive: mobile ── */
 @media (max-width: 767px) {
   .layout { flex-direction: column; }
+
   .content { padding: 12px 14px; }
+
   .filterToggle { display: flex; align-items: center; }
+
+  /* Grid: 2 columnas fijas en mobile */
   .grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 8px;
   }
+
+  /* TopBar: SearchBar en fila propia, controles en segunda fila */
   .topBar {
     display: grid;
     grid-template-columns: auto 1fr auto auto;
     gap: 8px;
     align-items: center;
   }
-  .viewToggle { padding: 8px 10px; font-size: .76rem; white-space: nowrap; }
-  .addBtn     { padding: 8px 10px; font-size: .76rem; }
-  .clearBtn   { padding: 7px 10px; font-size: .74rem; }
+
+  /* SearchBar se extiende full en la fila */
+  .topBar > *:nth-child(2) { grid-column: 2; }
+
+  /* Stats y Agregar más compactos */
+  .viewToggle {
+    padding: 8px 10px;
+    font-size: .76rem;
+    white-space: nowrap;
+  }
+
+  .addBtn {
+    padding: 8px 10px;
+    font-size: .76rem;
+  }
+
+  .clearBtn {
+    padding: 7px 10px;
+    font-size: .74rem;
+  }
+
+  /* Cards más compactas en mobile */
   .cardBody  { padding: 8px; }
   .cardTitle { font-size: .76rem; }
   .cardSub   { font-size: .68rem; margin-bottom: 5px; }
   .pill      { font-size: .56rem; }
   .year      { font-size: .58rem; }
+
+  /* Ocultar botón Spotify en card (no hay hover en touch) */
   .spotifyBtn { display: none; }
+
+  /* Detail modal full-width en mobile */
   .detailBox   { padding: 16px; }
   .detailTitle { font-size: 1.05rem; }
   .detailGrid  { grid-template-columns: repeat(2, 1fr); gap: 8px; }

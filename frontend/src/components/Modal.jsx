@@ -2,13 +2,6 @@ import { useEffect, useState } from 'react'
 import { fetchSpotifyId } from '../services/api'
 import styles from './Modal.module.css'
 
-// ── Spotify embed URL ─────────────────────────────────────────────────────────
-function spotifyEmbedUrl(id) {
-  if (!id) return null
-  if (id.includes('/')) return `https://open.spotify.com/embed/${id}?utm_source=generator&theme=0`
-  return `https://open.spotify.com/embed/album/${id}?utm_source=generator&theme=0`
-}
-
 // Cerrar con Escape — useEffect con cleanup
 // Analogía: como un trigger que se activa y se desactiva
 export default function Modal({ item, coll, index, onClose, onEdit, onSetFeatured }) {
@@ -60,6 +53,14 @@ export default function Modal({ item, coll, index, onClose, onEdit, onSetFeature
     } finally {
       setFetchingSpot(false)
     }
+  }
+
+  function handleShare() {
+    const url = `${window.location.origin}${window.location.pathname}?v=${index}`
+    navigator.clipboard.writeText(url).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    })
   }
 
   if (!item) return null
@@ -157,6 +158,20 @@ export default function Modal({ item, coll, index, onClose, onEdit, onSetFeature
                   </a>
                 )
             }
+            {coll === 'vinyl' && index >= 0 && (
+              <button className={`${styles.btn} ${styles.btnSecondary}`} onClick={handleShare}>
+                {copied ? '✅ Link copiado' : '🔗 Compartir'}
+              </button>
+            )}
+            {onSetFeatured && (
+              <button
+                className={`${styles.btn} ${styles.btnSecondary}`}
+                onClick={() => onSetFeatured(item, index)}
+                title="Destacar como Descubrimiento del Mes"
+              >
+                ⭐ Destacar del mes
+              </button>
+            )}
             {onEdit && (
               <button className={`${styles.btn} ${styles.btnPrimary} ${styles[coll]}`} onClick={onEdit}>
                 ✏ Editar
@@ -170,6 +185,15 @@ export default function Modal({ item, coll, index, onClose, onEdit, onSetFeature
       </div>
     </div>
   )
+}
+
+// ── Spotify embed URL — soporta album / playlist / track ─────────────────────
+function spotifyEmbedUrl(id) {
+  if (!id) return null
+  // Formato nuevo: "album/ID", "playlist/ID", "track/ID"
+  if (id.includes('/')) return `https://open.spotify.com/embed/${id}?utm_source=generator&theme=0`
+  // Formato legacy: solo el ID → asumir album
+  return `https://open.spotify.com/embed/album/${id}?utm_source=generator&theme=0`
 }
 
 // ── Campos por colección ──────────────────────────────────────────────────────

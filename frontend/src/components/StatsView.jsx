@@ -46,12 +46,16 @@ function BarChart({ title, entries, accent, filterKey, onBarClick }) {
   )
 }
 
-/* ── Stat helper ── */
+/* ── Stat cell helper ── */
 function Stat({ num, lbl, items, title, onStatClick, missing }) {
   const clickable = !!(items && onStatClick)
   return (
     <div
-      className={[styles.stat, clickable ? styles.statClickable : '', missing ? styles.statMissing : ''].join(' ')}
+      className={[
+        styles.stat,
+        clickable ? styles.statClickable : '',
+        missing   ? styles.statMissing   : '',
+      ].join(' ')}
       onClick={clickable ? () => onStatClick(title || lbl, items) : undefined}
       title={clickable ? `Ver ${items.length} registros` : undefined}
     >
@@ -86,41 +90,23 @@ function VinylStats({ data, onBarClick, onStatClick }) {
   const pctCover     = data.length ? Math.round((withCover  / data.length) * 100) : 0
   const prestados    = data.filter(r => r.fuera).length
 
+  const noDiscogs = data.filter(r => !r.discogs)
+  const noCover   = data.filter(r => !r.cover_url)
+
   return (
     <>
       {/* Summary card */}
       <div className={styles.card}>
         <h3 className={styles.cardTitle}>Resumen</h3>
         <div className={styles.summaryGrid}>
-          <div className={styles.stat}>
-            <span className={styles.statNum}>{data.length}</span>
-            <span className={styles.statLbl}>Álbumes</span>
-          </div>
-          <div className={styles.stat}>
-            <span className={styles.statNum}>{totalArtists}</span>
-            <span className={styles.statLbl}>Artistas</span>
-          </div>
-          <div className={styles.stat}>
-            <span className={styles.statNum}>{withDiscogs}</span>
-            <span className={styles.statLbl}>En Discogs</span>
-          </div>
-          <div className={styles.stat}>
-            <span className={styles.statNum}>{pctDiscogs}%</span>
-            <span className={styles.statLbl}>% Discogs</span>
-          </div>
-          <div className={styles.stat}>
-            <span className={styles.statNum}>{withCover}</span>
-            <span className={styles.statLbl}>Con portada</span>
-          </div>
-          <div className={styles.stat}>
-            <span className={styles.statNum}>{pctCover}%</span>
-            <span className={styles.statLbl}>% Portada</span>
-          </div>
+          <Stat num={data.length}   lbl="Álbumes"    items={data}                        title="Todos los álbumes"      onStatClick={onStatClick} />
+          <Stat num={totalArtists}  lbl="Artistas"   />
+          <Stat num={withDiscogs}   lbl="En Discogs" items={data.filter(r => r.discogs)} title="Con Discogs"            onStatClick={onStatClick} />
+          <Stat num={`${pctDiscogs}%`} lbl="Sin Discogs" items={noDiscogs}               title={`Sin Discogs (${noDiscogs.length})`} onStatClick={onStatClick} missing={noDiscogs.length > 0} />
+          <Stat num={withCover}     lbl="Con portada" items={data.filter(r => r.cover_url)} title="Con portada"         onStatClick={onStatClick} />
+          <Stat num={`${pctCover}%`} lbl="Sin portada"  items={noCover}                  title={`Sin portada (${noCover.length})`}   onStatClick={onStatClick} missing={noCover.length > 0} />
           {prestados > 0 && (
-            <div className={styles.stat}>
-              <span className={styles.statNum}>{prestados}</span>
-              <span className={styles.statLbl}>Prestados</span>
-            </div>
+            <Stat num={prestados} lbl="Prestados" items={data.filter(r => r.fuera)} title="Prestados" onStatClick={onStatClick} />
           )}
         </div>
       </div>
@@ -155,40 +141,21 @@ function RumStats({ data, onBarClick, onStatClick }) {
     : '—'
   const pctCover    = data.length ? Math.round((withCover / data.length) * 100) : 0
 
+  const noCover = data.filter(r => !r.cover_url)
+
   return (
     <>
       <div className={styles.card}>
         <h3 className={styles.cardTitle}>Resumen</h3>
         <div className={styles.summaryGrid}>
-          <div className={styles.stat}>
-            <span className={styles.statNum}>{data.length}</span>
-            <span className={styles.statLbl}>Rones</span>
-          </div>
-          <div className={styles.stat}>
-            <span className={styles.statNum}>{countries.length}</span>
-            <span className={styles.statLbl}>Países</span>
-          </div>
-          <div className={styles.stat}>
-            <span className={styles.statNum}>{types.length}</span>
-            <span className={styles.statLbl}>Tipos</span>
-          </div>
-          <div className={styles.stat}>
-            <span className={styles.statNum}>{avgScale}</span>
-            <span className={styles.statLbl}>Escala prom</span>
-          </div>
-          <div className={styles.stat}>
-            <span className={styles.statNum}>{withCover}</span>
-            <span className={styles.statLbl}>Con portada</span>
-          </div>
-          <div className={styles.stat}>
-            <span className={styles.statNum}>{pctCover}%</span>
-            <span className={styles.statLbl}>% Portada</span>
-          </div>
+          <Stat num={data.length}      lbl="Rones"       items={data}                        title="Todos los rones"       onStatClick={onStatClick} />
+          <Stat num={countries.length} lbl="Países" />
+          <Stat num={types.length}     lbl="Tipos" />
+          <Stat num={avgScale}         lbl="Escala prom" />
+          <Stat num={withCover}        lbl="Con portada" items={data.filter(r => r.cover_url)} title="Con portada"          onStatClick={onStatClick} />
+          <Stat num={`${pctCover}%`}   lbl="Sin portada" items={noCover}                      title={`Sin portada (${noCover.length})`} onStatClick={onStatClick} missing={noCover.length > 0} />
           {terminados > 0 && (
-            <div className={styles.stat}>
-              <span className={styles.statNum}>{terminados}</span>
-              <span className={styles.statLbl}>Ya consumí</span>
-            </div>
+            <Stat num={terminados} lbl="Ya consumí" items={data.filter(r => r.terminado)} title="Ya consumí" onStatClick={onStatClick} />
           )}
         </div>
       </div>
@@ -213,44 +180,22 @@ function WhiskyStats({ data, onBarClick, onStatClick }) {
   const nas        = data.length - withAge
   const pctCover   = data.length ? Math.round((withCover / data.length) * 100) : 0
 
+  const noCover = data.filter(r => !r.cover_url)
+
   return (
     <>
       <div className={styles.card}>
         <h3 className={styles.cardTitle}>Resumen</h3>
         <div className={styles.summaryGrid}>
-          <div className={styles.stat}>
-            <span className={styles.statNum}>{data.length}</span>
-            <span className={styles.statLbl}>Whiskies</span>
-          </div>
-          <div className={styles.stat}>
-            <span className={styles.statNum}>{countries.length}</span>
-            <span className={styles.statLbl}>Países</span>
-          </div>
-          <div className={styles.stat}>
-            <span className={styles.statNum}>{regions.length}</span>
-            <span className={styles.statLbl}>Regiones</span>
-          </div>
-          <div className={styles.stat}>
-            <span className={styles.statNum}>{withAge}</span>
-            <span className={styles.statLbl}>Con edad</span>
-          </div>
-          <div className={styles.stat}>
-            <span className={styles.statNum}>{nas}</span>
-            <span className={styles.statLbl}>NAS</span>
-          </div>
-          <div className={styles.stat}>
-            <span className={styles.statNum}>{withCover}</span>
-            <span className={styles.statLbl}>Con portada</span>
-          </div>
-          <div className={styles.stat}>
-            <span className={styles.statNum}>{pctCover}%</span>
-            <span className={styles.statLbl}>% Portada</span>
-          </div>
+          <Stat num={data.length}      lbl="Whiskies"    items={data}                        title="Todos los whiskies"    onStatClick={onStatClick} />
+          <Stat num={countries.length} lbl="Países" />
+          <Stat num={regions.length}   lbl="Regiones" />
+          <Stat num={withAge}          lbl="Con edad"    items={data.filter(r => r.years)}   title="Con edad declarada"    onStatClick={onStatClick} />
+          <Stat num={nas}              lbl="NAS"         items={data.filter(r => !r.years)}  title="NAS (sin edad)"        onStatClick={onStatClick} />
+          <Stat num={withCover}        lbl="Con portada" items={data.filter(r => r.cover_url)} title="Con portada"         onStatClick={onStatClick} />
+          <Stat num={`${pctCover}%`}   lbl="Sin portada" items={noCover}                     title={`Sin portada (${noCover.length})`} onStatClick={onStatClick} missing={noCover.length > 0} />
           {terminados > 0 && (
-            <div className={styles.stat}>
-              <span className={styles.statNum}>{terminados}</span>
-              <span className={styles.statLbl}>Ya consumí</span>
-            </div>
+            <Stat num={terminados} lbl="Ya consumí" items={data.filter(r => r.terminado)} title="Ya consumí" onStatClick={onStatClick} />
           )}
         </div>
       </div>

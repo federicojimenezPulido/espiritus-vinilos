@@ -3,6 +3,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { fetchSpotifyId, saveSpotifyId, refreshSpotifyId } from '../services/api'
 import styles from './SpotifyModal.module.css'
 
+// Soporta "album/ID", "playlist/ID", "track/ID" (nuevo) o solo "ID" (legacy album)
 function spotifyEmbedUrl(id) {
   if (!id) return null
   if (id.includes('/')) return `https://open.spotify.com/embed/${id}?utm_source=generator&theme=0`
@@ -15,7 +16,6 @@ export default function SpotifyModal({ item, index, coll, onClose }) {
   const [msg,          setMsg]          = useState('')
   const [manualId,     setManualId]     = useState('')
   const [showManual,   setShowManual]   = useState(false)
-
   const queryClient = useQueryClient()
 
   useEffect(() => {
@@ -31,11 +31,12 @@ export default function SpotifyModal({ item, index, coll, onClose }) {
     }
   }, [])
 
+  // Guarda en BD y refresca el cache de React Query para que no vuelva a buscar
   async function persistId(id) {
     try {
       await saveSpotifyId(index, id)
       if (coll) queryClient.invalidateQueries({ queryKey: [coll] })
-    } catch { }
+    } catch { /* silencioso */ }
   }
 
   async function doSearch() {
@@ -46,6 +47,7 @@ export default function SpotifyModal({ item, index, coll, onClose }) {
       const result = await fetchSpotifyId(index)
       if (result.spotify_id) {
         setSpotifyId(result.spotify_id)
+        // fetchSpotifyId ya guarda en BD; solo refrescamos el cache
         if (coll) queryClient.invalidateQueries({ queryKey: [coll] })
       } else {
         setMsg('⚠ Este álbum no se encontró en Spotify')
@@ -84,12 +86,18 @@ export default function SpotifyModal({ item, index, coll, onClose }) {
   async function applyManualId() {
     const raw = manualId.trim()
     if (!raw) return
+
+    // Parsear URL completa: https://open.spotify.com/{type}/{id}?...
     const urlMatch = raw.match(/open\.spotify\.com\/(album|playlist|track)\/([A-Za-z0-9]+)/)
+    // URI: spotify:album:ID  /  spotify:playlist:ID
     const uriMatch = raw.match(/spotify:(album|playlist|track):([A-Za-z0-9]+)/)
+
     let storedId
     if (urlMatch)      storedId = `${urlMatch[1]}/${urlMatch[2]}`
     else if (uriMatch) storedId = `${uriMatch[1]}/${uriMatch[2]}`
-    else               storedId = raw
+    else               storedId = raw  // ID crudo → legacy album
+
+
     setSpotifyId(storedId)
     setShowManual(false)
     setMsg('')

@@ -114,6 +114,27 @@
   flex-direction: column;
   align-items: center;
   gap: 4px;
+  transition: border-color .15s, background .15s;
+}
+
+.statClickable {
+  cursor: pointer;
+}
+.statClickable:hover {
+  background: rgba(255,255,255,.07);
+  border-color: rgba(255,255,255,.25);
+}
+.statClickable:hover .statNum {
+  opacity: .9;
+}
+
+/* Tag de "sin X" para stats invertidos */
+.statMissing .statNum {
+  color: #f87171;
+}
+.statMissing .statLbl::after {
+  content: ' ↗';
+  opacity: .5;
 }
 
 .statNum {
@@ -136,12 +157,22 @@
 
 /* ── Responsive: mobile ── */
 @media (max-width: 767px) {
-  .container { grid-template-columns: 1fr; padding-bottom: 16px; }
+  .container {
+    grid-template-columns: 1fr;
+    padding-bottom: 16px;
+  }
+
   .card { padding: 14px; }
+
   .barLabel { width: 90px; font-size: .68rem; }
   .barCount { font-size: .64rem; }
-  .barPct   { display: none; }
-  .summaryGrid { grid-template-columns: repeat(3, 1fr); }
+  .barPct   { display: none; } /* ahorra espacio horizontal */
+
+  .summaryGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+
   .statNum { font-size: 1.1rem; }
   .statLbl { font-size: .55rem; letter-spacing: .5px; }
 }

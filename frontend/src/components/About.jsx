@@ -166,14 +166,20 @@ const STACK = [
 ]
 
 const COMPONENTS = [
-  { name: 'Header',     desc: 'Logo animado, título, toggle de colección, token Discogs (🔑), botón About (📖)' },
-  { name: 'Dashboard',  desc: 'Orquestador: useQuery, filtros con useMemo, grid de cards, controla modales' },
-  { name: 'Sidebar',    desc: 'Filtros por categoría/género/tipo/país — activa/desactiva con click' },
-  { name: 'KpiBar',     desc: 'Métricas automáticas: totales, artistas únicos, escala promedio, etc.' },
-  { name: 'SearchBar',  desc: 'Búsqueda full-text en memoria sobre los datos ya cargados' },
-  { name: 'Modal',      desc: 'Detalle de un item (solo lectura). Cierra con Escape, overlay click, o botón' },
-  { name: 'AdminForm',  desc: 'Alta/edición/borrado + auto-fetch de portada Discogs + og:image scraping' },
-  { name: 'About',      desc: 'Este modal — arquitectura, stack, endpoints, cómo correr' },
+  { name: 'Header',         desc: 'Logo animado, título, toggle de colección, redes sociales, token Discogs (🔑), PIN admin (🛡️), About (📖)' },
+  { name: 'Dashboard',      desc: 'Orquestador: useQuery, filtros con useMemo, grid de cards, controla todos los modales' },
+  { name: 'Sidebar',        desc: 'Filtros por categoría/género/tipo/país — activa/desactiva con click' },
+  { name: 'KpiBar',         desc: 'Métricas automáticas: totales, artistas únicos, escala promedio, prestados/consumidos' },
+  { name: 'SearchBar',      desc: 'Búsqueda full-text en memoria sobre los datos ya cargados' },
+  { name: 'StatsView',      desc: 'Vista de estadísticas: gráficos de barras CSS por género, década, país. Clic en barra filtra la colección' },
+  { name: 'FeaturedBanner', desc: 'Banner "Descubrimiento del mes": vinilo destacado fijado en localStorage, con botón de compartir y player Spotify' },
+  { name: 'ShareView',      desc: 'Vista de tarjeta compartible vía URL (?v=INDEX). Se abre automáticamente con el link' },
+  { name: 'SpotifyModal',   desc: 'Player de Spotify embebido en modal, vinculado al álbum por nombre o Spotify ID corregido manualmente' },
+  { name: 'Modal',          desc: 'Detalle de un item (solo lectura). Cierra con Escape, overlay click, o botón. Permite destacar y abrir Spotify' },
+  { name: 'AdminForm',      desc: 'Alta/edición/borrado + auto-fetch de portada Discogs + og:image scraping + corrección manual de álbum Spotify' },
+  { name: 'PinModal',       desc: 'Protección PIN para acciones de escritura (agregar/editar/borrar). PIN opcional, se configura en el Header' },
+  { name: 'WelcomeModal',   desc: 'Modal de bienvenida para primeras visitas — explica qué es el proyecto y sus tres colecciones' },
+  { name: 'About',          desc: 'Modal de documentación técnica: arquitectura, stack, endpoints, cómo correr localmente' },
 ]
 
 const ENDPOINTS = [
@@ -194,6 +200,7 @@ const ENDPOINTS = [
   ['POST',   '/api/covers/fetch-discogs', 'Buscar en Discogs y guardar en vinilo'],
   ['GET',    '/api/covers/scrape',        'Raspar og:image sin guardar'],
   ['POST',   '/api/covers/bulk-discogs',  'Portadas Discogs para todos los vinilos sin cover_url'],
+  ['GET',    '/api/spotify/search',       'Buscar álbum en Spotify por artista+álbum, devuelve embed_url y spotify_id'],
 ]
 
 const BACKEND_RUN = `cd espiritus-vinilos/backend
