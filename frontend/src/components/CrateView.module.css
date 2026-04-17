@@ -1,0 +1,291 @@
+/* ── Contenedor principal ── */
+.container {
+  padding-bottom: 32px;
+}
+
+/* ── Leyenda de géneros ── */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin-bottom: 24px;
+  padding: 12px 16px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: .68rem;
+  color: var(--text2);
+  white-space: nowrap;
+}
+
+.legendDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ── Unidad (mueble completo) ── */
+.unit {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: #1a1008;
+  border: 2px solid #2e1f0a;
+  border-radius: 6px;
+  padding: 16px 20px 8px;
+  box-shadow:
+    inset 0 2px 8px rgba(0,0,0,.6),
+    0 8px 32px rgba(0,0,0,.5);
+}
+
+/* ── Anaquel (fila) ── */
+.shelf {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+/* Tabla de madera */
+.shelfBoard {
+  position: absolute;
+  bottom: -10px;
+  left: -4px;
+  right: -4px;
+  height: 10px;
+  background: linear-gradient(180deg, #3d2b0e 0%, #2a1d08 60%, #1e1505 100%);
+  border-radius: 0 0 3px 3px;
+  box-shadow: 0 3px 8px rgba(0,0,0,.6);
+  z-index: 1;
+}
+
+/* Fila de discos */
+.records {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  min-height: 180px;
+  padding: 8px 4px 4px;
+  position: relative;
+}
+
+/* ── Sujetador de libros ── */
+.bookend {
+  width: 14px;
+  height: 160px;
+  background: linear-gradient(90deg, #5a3e1b 0%, #3d2b0e 40%, #2a1d08 100%);
+  border-radius: 3px 4px 4px 3px;
+  flex-shrink: 0;
+  box-shadow: 2px 0 4px rgba(0,0,0,.4);
+  align-self: flex-end;
+}
+
+/* ── Disco individual ── */
+.record {
+  position: relative;
+  width: 24px;
+  height: 160px;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: transform 0.25s cubic-bezier(.34,1.56,.64,1), width 0.2s ease;
+  transform-origin: bottom center;
+  z-index: 2;
+}
+
+/* Lomo del disco */
+.spine {
+  position: absolute;
+  inset: 0;
+  background: var(--spine-color, #3a3a3a);
+  border-radius: 2px 2px 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 3px 6px;
+  overflow: hidden;
+  box-shadow:
+    inset 1px 0 0 rgba(255,255,255,.08),
+    inset -1px 0 0 rgba(0,0,0,.3),
+    1px 0 3px rgba(0,0,0,.4);
+  transition: opacity 0.2s ease;
+}
+
+.spineArtist,
+.spineAlbum,
+.spineYear {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: 60px;
+  line-height: 1;
+  color: rgba(255,255,255,.85);
+  font-family: 'Inter', sans-serif;
+}
+
+.spineArtist {
+  font-size: .48rem;
+  font-weight: 700;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+  max-height: 52px;
+}
+
+.spineAlbum {
+  font-size: .42rem;
+  font-weight: 400;
+  opacity: .75;
+  max-height: 52px;
+}
+
+.spineYear {
+  font-size: .4rem;
+  opacity: .5;
+  max-height: 20px;
+}
+
+/* ── Portada que emerge al hacer hover ── */
+.cover {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(100%) scaleY(0.1);
+  transform-origin: bottom center;
+  width: 120px;
+  height: 120px;
+  border-radius: 4px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform 0.25s cubic-bezier(.34,1.56,.64,1),
+    opacity   0.2s ease;
+  z-index: 50;
+  box-shadow: 0 8px 24px rgba(0,0,0,.7), 0 0 0 1px rgba(255,255,255,.08);
+}
+
+.cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Placeholder: disco de vinilo cuando no hay portada */
+.coverPlaceholder {
+  width: 100%;
+  height: 100%;
+  background: #111;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vinylDisc {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: conic-gradient(
+    #1a1a1a 0, #222 15deg, #1a1a1a 30deg, #222 45deg,
+    #1a1a1a 60deg, #222 75deg, #1a1a1a 90deg, #222 105deg,
+    #1a1a1a 120deg, #222 135deg, #1a1a1a 150deg, #222 165deg,
+    #1a1a1a 180deg, #222 195deg, #1a1a1a 210deg, #222 225deg,
+    #1a1a1a 240deg, #222 255deg, #1a1a1a 270deg, #222 285deg,
+    #1a1a1a 300deg, #222 315deg, #1a1a1a 330deg, #222 345deg
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #333;
+}
+
+.vinylLabel {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .38rem;
+  font-weight: 700;
+  color: #fff;
+  text-align: center;
+  padding: 2px;
+  overflow: hidden;
+  line-height: 1.2;
+}
+
+/* ── Estado hover del disco ── */
+.recordHovered {
+  transform: translateY(-20px) scaleX(1.08);
+  z-index: 30;
+  width: 28px;
+}
+
+.recordHovered .spine {
+  opacity: 0.6;
+}
+
+.recordHovered .cover {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0) scaleY(1);
+}
+
+/* ── Hint de ayuda ── */
+.hint {
+  text-align: center;
+  font-size: .68rem;
+  color: var(--text3);
+  margin-top: 20px;
+  letter-spacing: .3px;
+}
+
+/* ── Responsive: mobile ── */
+@media (max-width: 767px) {
+  .unit {
+    padding: 12px 10px 4px;
+    overflow-x: auto;
+  }
+
+  .records {
+    min-height: 140px;
+  }
+
+  .record {
+    width: 20px;
+    height: 130px;
+  }
+
+  .cover {
+    width: 90px;
+    height: 90px;
+  }
+
+  .bookend {
+    height: 130px;
+  }
+
+  .recordHovered {
+    transform: translateY(-16px) scaleX(1.1);
+    width: 24px;
+  }
+
+  .legend {
+    gap: 6px 10px;
+  }
+
+  .legendItem {
+    font-size: .6rem;
+  }
+
+  .hint {
+    font-size: .6rem;
+  }
+}

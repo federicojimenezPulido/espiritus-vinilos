@@ -24,14 +24,6 @@ export default function Modal({ item, coll, index, onClose, onEdit, onSetFeature
     setSpotifyMsg('')
   }, [item])
 
-  function handleShare() {
-    const url = `${window.location.origin}${window.location.pathname}?v=${index}`
-    navigator.clipboard.writeText(url).then(() => {
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    })
-  }
-
   async function handleSpotify() {
     if (spotifyId) {
       setShowPlayer(p => !p)
@@ -158,20 +150,6 @@ export default function Modal({ item, coll, index, onClose, onEdit, onSetFeature
                   </a>
                 )
             }
-            {coll === 'vinyl' && index >= 0 && (
-              <button className={`${styles.btn} ${styles.btnSecondary}`} onClick={handleShare}>
-                {copied ? '✅ Link copiado' : '🔗 Compartir'}
-              </button>
-            )}
-            {onSetFeatured && (
-              <button
-                className={`${styles.btn} ${styles.btnSecondary}`}
-                onClick={() => onSetFeatured(item, index)}
-                title="Destacar como Descubrimiento del Mes"
-              >
-                ⭐ Destacar del mes
-              </button>
-            )}
             {onEdit && (
               <button className={`${styles.btn} ${styles.btnPrimary} ${styles[coll]}`} onClick={onEdit}>
                 ✏ Editar

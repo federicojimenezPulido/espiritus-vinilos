@@ -7,6 +7,7 @@ import Modal     from './Modal'
 import AdminForm from './AdminForm'
 import PinModal  from './PinModal'
 import StatsView      from './StatsView'
+import CrateView      from './CrateView'
 import SpotifyModal   from './SpotifyModal'
 import FeaturedBanner, { setFeatured, getFeatured } from './FeaturedBanner'
 import ShareView      from './ShareView'
@@ -219,19 +220,32 @@ export default function Dashboard({ coll }) {
                 Limpiar
               </button>
             )}
-            {/* Stats / Collection view toggle */}
-            <button
-              className={styles.viewToggle}
-              onClick={() => setView(v => v === 'collection' ? 'stats' : 'collection')}
-            >
-              {view === 'collection' ? '📊 Stats' : '📋 Colección'}
-            </button>
+            {/* View toggle: collection → stats → crate */}
+            {coll === 'vinyl'
+              ? <button
+                  className={styles.viewToggle}
+                  onClick={() => setView(v => v === 'collection' ? 'stats' : v === 'stats' ? 'crate' : 'collection')}
+                >
+                  {view === 'collection' ? '📊 Stats' : view === 'stats' ? '🗄 Anaquel' : '📋 Colección'}
+                </button>
+              : <button
+                  className={styles.viewToggle}
+                  onClick={() => setView(v => v === 'collection' ? 'stats' : 'collection')}
+                >
+                  {view === 'collection' ? '📊 Stats' : '📋 Colección'}
+                </button>
+            }
             <button className={`${styles.addBtn} ${styles[coll]}`} onClick={() => requirePin('Agregar nuevo registro', () => setAdminItem(null))}>
               + Agregar
             </button>
           </div>
 
-          {view === 'stats'
+          {view === 'crate'
+            ? <CrateView
+                data={filtered.length < data.length ? filtered : data}
+                onSelect={item => setSelected(item)}
+              />
+            : view === 'stats'
             ? <StatsView
                 data={filtered.length < data.length ? filtered : data}
                 coll={coll}

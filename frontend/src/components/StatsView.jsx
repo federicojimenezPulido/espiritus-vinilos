@@ -69,7 +69,7 @@ function Stat({ num, lbl, items, title, onStatClick, missing }) {
 function VinylStats({ data, onBarClick, onStatClick }) {
   const genres     = useMemo(() => countBy(data, 'agrupador'), [data])
   const categories = useMemo(() => countBy(data, 'genero'),    [data])
-  const countries  = useMemo(() => countBy(data, 'pais'),      [data])
+  const sellos     = useMemo(() => countBy(data, 'sello'),     [data])
 
   const decades = useMemo(() => {
     const map = {}
@@ -113,8 +113,8 @@ function VinylStats({ data, onBarClick, onStatClick }) {
 
       <BarChart title="Géneros principales" entries={genres}     accent="var(--v-acc2)" filterKey="agrupador" onBarClick={onBarClick} />
       <BarChart title="Categorías"          entries={categories} accent="var(--v-gold)" filterKey="genero"    onBarClick={onBarClick} />
-      <BarChart title="Países"              entries={countries}  accent="var(--v-acc)"  filterKey="pais"      onBarClick={onBarClick} />
-      <BarChart title="Por Década"          entries={decades}    accent="var(--v-acc2)" filterKey="decade" onBarClick={onBarClick} />
+      <BarChart title="Sellos"              entries={sellos}     accent="var(--v-acc)"  filterKey="sello"     onBarClick={onBarClick} />
+      <BarChart title="Por Década"          entries={decades}    accent="var(--v-acc2)" filterKey="decade"    onBarClick={onBarClick} />
     </>
   )
 }
