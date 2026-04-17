@@ -172,7 +172,6 @@
     grid-template-columns: repeat(3, 1fr);
   }
 
-
   .statNum { font-size: 1.1rem; }
   .statLbl { font-size: .55rem; letter-spacing: .5px; }
 }

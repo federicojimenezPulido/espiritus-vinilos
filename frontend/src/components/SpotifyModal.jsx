@@ -97,7 +97,6 @@ export default function SpotifyModal({ item, index, coll, onClose }) {
     else if (uriMatch) storedId = `${uriMatch[1]}/${uriMatch[2]}`
     else               storedId = raw  // ID crudo → legacy album
 
-
     setSpotifyId(storedId)
     setShowManual(false)
     setMsg('')
