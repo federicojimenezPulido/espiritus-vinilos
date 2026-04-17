@@ -9,7 +9,7 @@ const COLLECTIONS = [
 ]
 
 const TITLES   = { vinyl: 'Vinilos', rum: 'Rones', whisky: 'Whiskies' }
-const LOGO_SRC = '/espiritus-vinilos/logo-enlt.png'
+const LOGO_SRC = '/espiritus-vinilos/logo-enlt.jpeg'
 
 export default function Header({ coll, setColl }) {
   const [showToken, setShowToken] = useState(false)
@@ -65,7 +65,7 @@ export default function Header({ coll, setColl }) {
 
       <div className={styles.titleBlock}>
         <h1 className={styles.title}>En Las Nubes Trepao</h1>
-        <p className={styles.sub}>Espíritus & Vinilos · {TITLES[coll]}</p>
+        <p className={styles.sub}>Espíritus & Vinilos</p>
       </div>
       <div style={{ flex: 1 }} />
 
