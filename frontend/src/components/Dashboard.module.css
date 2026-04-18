@@ -105,6 +105,21 @@
 .dotGreen { background: #22c55e; }
 .dotRed   { background: #ef4444; }
 
+/* Punto rosado: ENLT publicó sobre este disco */
+.dotEnlt {
+  position: absolute;
+  top: 7px; left: 7px;
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: #e1306c;
+  box-shadow: 0 0 5px rgba(225,48,108,.7);
+  animation: enltPulse 2.5s infinite;
+}
+@keyframes enltPulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 5px rgba(225,48,108,.7); }
+  50%       { opacity: .65; box-shadow: 0 0 10px rgba(225,48,108,.4); }
+}
+
 .lentBadge {
   position: absolute;
   bottom: 6px; right: 6px;

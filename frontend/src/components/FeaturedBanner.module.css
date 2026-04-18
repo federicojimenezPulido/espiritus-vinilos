@@ -110,6 +110,33 @@
 }
 .btnShare:hover { border-color: #1DB954; color: #1DB954; }
 
+/* Botón "Ver en TikTok/IG" — solo aparece si hay contenido de ENLT */
+.btnPost {
+  background: rgba(225,48,108,.12);
+  border: 1px solid rgba(225,48,108,.3);
+  color: #e1306c;
+  border-radius: 20px;
+  padding: 8px 14px;
+  font-size: .75rem; font-weight: 600;
+  cursor: pointer; transition: all .15s;
+  white-space: nowrap;
+  display: flex; align-items: center; gap: 6px;
+}
+.btnPost:hover { background: rgba(225,48,108,.22); border-color: rgba(225,48,108,.55); }
+
+.btnPostDot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #e1306c;
+  box-shadow: 0 0 5px rgba(225,48,108,.7);
+  flex-shrink: 0;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: .6; transform: scale(0.85); }
+}
+
 .btnClear {
   background: none; border: none;
   color: rgba(255,255,255,.2);

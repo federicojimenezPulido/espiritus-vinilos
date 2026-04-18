@@ -54,6 +54,13 @@ export default function FeaturedBanner({ onOpen, onSpotify }) {
           <button className={styles.btnDetail} onClick={() => onOpen(featured)}>
             Ver disco
           </button>
+          {/* Botón contextual — solo aparece si el disco tiene contenido de ENLT */}
+          {(featured.tiktok_url || featured.ig_url) && (
+            <button className={styles.btnPost} onClick={() => onOpen(featured)} title="ENLT publicó sobre este disco">
+              <span className={styles.btnPostDot} />
+              {featured.tiktok_url ? 'Ver en TikTok' : 'Ver en IG'}
+            </button>
+          )}
           <button className={styles.btnShare} onClick={handleShare}>
             🔗 Compartir
           </button>

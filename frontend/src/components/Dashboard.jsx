@@ -343,6 +343,9 @@ function Card({ item, coll, onClick, onSpotify, onShare, onIgStory }) {
             : <div className={styles.bottle}>🥃</div>
         }
         <span className={`${styles.dot} ${item.cover_url ? styles.dotGreen : styles.dotRed}`} />
+        {(item.tiktok_url || item.ig_url) && (
+          <span className={styles.dotEnlt} title="ENLT publicó sobre este disco" />
+        )}
         {item.fuera     && <span className={styles.lentBadge} title="Prestado">📤</span>}
         {item.terminado && <span className={styles.lentBadge} title="Ya consumí">🫗</span>}
 
