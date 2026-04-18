@@ -61,6 +61,33 @@ def read_collection(name: str) -> list:
     return [{k: v for k, v in row.items() if k != "id"} for row in rows]
 
 
+def get_config(key: str):
+    """SELECT value FROM app_config WHERE key = ?"""
+    with get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute("SELECT value FROM app_config WHERE key = %s", (key,))
+            row = cur.fetchone()
+    return row[0] if row else None
+
+
+def set_config(key: str, value: str) -> None:
+    """INSERT OR UPDATE — equivalente a MERGE INTO en Oracle"""
+    with get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                "INSERT INTO app_config (key, value) VALUES (%s, %s) "
+                "ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value",
+                (key, value),
+            )
+
+
+def delete_config(key: str) -> None:
+    """DELETE FROM app_config WHERE key = ?"""
+    with get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute("DELETE FROM app_config WHERE key = %s", (key,))
+
+
 def write_collection(name: str, data: list) -> None:
     """
     Reemplaza toda la tabla con los datos nuevos.

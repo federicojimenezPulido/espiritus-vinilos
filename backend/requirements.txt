@@ -3,3 +3,5 @@ uvicorn==0.39.0
 pydantic==2.13.0
 psycopg2-binary==2.9.11
 httpx==0.28.1
+passlib[bcrypt]==1.7.4
+bcrypt==4.0.1
