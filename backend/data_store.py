@@ -17,7 +17,8 @@ DATABASE_URL = (os.environ.get("DATABASE_URL") or "").strip()
 # Mapeo nombre de colección → tabla SQL
 _VINYL_COLS = ["artista","album","genero","agrupador","anio","pais",
                "sello","pais_sello","cat_num","origen","fuera",
-               "discogs","cover_url","url","spotify_id"]
+               "discogs","cover_url","url","spotify_id",
+               "tiktok_url","ig_url"]
 
 TABLES = {
     "vinilos":  "vinyls",   # vinyls.py usa "vinilos"
