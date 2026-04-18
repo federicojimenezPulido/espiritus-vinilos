@@ -8,6 +8,7 @@ export default function Modal({ item, coll, index, onClose, onEdit, onSetFeature
   const [fetchingSpot, setFetchingSpot] = useState(false)
   const [spotifyMsg,   setSpotifyMsg]   = useState('')
   const [copied,       setCopied]       = useState(false)
+  const [igCopied,     setIgCopied]     = useState(false)
 
   useEffect(() => {
     const handler = e => { if (e.key === 'Escape') onClose() }
@@ -49,11 +50,13 @@ export default function Modal({ item, coll, index, onClose, onEdit, onSetFeature
     })
   }
 
-  function handleIgStory() {
+  function handleIgCopy() {
     const url = `${window.location.origin}${window.location.pathname}?v=${index}`
-    const text = `${item.artista} — ${item.album}${item.anio ? ` (${item.anio})` : ''}\n\n${url}`
-    navigator.clipboard.writeText(text).catch(() => {})
-    window.open('https://www.instagram.com/create/story', '_blank')
+    const text = `🎵 ${item.artista} — ${item.album}${item.anio ? ` (${item.anio})` : ''}\n\nEn Las Nubes Trepao · ${url}`
+    navigator.clipboard.writeText(text).then(() => {
+      setIgCopied(true)
+      setTimeout(() => setIgCopied(false), 2200)
+    }).catch(() => {})
   }
 
   if (!item) return null
@@ -180,9 +183,21 @@ export default function Modal({ item, coll, index, onClose, onEdit, onSetFeature
                 </button>
               )}
               {coll === 'vinyl' && index >= 0 && (
-                <button className={`${styles.btn} ${styles.btnIg}`} onClick={handleIgStory} title="Compartir en IG Stories">
-                  <IgIcon /> IG Stories
-                </button>
+                item.ig_url
+                  ? <a
+                      href={item.ig_url} target="_blank" rel="noreferrer"
+                      className={`${styles.btn} ${styles.btnIg}`}
+                      title="Ver publicación de ENLT en Instagram"
+                    >
+                      <IgIcon /> Ver en IG
+                    </a>
+                  : <button
+                      className={`${styles.btn} ${igCopied ? styles.btnIgCopied : styles.btnIgCopy}`}
+                      onClick={handleIgCopy}
+                      title="Copiar texto para pegar en IG Stories"
+                    >
+                      {igCopied ? '✓ Copiado para IG' : <><IgIcon /> Copiar para IG</>}
+                    </button>
               )}
               {coll === 'vinyl'
                 ? <a

@@ -100,6 +100,7 @@ export default function AdminForm({ coll, item, index, data, onClose, onRequestP
   const [coverMsg, setCoverMsg]           = useState('')
   const [showManualUrl, setShowManualUrl] = useState(false)
   const [manualUrl, setManualUrl]         = useState('')
+  const [saveError, setSaveError]         = useState('')
 
   // Al abrir un vinilo existente → auto-fetch Discogs si no tiene portada
   useEffect(() => {
@@ -141,13 +142,23 @@ export default function AdminForm({ coll, item, index, data, onClose, onRequestP
   }
 
   async function handleSave() {
-    const parsed = parseForm(form, coll)
-    if (isEdit) {
-      await update.mutateAsync({ index, data: parsed })
-    } else {
-      await add.mutateAsync(parsed)
+    setSaveError('')
+    try {
+      const parsed = parseForm(form, coll)
+      if (isEdit) {
+        if (index < 0) {
+          setSaveError('Error: no se pudo determinar el índice del registro. Cerrá y volvé a abrir el editor.')
+          return
+        }
+        await update.mutateAsync({ index, data: parsed })
+      } else {
+        await add.mutateAsync(parsed)
+      }
+      onClose()
+    } catch (err) {
+      const msg = err?.response?.data?.detail || err?.message || 'Error desconocido'
+      setSaveError(`No se pudo guardar: ${msg}`)
     }
-    onClose()
   }
 
   function handleDelete() {
@@ -318,6 +329,10 @@ export default function AdminForm({ coll, item, index, data, onClose, onRequestP
               </div>
             )}
           </div>
+
+          {saveError && (
+            <div className={styles.saveError}>{saveError}</div>
+          )}
 
           <div className={styles.actions}>
             <button

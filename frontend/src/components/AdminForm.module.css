@@ -207,6 +207,17 @@
 }
 .origenCancel:hover { background: rgba(192,57,43,.3); }
 
+.saveError {
+  margin-bottom: 10px;
+  padding: 9px 13px;
+  border-radius: 8px;
+  background: rgba(239,68,68,.1);
+  border: 1px solid rgba(239,68,68,.3);
+  color: #f87171;
+  font-size: .78rem;
+  line-height: 1.4;
+}
+
 /* ── Responsive: mobile ── */
 @media (max-width: 767px) {
   .box {
