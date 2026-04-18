@@ -95,9 +95,19 @@
 }
 
 .collIcon {
-  font-size: 1.6rem;
-  margin-bottom: 0.35rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.55rem;
+  height: 52px;
 }
+
+.collVinyl { border-color: rgba(192,57,43,.25); }
+.collVinyl:hover { border-color: rgba(192,57,43,.6); }
+.collRum   { border-color: rgba(176,101,29,.25); }
+.collRum:hover { border-color: rgba(176,101,29,.6); }
+.collWhisky { border-color: rgba(42,90,140,.35); }
+.collWhisky:hover { border-color: rgba(42,90,140,.7); }
 
 .collName {
   font-size: 0.85rem;
@@ -138,6 +148,9 @@
 .featureList li {
   font-size: 0.84rem;
   color: var(--text2, #bbb);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 /* ── Footer ── */

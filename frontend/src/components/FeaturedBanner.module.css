@@ -109,6 +109,11 @@
   transition: all .15s; white-space: nowrap;
 }
 .btnShare:hover { border-color: #1DB954; color: #1DB954; }
+.btnShareCopied {
+  border-color: #1DB954 !important;
+  color: #1DB954 !important;
+  background: rgba(29,185,84,.08) !important;
+}
 
 /* Botón "Ver en TikTok/IG" — solo aparece si hay contenido de ENLT */
 .btnPost {

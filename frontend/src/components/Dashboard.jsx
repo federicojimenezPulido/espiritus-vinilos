@@ -28,6 +28,7 @@ export default function Dashboard({ coll }) {
   const [spotifyItem,  setSpotifyItem]  = useState(null) // { item, index }
   const [featuredVer,  setFeaturedVer]  = useState(0)    // bump to re-render banner
   const [shareItem,    setShareItem]    = useState(null) // { item, index } — ShareView cinematográfica
+  const [sortBy,       setSortBy]       = useState('artista') // 'artista' | 'default'
 
   const { data, isLoading, isError } = useQuery({
     queryKey: [coll],
@@ -78,8 +79,13 @@ export default function Dashboard({ coll }) {
         return fields.some(f => (f || '').toLowerCase().includes(s))
       })
     }
+    if (coll === 'vinyl' && sortBy === 'artista') {
+      result = [...result].sort((a, b) =>
+        (a.artista || '').localeCompare(b.artista || '', 'es', { sensitivity: 'base' })
+      )
+    }
     return result
-  }, [data, search, filters, coll])
+  }, [data, search, filters, coll, sortBy])
 
   if (isLoading) return <div className={styles.state}>Cargando...</div>
   if (isError)   return <div className={styles.state}>⚠ Error conectando al backend</div>
@@ -235,6 +241,16 @@ export default function Dashboard({ coll }) {
             {hasActive && (
               <button className={styles.clearBtn} onClick={clearAll}>
                 Limpiar
+              </button>
+            )}
+            {/* Sort toggle — solo vinilos */}
+            {coll === 'vinyl' && view === 'collection' && (
+              <button
+                className={styles.sortToggle}
+                onClick={() => setSortBy(s => s === 'artista' ? 'default' : 'artista')}
+                title={sortBy === 'artista' ? 'Ordenado por artista' : 'Orden original'}
+              >
+                {sortBy === 'artista' ? '↑A Artista' : '↕ Orden'}
               </button>
             )}
             {/* View toggle: collection → stats → crate */}

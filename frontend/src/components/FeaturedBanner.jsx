@@ -17,6 +17,7 @@ export function clearFeatured() {
 
 export default function FeaturedBanner({ onOpen, onSpotify }) {
   const [featured, setFeaturedState] = useState(getFeatured)
+  const [copied, setCopied] = useState(false)
 
   useEffect(() => {
     const handler = () => setFeaturedState(getFeatured())
@@ -28,7 +29,10 @@ export default function FeaturedBanner({ onOpen, onSpotify }) {
 
   function handleShare() {
     const url = `${window.location.origin}${window.location.pathname}?v=${featured._index}`
-    navigator.clipboard.writeText(url).catch(() => {})
+    navigator.clipboard.writeText(url).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2200)
+    }).catch(() => {})
   }
 
   return (
@@ -61,8 +65,8 @@ export default function FeaturedBanner({ onOpen, onSpotify }) {
               {featured.tiktok_url ? 'Ver en TikTok' : 'Ver en IG'}
             </button>
           )}
-          <button className={styles.btnShare} onClick={handleShare}>
-            🔗 Compartir
+          <button className={`${styles.btnShare} ${copied ? styles.btnShareCopied : ''}`} onClick={handleShare}>
+            {copied ? '✓ Copiado' : '🔗 Compartir'}
           </button>
           <button className={styles.btnClear} onClick={clearFeatured} title="Quitar destacado">✕</button>
         </div>

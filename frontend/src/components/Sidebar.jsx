@@ -44,7 +44,7 @@ function getSections(data, coll) {
     return [
       { title: '🎵 Categoría', key: 'agrupador', entries: countBy(data, 'agrupador') },
       { title: '🎼 Género',    key: 'genero',    entries: countBy(data, 'genero') },
-      { title: '🌍 País',      key: 'pais',      entries: countBy(data, 'pais') },
+      { title: '🏷 Sello',     key: 'sello',     entries: countBy(data, 'sello') },
     ]
   }
   if (coll === 'rum') {
