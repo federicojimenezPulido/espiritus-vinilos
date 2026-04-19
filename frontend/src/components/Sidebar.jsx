@@ -1,3 +1,4 @@
+import { useLang } from '../LangContext'
 import styles from './Sidebar.module.css'
 
 // countBy — equivalente a SELECT campo, COUNT(*) FROM tabla GROUP BY campo ORDER BY 2 DESC
@@ -14,9 +15,10 @@ function countBy(arr, key) {
 // setFilter = función para cambiar un filtro
 // isOpen = controla si el drawer móvil está visible
 export default function Sidebar({ data, coll, filters, setFilter, isOpen }) {
+  const { t } = useLang()
   if (!data) return null
 
-  const sections = getSections(data, coll)
+  const sections = getSections(data, coll, t)
 
   return (
     <aside className={`${styles.sidebar} ${isOpen ? styles.sidebarOpen : ''}`}>
@@ -39,24 +41,24 @@ export default function Sidebar({ data, coll, filters, setFilter, isOpen }) {
   )
 }
 
-function getSections(data, coll) {
+function getSections(data, coll, t) {
   if (coll === 'vinyl') {
     return [
-      { title: '🎵 Categoría', key: 'agrupador', entries: countBy(data, 'agrupador') },
-      { title: '🎼 Género',    key: 'genero',    entries: countBy(data, 'genero') },
-      { title: '🏷 Sello',     key: 'sello',     entries: countBy(data, 'sello') },
+      { title: `🎵 ${t('sidebarCategory')}`, key: 'agrupador', entries: countBy(data, 'agrupador') },
+      { title: `🎼 ${t('sidebarGenre')}`,    key: 'genero',    entries: countBy(data, 'genero') },
+      { title: `🏷 ${t('sidebarLabel')}`,    key: 'sello',     entries: countBy(data, 'sello') },
     ]
   }
   if (coll === 'rum') {
     return [
-      { title: '🌍 País',  key: 'country', entries: countBy(data, 'country') },
-      { title: '🏷 Tipo',  key: 'type',    entries: countBy(data, 'type') },
-      { title: '🔀 Blend', key: 'blend',   entries: countBy(data, 'blend') },
+      { title: `🌍 ${t('sidebarCountry')}`, key: 'country', entries: countBy(data, 'country') },
+      { title: `🏷 ${t('sidebarType')}`,    key: 'type',    entries: countBy(data, 'type') },
+      { title: `🔀 ${t('sidebarBlend')}`,   key: 'blend',   entries: countBy(data, 'blend') },
     ]
   }
   return [
-    { title: '🌍 País',   key: 'country', entries: countBy(data, 'country') },
-    { title: '🏷 Tipo',   key: 'type',    entries: countBy(data, 'type') },
-    { title: '🏭 Origen', key: 'origin',  entries: countBy(data, 'origin') },
+    { title: `🌍 ${t('sidebarCountry')}`, key: 'country', entries: countBy(data, 'country') },
+    { title: `🏷 ${t('sidebarType')}`,    key: 'type',    entries: countBy(data, 'type') },
+    { title: `🏭 ${t('sidebarOrigin')}`,  key: 'origin',  entries: countBy(data, 'origin') },
   ]
 }

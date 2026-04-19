@@ -208,6 +208,13 @@
 }
 .haBtnIg:hover { background: rgba(193,53,132,.5); color: #fff; }
 
+.haBtnTikTok {
+  background: rgba(238,29,82,.2);
+  border-color: rgba(238,29,82,.4);
+  color: #ee1d52;
+}
+.haBtnTikTok:hover { background: rgba(238,29,82,.45); color: #fff; }
+
 /* ── Botón Agregar ── */
 .addBtn {
   margin-left: auto;

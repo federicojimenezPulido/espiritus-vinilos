@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useCrud } from '../hooks/useCrud'
-import { fetchAndSaveCover, fetchAndSaveDiscogsCover, scrapeUrl } from '../services/api'
+import { fetchAndSaveCover, fetchAndSaveDiscogsCover, scrapeUrl, fetchPurchaseInfo } from '../services/api'
 import styles from './AdminForm.module.css'
 
 // ── Combo de origen con botón "+" para agregar opciones ──────────────────────
@@ -91,16 +91,18 @@ function OrigenCombo({ value, onChange, onRequestPin }) {
 
 // item = null → nuevo registro | item = {...} → editar
 // index = posición en el array del backend (necesario para PUT/DELETE)
-export default function AdminForm({ coll, item, index, data, onClose, onRequestPin }) {
+export default function AdminForm({ coll, item, index, data, onClose, onRequestPin, pinIsSet }) {
   const { add, update, remove } = useCrud(coll)
   const isEdit = item !== null && index !== undefined
 
   const [form, setForm] = useState(buildInitial(item, coll))
-  const [fetchingCover, setFetchingCover] = useState(false)
-  const [coverMsg, setCoverMsg]           = useState('')
-  const [showManualUrl, setShowManualUrl] = useState(false)
-  const [manualUrl, setManualUrl]         = useState('')
-  const [saveError, setSaveError]         = useState('')
+  const [fetchingCover, setFetchingCover]       = useState(false)
+  const [coverMsg, setCoverMsg]                 = useState('')
+  const [showManualUrl, setShowManualUrl]       = useState(false)
+  const [manualUrl, setManualUrl]               = useState('')
+  const [saveError, setSaveError]               = useState('')
+  const [fetchingPurchase, setFetchingPurchase] = useState(false)
+  const [purchaseMsg, setPurchaseMsg]           = useState('')
 
   // Al abrir un vinilo existente → auto-fetch Discogs si no tiene portada
   useEffect(() => {
@@ -162,12 +164,35 @@ export default function AdminForm({ coll, item, index, data, onClose, onRequestP
   }
 
   function handleDelete() {
+    if (!pinIsSet) {
+      alert('Configurá un PIN en ⚙ Configuración para habilitar la edición.')
+      return
+    }
     if (!confirm(`¿Eliminar este registro? Esta acción no se puede deshacer.`)) return
     const doDelete = async () => { await remove.mutateAsync(index); onClose() }
-    const pin = localStorage.getItem('admin_pin')
-    if (!pin) { doDelete(); return }
-    // Delegar la verificación al PinModal — pasamos el callback al padre via onRequestPin
     onRequestPin?.('Eliminar registro', doDelete)
+  }
+
+  async function handleFetchPurchase() {
+    const url = form.buy_url?.trim()
+    if (!url) return
+    setFetchingPurchase(true)
+    setPurchaseMsg('Buscando...')
+    try {
+      const result = await fetchPurchaseInfo(url)
+      if (result.price) {
+        setField('buy_price', result.price)
+        if (result.currency) setField('buy_currency', result.currency)
+        if (result.availability) setField('buy_availability', result.availability)
+        setPurchaseMsg('✅ Info encontrada')
+      } else {
+        setPurchaseMsg('⚠ No se encontró precio — completá manualmente')
+      }
+    } catch {
+      setPurchaseMsg('⚠ Error al buscar — completá manualmente')
+    } finally {
+      setFetchingPurchase(false)
+    }
   }
 
   // Buscar portada manualmente (botón) — vinilos: Discogs | licores: og:image
@@ -285,6 +310,64 @@ export default function AdminForm({ coll, item, index, data, onClose, onRequestP
               </div>
             ))}
           </div>
+
+          {/* Sección de compra — solo rones y whiskies */}
+          {(coll === 'rum' || coll === 'whisky') && (
+            <div className={styles.purchaseSection}>
+              <div className={styles.purchaseUrlRow}>
+                <div className={styles.fgroup} style={{ flex: 1 }}>
+                  <label>¿Dónde comprar? (URL)</label>
+                  <input
+                    type="text"
+                    value={form.buy_url ?? ''}
+                    onChange={e => { setField('buy_url', e.target.value); setPurchaseMsg('') }}
+                    placeholder="https://..."
+                  />
+                </div>
+                <button
+                  className={`${styles.btn} ${styles.btnSecondary} ${styles.purchaseFetchBtn}`}
+                  onClick={handleFetchPurchase}
+                  disabled={fetchingPurchase || !form.buy_url?.trim()}
+                >
+                  {fetchingPurchase ? '...' : '🔍 Buscar info'}
+                </button>
+              </div>
+
+              {purchaseMsg && (
+                <div className={styles.coverMsg}>{purchaseMsg}</div>
+              )}
+
+              <div className={styles.purchaseFields}>
+                <div className={styles.fgroup}>
+                  <label>Precio</label>
+                  <input
+                    type="text"
+                    value={form.buy_price ?? ''}
+                    onChange={e => setField('buy_price', e.target.value)}
+                    placeholder="—"
+                  />
+                </div>
+                <div className={styles.fgroup}>
+                  <label>Moneda</label>
+                  <input
+                    type="text"
+                    value={form.buy_currency ?? ''}
+                    onChange={e => setField('buy_currency', e.target.value)}
+                    placeholder="COP, USD..."
+                  />
+                </div>
+                <div className={styles.fgroup}>
+                  <label>Disponibilidad</label>
+                  <input
+                    type="text"
+                    value={form.buy_availability ?? ''}
+                    onChange={e => setField('buy_availability', e.target.value)}
+                    placeholder="En stock..."
+                  />
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Sección de portada */}
           <div className={styles.coverSection}>

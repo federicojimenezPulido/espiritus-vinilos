@@ -69,6 +69,33 @@
 .btnSecondary { background: var(--bg4); color: var(--text2); border: 1px solid var(--border); }
 .btnSecondary:hover { border-color: var(--v-acc2); color: var(--text); }
 
+/* ── Purchase section ── */
+.purchaseSection {
+  margin-bottom: 16px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: rgba(255,255,255,.02);
+}
+.purchaseUrlRow {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+  margin-bottom: 8px;
+}
+.purchaseFetchBtn {
+  flex-shrink: 0;
+  white-space: nowrap;
+  height: 36px;
+  align-self: flex-end;
+}
+.purchaseFields {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  margin-top: 8px;
+}
+
 /* ── Cover section ── */
 .coverSection { margin-bottom: 14px; }
 

@@ -1,13 +1,17 @@
 import { useEffect, useState } from 'react'
 import { fetchSpotifyId } from '../services/api'
+import SocialDrawer from './SocialDrawer'
+import { useLang } from '../LangContext'
 import styles from './Modal.module.css'
 
 export default function Modal({ item, coll, index, onClose, onEdit, onSetFeatured }) {
+  const { t } = useLang()
   const [spotifyId,    setSpotifyId]    = useState(item?.spotify_id || null)
   const [showPlayer,   setShowPlayer]   = useState(false)
   const [fetchingSpot, setFetchingSpot] = useState(false)
   const [spotifyMsg,   setSpotifyMsg]   = useState('')
   const [copied,       setCopied]       = useState(false)
+  const [socialDrawer, setSocialDrawer] = useState(null) // { type, url }
   const [igCopied,     setIgCopied]     = useState(false)
 
   useEffect(() => {
@@ -61,7 +65,7 @@ export default function Modal({ item, coll, index, onClose, onEdit, onSetFeature
 
   if (!item) return null
 
-  const groups = coll === 'vinyl' ? getVinylGroups(item) : getSpiritsGroups(item, coll)
+  const groups = coll === 'vinyl' ? getVinylGroups(item, t) : getSpiritsGroups(item, coll, t)
   const title  = coll === 'vinyl' ? item.album   : (item.name || item.version || item.brand)
   const sub    = coll === 'vinyl' ? item.artista  : `${item.brand} · ${item.country || ''}`
   const url    = item.url
@@ -118,37 +122,37 @@ export default function Modal({ item, coll, index, onClose, onEdit, onSetFeature
             <div className={styles.enltSection}>
               <div className={styles.enltLabel}>
                 <span className={styles.enltDot} />
-                En Las Nubes Trepao lo posteó
+                {t('enltPosted')}
               </div>
-              <div className={styles.enltEmbeds}>
+              <div className={styles.enltBtns}>
                 {item.tiktok_url && (
-                  <div className={styles.enltEmbed}>
-                    <iframe
-                      src={tiktokEmbedUrl(item.tiktok_url)}
-                      width="100%" height="700" frameBorder="0"
-                      allow="autoplay; clipboard-write" loading="lazy"
-                      className={styles.enltFrame} scrolling="no"
-                    />
-                    <a href={item.tiktok_url} target="_blank" rel="noreferrer" className={styles.enltLink}>
-                      Ver en TikTok ↗
-                    </a>
-                  </div>
+                  <button
+                    className={`${styles.enltBtn} ${styles.enltBtnTikTok}`}
+                    onClick={() => setSocialDrawer({ type: 'tiktok', url: item.tiktok_url })}
+                  >
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.17 8.17 0 0 0 4.78 1.52V6.75a4.85 4.85 0 0 1-1.01-.06z"/></svg>
+                    {t('viewTikTok')}
+                  </button>
                 )}
                 {item.ig_url && (
-                  <div className={styles.enltEmbed}>
-                    <iframe
-                      src={igEmbedUrl(item.ig_url)}
-                      width="100%" height="540" frameBorder="0"
-                      scrolling="no" allow="autoplay; clipboard-write; encrypted-media"
-                      loading="lazy" className={styles.enltFrame}
-                    />
-                    <a href={item.ig_url} target="_blank" rel="noreferrer" className={styles.enltLink}>
-                      Ver en Instagram ↗
-                    </a>
-                  </div>
+                  <button
+                    className={`${styles.enltBtn} ${styles.enltBtnIg}`}
+                    onClick={() => setSocialDrawer({ type: 'instagram', url: item.ig_url })}
+                  >
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                    {t('viewInstagram')}
+                  </button>
                 )}
               </div>
             </div>
+          )}
+
+          {socialDrawer && (
+            <SocialDrawer
+              type={socialDrawer.type}
+              url={socialDrawer.url}
+              onClose={() => setSocialDrawer(null)}
+            />
           )}
 
           {/* ── Player Spotify ── */}
@@ -173,13 +177,13 @@ export default function Modal({ item, coll, index, onClose, onEdit, onSetFeature
                 className={`${styles.btn} ${showPlayer ? styles.btnSpotifyActive : styles.btnSpotify} ${styles.btnFull}`}
                 onClick={handleSpotify} disabled={fetchingSpot}
               >
-                {fetchingSpot ? '⏳ Buscando...' : showPlayer ? '⏹ Cerrar player' : spotifyId ? '▶ Escuchar en Spotify' : '🎵 Buscar en Spotify'}
+                {fetchingSpot ? t('searching') : showPlayer ? t('closePlayer') : spotifyId ? t('listenSpotify') : t('searchSpotify')}
               </button>
             )}
             {coll !== 'vinyl' && url && (
               <a href={url} target="_blank" rel="noreferrer"
                 className={`${styles.btn} ${styles.btnPrimary} ${styles[coll]} ${styles.btnFull}`}>
-                🌐 Ver sitio oficial
+                {t('viewSite')}
               </a>
             )}
 
@@ -187,7 +191,7 @@ export default function Modal({ item, coll, index, onClose, onEdit, onSetFeature
             {coll === 'vinyl' && index >= 0 && (
               <div className={styles.actionsGrid}>
                 <button className={`${styles.btn} ${styles.btnSecondary}`} onClick={handleShare}>
-                  {copied ? '✅ Copiado' : '🔗 Compartir'}
+                  {copied ? t('copied') : t('share')}
                 </button>
 
                 {item.ig_url
@@ -196,14 +200,14 @@ export default function Modal({ item, coll, index, onClose, onEdit, onSetFeature
                       className={`${styles.btn} ${styles.btnIg}`}
                       title="Ver publicación de ENLT en Instagram"
                     >
-                      <IgIcon /> Ver en IG
+                      <IgIcon /> {t('viewIG')}
                     </a>
                   : <button
                       className={`${styles.btn} ${igCopied ? styles.btnIgCopied : styles.btnIgCopy}`}
                       onClick={handleIgCopy}
                       title="Copiar texto para pegar en IG Stories"
                     >
-                      {igCopied ? '✓ Copiado' : <><IgIcon /> Copiar IG</>}
+                      {igCopied ? t('copied') : <><IgIcon /> {t('copyIG')}</>}
                     </button>
                 }
 
@@ -211,7 +215,7 @@ export default function Modal({ item, coll, index, onClose, onEdit, onSetFeature
                   href={url || `https://www.discogs.com/search/?q=${encodeURIComponent(`${item.artista} ${item.album}`)}&type=master`}
                   target="_blank" rel="noreferrer"
                   className={`${styles.btn} ${styles.btnSecondary}`}
-                >🔗 Discogs</a>
+                >🔗 {t('discogs')}</a>
               </div>
             )}
 
@@ -219,16 +223,16 @@ export default function Modal({ item, coll, index, onClose, onEdit, onSetFeature
             <div className={styles.actionsAdmin}>
               {onSetFeatured && (
                 <button className={`${styles.btn} ${styles.btnSecondary}`} onClick={() => onSetFeatured(item, index)}>
-                  ⭐ Destacar
+                  {t('feature')}
                 </button>
               )}
               {onEdit && (
                 <button className={`${styles.btn} ${styles.btnPrimary} ${styles[coll]}`} onClick={onEdit}>
-                  ✏ Editar
+                  {t('edit')}
                 </button>
               )}
               <button className={`${styles.btn} ${styles.btnSecondary}`} onClick={onClose}>
-                Cerrar
+                {t('close')}
               </button>
             </div>
 
@@ -257,49 +261,50 @@ function igEmbedUrl(url) {
 }
 
 // ── Grupos de campos por colección ───────────────────────────────────────────
-function getVinylGroups(item) {
+function getVinylGroups(item, t) {
   return [
     {
-      label: 'Música',
+      label: t('music'),
       rows: [
-        [['Género', item.genero], ['Categoría', item.agrupador]],
+        [[t('genre'), item.genero], [t('category'), item.agrupador]],
       ]
     },
     {
-      label: 'Disco físico',
+      label: t('physicalDisc'),
       rows: [
-        [['Sello', item.sello], ['País sello', item.pais_sello]],
-        [['País prensado', item.pais], ['Cat. Nº', item.cat_num]],
+        [[t('label'), item.sello], [t('labelCountry'), item.pais_sello]],
+        [[t('pressedCountry'), item.pais], [t('catNum'), item.cat_num]],
       ]
     },
     {
-      label: 'Colección',
+      label: t('collection'),
       rows: [
         [
-          ['Origen', item.origen],
-          ['Prestado', item.fuera ? '📤 Sí' : null],
-          ['Discogs', item.discogs ? '🔗 Sí' : null],
+          [t('origin'), item.origen],
+          [t('lent'), item.fuera ? '📤 Sí' : null],
+          [t('discogs'), item.discogs ? '🔗 Sí' : null],
         ]
       ]
     }
   ]
 }
 
-function getSpiritsGroups(item, coll) {
+function getSpiritsGroups(item, coll, t) {
+  const yearsLabel = t('years').replace(' (0 = NAS)', '')
   if (coll === 'rum') return [
     {
       label: 'Producción',
       rows: [
-        [['Tipo', item.type], ['País', item.country]],
-        [['Región', item.region], ['Blend', item.blend]],
-        [['Edad mín.', item.age_low ? `${item.age_low} años` : null], ['Edad máx.', item.age_max ? `${item.age_max} años` : null]],
-        [['ABV', item.abv ? `${item.abv}%` : null], ['Escala', item.scale ? '★'.repeat(Math.round(item.scale)) + ` (${item.scale})` : null]],
+        [[t('type'), item.type], [t('country'), item.country]],
+        [[t('region'), item.region], [t('blend'), item.blend]],
+        [[t('ageMin'), item.age_low ? `${item.age_low} ${yearsLabel}` : null], [t('ageMax'), item.age_max ? `${item.age_max} ${yearsLabel}` : null]],
+        [['ABV', item.abv ? `${item.abv}%` : null], [t('scale'), item.scale ? '★'.repeat(Math.round(item.scale)) + ` (${item.scale})` : null]],
       ]
     },
     {
-      label: 'Colección',
+      label: t('collection'),
       rows: [
-        [['Ya consumí', item.terminado ? '🫗 Sí' : null]],
+        [[t('finished'), item.terminado ? '🫗 Sí' : null]],
       ]
     }
   ]
@@ -307,16 +312,16 @@ function getSpiritsGroups(item, coll) {
     {
       label: 'Producción',
       rows: [
-        [['Tipo', item.type], ['País', item.country]],
-        [['Región', item.region], ['Origen', item.origin]],
-        [['Destilería', item.distillery], ['Años', item.years ? `${item.years} años` : 'NAS']],
+        [[t('type'), item.type], [t('country'), item.country]],
+        [[t('region'), item.region], [t('origin'), item.origin]],
+        [[t('distillery'), item.distillery], [yearsLabel, item.years ? `${item.years} ${yearsLabel}` : 'NAS']],
         [['ABV', item.abv ? `${item.abv}%` : null]],
       ]
     },
     {
-      label: 'Colección',
+      label: t('collection'),
       rows: [
-        [['Ya consumí', item.terminado ? '🫗 Sí' : null]],
+        [[t('finished'), item.terminado ? '🫗 Sí' : null]],
       ]
     }
   ]

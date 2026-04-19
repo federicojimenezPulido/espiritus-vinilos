@@ -19,3 +19,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <App />
   </QueryClientProvider>
 )
+
+// Elimina el pre-loader una vez que React monta la app
+document.getElementById('pre-loader')?.remove()

@@ -1,12 +1,9 @@
+import { useLang } from '../LangContext'
 import styles from './SearchBar.module.css'
 
-// search y setSearch vienen del padre (Dashboard)
-// Este componente es "controlado" — no tiene estado propio
-// Analogía: como un parámetro de entrada de un procedure
 export default function SearchBar({ search, setSearch, coll }) {
-  const placeholder = coll === 'vinyl'
-    ? 'Buscar artista, álbum, género...'
-    : 'Buscar marca, país, tipo...'
+  const { t } = useLang()
+  const placeholder = coll === 'vinyl' ? t('searchVinyl') : t('searchSpirits')
 
   return (
     <div className={styles.wrap}>

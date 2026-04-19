@@ -60,6 +60,16 @@ export const saveSpotifyId     = (index, spotify_id) =>
 export const refreshSpotifyId  = (index) =>
   api.post(`/api/spotify/${index}/refresh`).then(r => r.data)
 
+// ── CONFIG / PIN ──────────────────────────────────────────────────────────────
+export const getPinStatus = ()      => api.get('/api/config/pin').then(r => r.data)
+export const savePin      = (pin)   => api.post('/api/config/pin', { pin }).then(r => r.data)
+export const verifyPin    = (pin)   => api.post('/api/config/pin/verify', { pin }).then(r => r.data)
+export const deletePin    = ()      => api.delete('/api/config/pin').then(r => r.data)
+
+// Scrapea precio, moneda y disponibilidad de la URL del producto
+export const fetchPurchaseInfo = (url) =>
+  api.post('/api/covers/fetch-purchase', { url }).then(r => r.data)
+
 // Busca portada en Discogs y la persiste en el vinilo
 export const fetchAndSaveDiscogsCover = (index, q) => {
   const token = localStorage.getItem('discogs_token')

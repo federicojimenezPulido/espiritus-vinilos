@@ -11,11 +11,14 @@ import CrateView      from './CrateView'
 import SpotifyModal   from './SpotifyModal'
 import FeaturedBanner, { setFeatured, getFeatured } from './FeaturedBanner'
 import ShareView      from './ShareView'
+import SocialDrawer   from './SocialDrawer'
+import { useLang }    from '../LangContext'
 import styles         from './Dashboard.module.css'
 
 const FETCHERS = { vinyl: getVinyls, rum: getRums, whisky: getWhiskies }
 
-export default function Dashboard({ coll }) {
+export default function Dashboard({ coll, pinIsSet }) {
+  const { t } = useLang()
   const [search,      setSearch]      = useState('')
   const [filters,     setFilters]     = useState({})
   const [selected,    setSelected]    = useState(null)
@@ -29,6 +32,7 @@ export default function Dashboard({ coll }) {
   const [featuredVer,  setFeaturedVer]  = useState(0)    // bump to re-render banner
   const [shareItem,    setShareItem]    = useState(null) // { item, index } — ShareView cinematográfica
   const [sortBy,       setSortBy]       = useState('artista') // 'artista' | 'default'
+  const [socialDrawer, setSocialDrawer] = useState(null)     // { type: 'tiktok'|'instagram', url }
 
   const { data, isLoading, isError } = useQuery({
     queryKey: [coll],
@@ -129,12 +133,24 @@ export default function Dashboard({ coll }) {
   }
 
   function requirePin(label, onSuccess) {
-    if (!localStorage.getItem('admin_pin')) { onSuccess(); return }
+    if (!pinIsSet) {
+      alert(t('requirePinMsg'))
+      return
+    }
     setPinAction({ label, onSuccess })
   }
 
   return (
     <>
+      {/* Social drawer — TikTok / Instagram side panel */}
+      {socialDrawer && (
+        <SocialDrawer
+          type={socialDrawer.type}
+          url={socialDrawer.url}
+          onClose={() => setSocialDrawer(null)}
+        />
+      )}
+
       {/* ShareView — vista cinematográfica para links ?v=INDEX */}
       {shareItem && (
         <ShareView
@@ -192,7 +208,7 @@ export default function Dashboard({ coll }) {
           item={selected} coll={coll}
           index={findIndex(selected)}
           onClose={() => setSelected(null)}
-          onEdit={() => { setAdminIndex(findIndex(selected)); setSelected(null); setAdminItem(selected) }}
+          onEdit={() => requirePin('Editar registro', () => { setAdminIndex(findIndex(selected)); setSelected(null); setAdminItem(selected) })}
           onSetFeatured={coll === 'vinyl' ? (item, idx) => {
             requirePin('Destacar disco del mes', () => {
               setFeatured(item, idx)
@@ -209,6 +225,7 @@ export default function Dashboard({ coll }) {
           index={adminItem === null ? -1 : adminIndex}
           data={data}
           onClose={() => { setAdminItem(undefined); setAdminIndex(-1) }}
+          pinIsSet={pinIsSet}
           onRequestPin={(label, cb) => requirePin(label, cb)}
         />
       )}
@@ -216,7 +233,6 @@ export default function Dashboard({ coll }) {
         <FeaturedBanner
           key={featuredVer}
           onOpen={item => setSelected(item)}
-          onSpotify={(item, idx) => setSpotifyItem({ item, index: idx })}
         />
       )}
       <div className={styles.layout}>
@@ -235,41 +251,33 @@ export default function Dashboard({ coll }) {
           <div className={styles.topBar}>
             {/* Mobile: show filter toggle button */}
             <button className={styles.filterToggle} onClick={() => setSidebarOpen(o => !o)}>
-              🎚 Filtros
+              🎚 {t('filters')}
             </button>
             <SearchBar search={search} setSearch={setSearch} coll={coll} />
             {hasActive && (
               <button className={styles.clearBtn} onClick={clearAll}>
-                Limpiar
+                {t('clear')}
               </button>
             )}
-            {/* Sort toggle — solo vinilos */}
             {coll === 'vinyl' && view === 'collection' && (
               <button
                 className={styles.sortToggle}
                 onClick={() => setSortBy(s => s === 'artista' ? 'default' : 'artista')}
-                title={sortBy === 'artista' ? 'Ordenado por artista' : 'Orden original'}
+                title={sortBy === 'artista' ? t('sortedByArtist') : t('originalOrder')}
               >
-                {sortBy === 'artista' ? '↑A Artista' : '↕ Orden'}
+                {sortBy === 'artista' ? t('sortArtist') : t('sortOrder')}
               </button>
             )}
-            {/* View toggle: collection → stats → crate */}
             {coll === 'vinyl'
-              ? <button
-                  className={styles.viewToggle}
-                  onClick={() => setView(v => v === 'collection' ? 'stats' : v === 'stats' ? 'crate' : 'collection')}
-                >
-                  {view === 'collection' ? '📊 Stats' : view === 'stats' ? '🗄 Anaquel' : '📋 Colección'}
+              ? <button className={styles.viewToggle} onClick={() => setView(v => v === 'collection' ? 'stats' : v === 'stats' ? 'crate' : 'collection')}>
+                  {view === 'collection' ? `📊 ${t('stats')}` : view === 'stats' ? `🗄 ${t('crate')}` : `📋 ${t('collection')}`}
                 </button>
-              : <button
-                  className={styles.viewToggle}
-                  onClick={() => setView(v => v === 'collection' ? 'stats' : 'collection')}
-                >
-                  {view === 'collection' ? '📊 Stats' : '📋 Colección'}
+              : <button className={styles.viewToggle} onClick={() => setView(v => v === 'collection' ? 'stats' : 'collection')}>
+                  {view === 'collection' ? `📊 ${t('stats')}` : `📋 ${t('collection')}`}
                 </button>
             }
-            <button className={`${styles.addBtn} ${styles[coll]}`} onClick={() => requirePin('Agregar nuevo registro', () => setAdminItem(null))}>
-              + Agregar
+            <button className={`${styles.addBtn} ${styles[coll]}`} onClick={() => requirePin(t('addNew'), () => setAdminItem(null))}>
+              {t('addNew')}
             </button>
           </div>
 
@@ -305,11 +313,11 @@ export default function Dashboard({ coll }) {
                 )}
 
                 <div className={styles.meta}>
-                  {filtered.length} de {data.length} registros
+                  {filtered.length} / {data.length} {t('records')}
                 </div>
 
                 {filtered.length === 0
-                  ? <div className={styles.empty}>🔍 Sin resultados</div>
+                  ? <div className={styles.empty}>🔍 {t('noResults')}</div>
                   : <div className={styles.grid}>
                       {filtered.map((item, i) => (
                         <Card
@@ -324,7 +332,11 @@ export default function Dashboard({ coll }) {
                           } : null}
                           onIgStory={(coll === 'vinyl' && item.ig_url) ? (e) => {
                             e.stopPropagation()
-                            window.open(item.ig_url, '_blank')
+                            setSocialDrawer({ type: 'instagram', url: item.ig_url })
+                          } : null}
+                          onTikTok={(coll === 'vinyl' && item.tiktok_url) ? (e) => {
+                            e.stopPropagation()
+                            setSocialDrawer({ type: 'tiktok', url: item.tiktok_url })
                           } : null}
                         />
                       ))}
@@ -339,7 +351,7 @@ export default function Dashboard({ coll }) {
 }
 
 // ── CARD ─────────────────────────────────────────────────────────────────────
-function Card({ item, coll, onClick, onSpotify, onShare, onIgStory }) {
+function Card({ item, coll, onClick, onSpotify, onShare, onIgStory, onTikTok }) {
   const [copied, setCopied] = useState(false)
 
   const title = coll === 'vinyl' ? item.artista : item.brand
@@ -377,7 +389,7 @@ function Card({ item, coll, onClick, onSpotify, onShare, onIgStory }) {
         {item.terminado && <span className={styles.lentBadge} title="Ya consumí">🫗</span>}
 
         {/* ── Hover overlay con acciones rápidas ── */}
-        {(onSpotify || onShare || onIgStory) && (
+        {(onSpotify || onShare || onIgStory || onTikTok) && (
           <div className={styles.hoverActions}>
             {onSpotify && (
               <button
@@ -401,6 +413,17 @@ function Card({ item, coll, onClick, onSpotify, onShare, onIgStory }) {
               >
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                </svg>
+              </button>
+            )}
+            {onTikTok && (
+              <button
+                className={`${styles.haBtn} ${styles.haBtnTikTok}`}
+                onClick={onTikTok}
+                title="Ver en TikTok"
+              >
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.17 8.17 0 0 0 4.78 1.52V6.75a4.85 4.85 0 0 1-1.01-.06z"/>
                 </svg>
               </button>
             )}

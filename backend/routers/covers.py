@@ -107,6 +107,17 @@ def bulk_fetch_discogs(x_discogs_token: Optional[str] = Header(None)):
     return {"updated": updated, "skipped": skipped}
 
 
+# ── POST /api/covers/fetch-purchase ──────────────────────────────────────────
+# Scrapea precio, moneda y disponibilidad de la URL del producto
+# Body: { "url": "https://..." }
+@router.post("/fetch-purchase")
+def fetch_purchase_info(body: dict):
+    url = body.get("url")
+    if not url:
+        return {"error": "falta url"}
+    return scrape_purchase_info(url)
+
+
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
 def scrape_og_image(url: str) -> Optional[str]:
@@ -135,6 +146,83 @@ def scrape_og_image(url: str) -> Optional[str]:
         return None
     except Exception:
         return None
+
+
+def scrape_purchase_info(url: str) -> dict:
+    """
+    Extrae precio, moneda y disponibilidad de la página del producto.
+    Estrategia: JSON-LD (schema.org/Product) → meta product tags → vacío.
+    """
+    try:
+        req = urllib.request.Request(
+            url,
+            headers={"User-Agent": "Mozilla/5.0 (compatible; EspiritusVinilos/1.0)"}
+        )
+        with urllib.request.urlopen(req, timeout=8) as resp:
+            html = resp.read(100_000).decode("utf-8", errors="ignore")
+
+        # 1. JSON-LD schema.org/Product
+        json_ld_blocks = re.findall(
+            r'<script[^>]+type=["\']application/ld\+json["\'][^>]*>(.*?)</script>',
+            html, re.IGNORECASE | re.DOTALL
+        )
+        for raw in json_ld_blocks:
+            try:
+                obj = json.loads(raw.strip())
+                items = obj if isinstance(obj, list) else [obj]
+                for item in items:
+                    if item.get("@type") in ("Product", "IndividualProduct"):
+                        offers = item.get("offers", {})
+                        if isinstance(offers, list):
+                            offers = offers[0] if offers else {}
+                        price    = offers.get("price") or offers.get("lowPrice")
+                        currency = offers.get("priceCurrency", "")
+                        avail    = offers.get("availability", "")
+                        if "InStock" in avail:
+                            avail = "En stock"
+                        elif "OutOfStock" in avail:
+                            avail = "Sin stock"
+                        elif avail:
+                            avail = avail.split("/")[-1]
+                        if price:
+                            return {
+                                "price": str(price),
+                                "currency": currency,
+                                "availability": avail,
+                                "source": "json-ld",
+                            }
+            except Exception:
+                continue
+
+        # 2. Meta tags de producto (OpenGraph commerce)
+        price_patterns = [
+            r'<meta[^>]+property=["\']product:price:amount["\'][^>]+content=["\']([^"\']+)["\']',
+            r'<meta[^>]+content=["\']([^"\']+)["\'][^>]+property=["\']product:price:amount["\']',
+            r'<meta[^>]+property=["\']og:price:amount["\'][^>]+content=["\']([^"\']+)["\']',
+        ]
+        currency_patterns = [
+            r'<meta[^>]+property=["\']product:price:currency["\'][^>]+content=["\']([^"\']+)["\']',
+            r'<meta[^>]+property=["\']og:price:currency["\'][^>]+content=["\']([^"\']+)["\']',
+        ]
+        price = None
+        for p in price_patterns:
+            m = re.search(p, html, re.IGNORECASE)
+            if m:
+                price = m.group(1).strip()
+                break
+        currency = ""
+        for p in currency_patterns:
+            m = re.search(p, html, re.IGNORECASE)
+            if m:
+                currency = m.group(1).strip()
+                break
+        if price:
+            return {"price": price, "currency": currency, "availability": "", "source": "meta"}
+
+        return {"price": None, "currency": None, "availability": None, "source": None}
+
+    except Exception as e:
+        return {"price": None, "currency": None, "availability": None, "source": None, "error": str(e)}
 
 
 def search_discogs(q: str, token: Optional[str]):

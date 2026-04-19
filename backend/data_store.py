@@ -31,9 +31,11 @@ COLUMNS = {
     "vinilos":  _VINYL_COLS,
     "vinyls":   _VINYL_COLS,
     "rums":     ["brand","name","type","country","abv","blend",
-                 "age_low","age_max","region","scale","url","cover_url","terminado"],
+                 "age_low","age_max","region","scale","url","cover_url","terminado",
+                 "buy_url","buy_price","buy_currency","buy_availability"],
     "whiskies": ["brand","version","type","origin","country","abv",
-                 "years","region","distillery","url","cover_url","terminado"],
+                 "years","region","distillery","url","cover_url","terminado",
+                 "buy_url","buy_price","buy_currency","buy_availability"],
 }
 
 

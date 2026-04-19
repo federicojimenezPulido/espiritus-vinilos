@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useLang } from '../LangContext'
 import styles from './WelcomeModal.module.css'
 
 const STORAGE_KEY = 'enlt_welcome_seen'
@@ -58,6 +59,7 @@ function ShareIcon() {
 }
 
 export default function WelcomeModal({ onClose }) {
+  const { t } = useLang()
   const [dontShow, setDontShow] = useState(false)
 
   function handleClose() {
@@ -73,61 +75,48 @@ export default function WelcomeModal({ onClose }) {
         <div className={styles.hero}>
           <div className={styles.heroTitle}>En Las Nubes Trepao</div>
           <div className={styles.heroSub}>Espíritus &amp; Vinilos</div>
-          <div className={styles.heroTagline}>Una colección personal. Tres mundos.</div>
+          <div className={styles.heroTagline}>{t('welcomeTagline')}</div>
         </div>
 
-        {/* Sección: qué es este lugar */}
         <div className={styles.intro}>
-          <p>
-            Esto no es una tienda ni una base de datos. Es el archivo de lo que suena y lo que se sirve
-            en las nubes — discos que ya no suenan en el radio, rones de destilerías que no necesitan premios,
-            whiskies de lugares que todavía trabajan con tiempo.
-          </p>
+          <p>{t('welcomeBody')}</p>
         </div>
 
-        {/* Sección: las tres colecciones en 3 cards */}
         <div className={styles.collectionsRow}>
           <div className={`${styles.collCard} ${styles.collVinyl}`}>
             <div className={styles.collIcon}><VinylIcon /></div>
-            <div className={styles.collName}>Vinilos</div>
-            <div className={styles.collDesc}>Salsa, jazz, bolero, rock. Artistas que moldearon épocas.</div>
+            <div className={styles.collName}>{t('vinyls')}</div>
+            <div className={styles.collDesc}>{t('welcomeVinylDesc')}</div>
           </div>
           <div className={`${styles.collCard} ${styles.collRum}`}>
             <div className={styles.collIcon}><RumIcon /></div>
-            <div className={styles.collName}>Rones</div>
-            <div className={styles.collDesc}>Caña destilada con identidad. Desde el Caribe hasta Latinoamérica.</div>
+            <div className={styles.collName}>{t('rums')}</div>
+            <div className={styles.collDesc}>{t('welcomeRumDesc')}</div>
           </div>
           <div className={`${styles.collCard} ${styles.collWhisky}`}>
             <div className={styles.collIcon}><WhiskyIcon /></div>
-            <div className={styles.collName}>Whiskies</div>
-            <div className={styles.collDesc}>Destilerías que priorizan el proceso sobre el marketing.</div>
+            <div className={styles.collName}>{t('whiskies')}</div>
+            <div className={styles.collDesc}>{t('welcomeWhiskyDesc')}</div>
           </div>
         </div>
 
-        {/* Sección: features key */}
         <div className={styles.features}>
-          <div className={styles.featuresTitle}>Lo que podés hacer</div>
+          <div className={styles.featuresTitle}>{t('welcomeCanDo')}</div>
           <ul className={styles.featureList}>
-            <li><SearchIcon /> Buscar y filtrar por género, sello, tipo</li>
-            <li><StatsIcon /> Ver estadísticas de la colección</li>
-            <li><SpotifyIcon /> Escuchar en Spotify directamente</li>
-            <li><ShareIcon /> Compartir un disco con alguien</li>
+            <li><SearchIcon /> {t('welcomeAction1')}</li>
+            <li><StatsIcon /> {t('welcomeAction2')}</li>
+            <li><SpotifyIcon /> {t('welcomeAction3')}</li>
+            <li><ShareIcon /> {t('welcomeAction4')}</li>
           </ul>
         </div>
 
-        {/* Footer: checkbox + botón CTA */}
         <div className={styles.footer}>
           <label className={styles.checkLabel}>
-            <input
-              type="checkbox"
-              className={styles.checkbox}
-              checked={dontShow}
-              onChange={e => setDontShow(e.target.checked)}
-            />
-            <span>No mostrar de nuevo</span>
+            <input type="checkbox" className={styles.checkbox} checked={dontShow} onChange={e => setDontShow(e.target.checked)} />
+            <span>{t('welcomeDontShow')}</span>
           </label>
           <button className={styles.ctaBtn} onClick={handleClose}>
-            Explorar la colección →
+            {t('welcomeExplore')}
           </button>
         </div>
 

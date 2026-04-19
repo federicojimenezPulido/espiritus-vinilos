@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://enlasnubestrepao.com/sitemap.xml
