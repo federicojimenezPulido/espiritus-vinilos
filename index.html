@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/jpeg" href="/logo-enlt.jpeg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>En Las Nubes Trepao — Espíritus Vinilos</title>
+
+    <!-- Primary Meta -->
+    <meta name="description" content="Curaduría de vinilos, rones y whiskies. Música no mainstream, cultura análoga y recomendaciones de alguien que sí sabe de discos." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://enlasnubestrepao.com/" />
+
+    <!-- Open Graph (WhatsApp, Facebook, iMessage) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://enlasnubestrepao.com/" />
+    <meta property="og:title" content="En Las Nubes Trepao — Espíritus Vinilos" />
+    <meta property="og:description" content="Curaduría de vinilos, rones y whiskies. Música no mainstream, cultura análoga y recomendaciones de alguien que sí sabe de discos." />
+    <!-- [REPLACE: og:image — subir archivo og-image.jpg (1200x630px) a /public/ y reemplazar esta URL] -->
+    <meta property="og:image" content="https://enlasnubestrepao.com/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="es_419" />
+
+    <!-- Twitter / X Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <!-- [REPLACE: twitter:site — agregar handle @enlasnubestrepao si existe cuenta en Twitter/X] -->
+    <meta name="twitter:title" content="En Las Nubes Trepao — Espíritus Vinilos" />
+    <meta name="twitter:description" content="Curaduría de vinilos, rones y whiskies. Música no mainstream, cultura análoga y recomendaciones de alguien que sí sabe de discos." />
+    <meta name="twitter:image" content="https://enlasnubestrepao.com/og-image.jpg" />
+
+    <!--
+      INFRASTRUCTURE NOTE:
+      Este sitio está hosteado en GitHub Pages (estático, sin ejecución server-side).
+      En caso de caída, los usuarios con JS activo verán pantalla en blanco.
+      El bloque <noscript> es el único safety net server-rendered.
+
+      Para testear el noscript: abrir index.html con JS desactivado en DevTools.
+      Resultado esperado: mensaje en español con link a Instagram, sin JS.
+
+      Opción futura (ver BACKLOG.md): configurar Cloudflare Pages como mirror
+      que sirva una página estática "estamos volviendo" ante falla del origen.
+    -->
+
+    <!-- Pre-JS loader — visible antes de que el bundle hidrate, desaparece al montar -->
+    <style>
+      #pre-loader {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #0a0a0a; /* --bg confirmado desde index.css */
+        z-index: 9999;
+      }
+      #pre-loader .disc {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        border: 2px solid #f0f0f0; /* --text confirmado desde index.css */
+        border-top-color: transparent;
+        animation: spin 1.2s linear infinite;
+      }
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+    </style>
+    <script type="module" crossorigin src="/assets/index-Cx9LAcR4.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-DUy0qBNq.css">
+  </head>
+  <body>
+    <!-- Fallback para usuarios sin JavaScript — no tocar, está correcto -->
+    <noscript>
+      <div style="font-family: Georgia, serif; max-width: 600px; margin: 60px auto; padding: 0 24px; line-height: 1.7;">
+        <h1>En Las Nubes Trepao</h1>
+        <p>Este sitio requiere JavaScript para funcionar. Activá JavaScript en tu navegador y recargá la página.</p>
+        <p>Si seguís viendo esto, encontranos en <a href="https://www.instagram.com/enlasnubestrepao">Instagram @enlasnubestrepao</a></p>
+      </div>
+    </noscript>
+
+    <div id="pre-loader" aria-hidden="true">
+      <div class="disc"></div>
+    </div>
+
+    <!--
+      IMPLEMENTATION NOTE: el loader se elimina desde main.jsx al montar la app.
+      document.getElementById('pre-loader')?.remove()
+    -->
+    <div id="root"></div>
+  </body>
+</html>
