@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { LangProvider, useLang } from './LangContext'
 import Header        from './components/Header'
 import Dashboard     from './components/Dashboard'
+import HeroSection   from './components/HeroSection'
 import WelcomeModal, { shouldShowWelcome } from './components/WelcomeModal'
 import PinModal      from './components/PinModal'
 import SettingsPanel from './components/SettingsPanel'
@@ -10,6 +11,7 @@ import { getPinStatus } from './services/api'
 function AppInner() {
   const { lang, setLang, t } = useLang()
   const [coll, setColl]               = useState('vinyl')
+  const dashboardRef = useRef(null)
   const [showWelcome, setShowWelcome] = useState(shouldShowWelcome)
   const [showSettingsPin, setShowSettingsPin] = useState(false)
   const [showSettings,    setShowSettings]    = useState(false)
@@ -45,7 +47,10 @@ function AppInner() {
       )}
 
       <Header coll={coll} setColl={setColl} onSettings={handleSettingsClick} lang={lang} setLang={setLang} />
-      <Dashboard coll={coll} pinIsSet={pinIsSet} />
+      <HeroSection onScrollDown={() => dashboardRef.current?.scrollIntoView({ behavior: 'smooth' })} />
+      <div ref={dashboardRef}>
+        <Dashboard coll={coll} pinIsSet={pinIsSet} />
+      </div>
     </>
   )
 }

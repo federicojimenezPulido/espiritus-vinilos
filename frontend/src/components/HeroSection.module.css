@@ -1,0 +1,236 @@
+/* ── Hero shell ── */
+.hero {
+  position: relative;
+  min-height: calc(100vh - 56px); /* resta el header */
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+
+  /* Fondo: negro con calor ámbar en la esquina donde vive el vinilo */
+  background:
+    radial-gradient(ellipse 60% 80% at 78% 50%, #1d0e04 0%, transparent 70%),
+    var(--bg);
+}
+
+/* ── Contenido ── */
+.content {
+  position: relative;
+  z-index: 2;
+  padding: 48px 32px 80px;
+  max-width: 680px;
+}
+
+/* Eyebrow — nombre del proyecto */
+.eyebrow {
+  font-family: 'Inter', sans-serif;
+  font-size: .7rem;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--v-acc);
+  margin: 0 0 24px;
+
+  opacity: 0;
+  transform: translateY(12px);
+  animation: fadeUp .5s ease .1s forwards;
+}
+
+/* Headline — protagonista tipográfico */
+.headline {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.8rem, 7vw, 5.2rem);
+  font-weight: 900;
+  line-height: 1.08;
+  letter-spacing: -.02em;
+  color: var(--text);
+  margin: 0 0 28px;
+
+  opacity: 0;
+  transform: translateY(18px);
+  animation: fadeUp .6s ease .25s forwards;
+}
+
+/* Tagline — voz curatorial */
+.tagline {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(.9rem, 2vw, 1.05rem);
+  font-weight: 300;
+  line-height: 1.65;
+  color: var(--text2);
+  margin: 0 0 48px;
+
+  opacity: 0;
+  transform: translateY(12px);
+  animation: fadeUp .6s ease .45s forwards;
+}
+
+/* Scroll cue — botón sutil */
+.scrollCue {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: none;
+  border: 1px solid var(--text3);
+  border-radius: 999px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: border-color .2s, color .2s;
+
+  opacity: 0;
+  animation: fadeUp .6s ease .65s forwards;
+}
+.scrollCue:hover {
+  border-color: var(--text2);
+}
+.scrollLabel {
+  font-family: 'Inter', sans-serif;
+  font-size: .75rem;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text2);
+  transition: color .2s;
+}
+.scrollCue:hover .scrollLabel { color: var(--text); }
+
+.scrollArrow {
+  color: var(--text3);
+  font-size: .85rem;
+  animation: bounce 2s ease-in-out 1.4s infinite;
+  transition: color .2s;
+}
+.scrollCue:hover .scrollArrow { color: var(--text2); }
+
+/* ── Vinilo decorativo ── */
+.vinylWrap {
+  position: absolute;
+  right: -60px;
+  top: 50%;
+  transform: translateY(-50%) rotate(-12deg);
+  z-index: 1;
+  pointer-events: none;
+
+  opacity: 0;
+  animation: fadeIn .9s ease .3s forwards;
+}
+
+.vinyl {
+  width: clamp(320px, 42vw, 540px);
+  height: clamp(320px, 42vw, 540px);
+  border-radius: 50%;
+  background: conic-gradient(
+    #111 0deg, #1a1a1a 8deg, #111 16deg,
+    #1a1a1a 24deg, #111 32deg, #1a1a1a 40deg,
+    #111 48deg, #1a1a1a 56deg, #111 64deg,
+    #1a1a1a 72deg, #111 80deg, #1a1a1a 88deg,
+    #111 96deg, #1a1a1a 104deg, #111 112deg,
+    #1a1a1a 120deg, #111 128deg, #1a1a1a 136deg,
+    #111 144deg, #1a1a1a 152deg, #111 160deg,
+    #1a1a1a 168deg, #111 176deg, #1a1a1a 184deg,
+    #111 192deg, #1a1a1a 200deg, #111 208deg,
+    #1a1a1a 216deg, #111 224deg, #1a1a1a 232deg,
+    #111 240deg, #1a1a1a 248deg, #111 256deg,
+    #1a1a1a 264deg, #111 272deg, #1a1a1a 280deg,
+    #111 288deg, #1a1a1a 296deg, #111 304deg,
+    #1a1a1a 312deg, #111 320deg, #1a1a1a 328deg,
+    #111 336deg, #1a1a1a 344deg, #111 352deg, #1a1a1a 360deg
+  );
+  box-shadow: 0 0 80px rgba(180, 90, 20, .12), 0 0 160px rgba(180, 90, 20, .05);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: slowSpin 40s linear infinite;
+}
+
+/* Surco interior decorativo */
+.vinylGroove {
+  position: absolute;
+  width: 65%;
+  height: 65%;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.04);
+}
+
+/* Etiqueta central */
+.vinylLabel {
+  position: absolute;
+  width: 32%;
+  height: 32%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 40%, #2a1505, #1a0d03);
+  border: 1px solid rgba(180, 90, 20, .25);
+  box-shadow: inset 0 2px 8px rgba(0,0,0,.5);
+}
+
+/* Punto central */
+.vinylCenter {
+  position: absolute;
+  width: 3%;
+  height: 3%;
+  border-radius: 50%;
+  background: #0a0a0a;
+  z-index: 1;
+}
+
+/* Degradado inferior — transición suave hacia la colección */
+.fadeBottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: linear-gradient(to bottom, transparent, var(--bg));
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* ── Animaciones ── */
+@keyframes fadeUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  to { opacity: .18; }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(5px); }
+}
+
+@keyframes slowSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* ── Responsive ── */
+@media (max-width: 767px) {
+  .hero {
+    min-height: calc(100svh - 56px);
+    align-items: flex-end;
+  }
+
+  .content {
+    padding: 32px 20px 72px;
+  }
+
+  .vinylWrap {
+    right: -80px;
+    top: 12%;
+    transform: translateY(0) rotate(-12deg);
+    opacity: 0;
+    animation: fadeIn .9s ease .3s forwards;
+  }
+
+  .fadeBottom {
+    height: 80px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .content {
+    padding: 80px 64px 120px;
+    max-width: 760px;
+  }
+}
