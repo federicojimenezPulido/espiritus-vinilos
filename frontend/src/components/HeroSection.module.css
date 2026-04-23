@@ -1,15 +1,33 @@
 /* ── Hero shell ── */
 .hero {
   position: relative;
-  min-height: calc(100vh - 56px); /* resta el header */
+  min-height: calc(100vh - 56px);
   display: flex;
   align-items: center;
   overflow: hidden;
+  background: var(--bg);
+}
 
-  /* Fondo: negro con calor ámbar en la esquina donde vive el vinilo */
+/* ── Foto de fondo ── */
+.photoBg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.photoImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+}
+/* Overlay: oscuro en la izquierda (texto), transparente en la derecha (foto) */
+.photoOverlay {
+  position: absolute;
+  inset: 0;
   background:
-    radial-gradient(ellipse 60% 80% at 78% 50%, #1d0e04 0%, transparent 70%),
-    var(--bg);
+    linear-gradient(to right,  rgba(8,6,4,.92) 0%, rgba(8,6,4,.72) 45%, rgba(8,6,4,.25) 100%),
+    linear-gradient(to bottom, rgba(8,6,4,.2)  0%, transparent 30%, rgba(8,6,4,.6) 85%, rgba(8,6,4,1) 100%);
 }
 
 /* ── Contenido ── */
@@ -101,77 +119,6 @@
 }
 .scrollCue:hover .scrollArrow { color: var(--text2); }
 
-/* ── Vinilo decorativo ── */
-.vinylWrap {
-  position: absolute;
-  right: -60px;
-  top: 50%;
-  transform: translateY(-50%) rotate(-12deg);
-  z-index: 1;
-  pointer-events: none;
-
-  opacity: 0;
-  animation: fadeIn .9s ease .3s forwards;
-}
-
-.vinyl {
-  width: clamp(320px, 42vw, 540px);
-  height: clamp(320px, 42vw, 540px);
-  border-radius: 50%;
-  background: conic-gradient(
-    #111 0deg, #1a1a1a 8deg, #111 16deg,
-    #1a1a1a 24deg, #111 32deg, #1a1a1a 40deg,
-    #111 48deg, #1a1a1a 56deg, #111 64deg,
-    #1a1a1a 72deg, #111 80deg, #1a1a1a 88deg,
-    #111 96deg, #1a1a1a 104deg, #111 112deg,
-    #1a1a1a 120deg, #111 128deg, #1a1a1a 136deg,
-    #111 144deg, #1a1a1a 152deg, #111 160deg,
-    #1a1a1a 168deg, #111 176deg, #1a1a1a 184deg,
-    #111 192deg, #1a1a1a 200deg, #111 208deg,
-    #1a1a1a 216deg, #111 224deg, #1a1a1a 232deg,
-    #111 240deg, #1a1a1a 248deg, #111 256deg,
-    #1a1a1a 264deg, #111 272deg, #1a1a1a 280deg,
-    #111 288deg, #1a1a1a 296deg, #111 304deg,
-    #1a1a1a 312deg, #111 320deg, #1a1a1a 328deg,
-    #111 336deg, #1a1a1a 344deg, #111 352deg, #1a1a1a 360deg
-  );
-  box-shadow: 0 0 80px rgba(180, 90, 20, .12), 0 0 160px rgba(180, 90, 20, .05);
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: slowSpin 40s linear infinite;
-}
-
-/* Surco interior decorativo */
-.vinylGroove {
-  position: absolute;
-  width: 65%;
-  height: 65%;
-  border-radius: 50%;
-  border: 1px solid rgba(255,255,255,.04);
-}
-
-/* Etiqueta central */
-.vinylLabel {
-  position: absolute;
-  width: 32%;
-  height: 32%;
-  border-radius: 50%;
-  background: radial-gradient(circle at 40% 40%, #2a1505, #1a0d03);
-  border: 1px solid rgba(180, 90, 20, .25);
-  box-shadow: inset 0 2px 8px rgba(0,0,0,.5);
-}
-
-/* Punto central */
-.vinylCenter {
-  position: absolute;
-  width: 3%;
-  height: 3%;
-  border-radius: 50%;
-  background: #0a0a0a;
-  z-index: 1;
-}
 
 /* Degradado inferior — transición suave hacia la colección */
 .fadeBottom {
@@ -190,18 +137,9 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes fadeIn {
-  to { opacity: .18; }
-}
-
 @keyframes bounce {
   0%, 100% { transform: translateY(0); }
   50%       { transform: translateY(5px); }
-}
-
-@keyframes slowSpin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
 }
 
 /* ── Responsive ── */

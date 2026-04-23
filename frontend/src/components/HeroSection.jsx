@@ -5,13 +5,10 @@ const HeroSection = forwardRef(function HeroSection({ onScrollDown }, ref) {
   return (
     <section className={styles.hero} ref={ref}>
 
-      {/* Vinilo decorativo — CSS puro, sin imagen */}
-      <div className={styles.vinylWrap} aria-hidden="true">
-        <div className={styles.vinyl}>
-          <div className={styles.vinylLabel} />
-          <div className={styles.vinylGroove} />
-          <div className={styles.vinylCenter} />
-        </div>
+      {/* Foto de fondo */}
+      <div className={styles.photoBg} aria-hidden="true">
+        <img src="/hero-4.png" alt="" className={styles.photoImg} />
+        <div className={styles.photoOverlay} />
       </div>
 
       {/* Contenido editorial */}
