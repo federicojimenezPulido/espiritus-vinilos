@@ -24,9 +24,10 @@
   transition: width .1s linear;
   border-radius: 0 2px 2px 0;
 }
-.progressBar.vinyl  { background: var(--v-acc2); }
-.progressBar.rum    { background: var(--ru-acc2); }
-.progressBar.whisky { background: var(--wh-acc2); }
+.progressBar.vinyl    { background: var(--v-acc2); }
+.progressBar.rum      { background: var(--ru-acc2); }
+.progressBar.whisky   { background: var(--wh-acc2); }
+.progressBar.sessions { background: var(--se-acc2); }
 
 /* ── Logo ── */
 .logo {
@@ -195,6 +196,10 @@
 .whisky.active {
   background: linear-gradient(135deg, var(--wh-acc) 0%, #0d3a5e 100%);
   box-shadow: 0 2px 12px rgba(26,96,145,.4), 0 1px 0 rgba(255,255,255,.1) inset;
+}
+.sessions.active {
+  background: linear-gradient(135deg, var(--se-acc) 0%, #6d28d9 100%);
+  box-shadow: 0 2px 12px rgba(124,58,237,.4), 0 1px 0 rgba(255,255,255,.1) inset;
 }
 
 /* ── Mobile ── */

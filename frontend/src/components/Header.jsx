@@ -51,6 +51,16 @@ function InstagramIcon() {
   )
 }
 
+function SessionsIcon() {
+  return (
+    <svg width="14" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M9 18V5l12-2v13"/>
+      <circle cx="6" cy="18" r="3"/>
+      <circle cx="18" cy="16" r="3"/>
+    </svg>
+  )
+}
+
 function GearIcon() {
   return (
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -61,9 +71,10 @@ function GearIcon() {
 }
 
 const COLLECTIONS = [
-  { id: 'vinyl',  labelEs: 'Vinilos',  labelEn: 'Records',  Icon: VinylIcon   },
-  { id: 'rum',    labelEs: 'Rones',    labelEn: 'Rums',     Icon: SpiritsIcon },
-  { id: 'whisky', labelEs: 'Whiskies', labelEn: 'Whiskies', Icon: WhiskyIcon  },
+  { id: 'vinyl',    labelEs: 'Vinilos',   labelEn: 'Records',  Icon: VinylIcon    },
+  { id: 'rum',      labelEs: 'Rones',     labelEn: 'Rums',     Icon: SpiritsIcon  },
+  { id: 'whisky',   labelEs: 'Whiskies',  labelEn: 'Whiskies', Icon: WhiskyIcon   },
+  { id: 'sessions', labelEs: 'Sesiones',  labelEn: 'Sessions', Icon: SessionsIcon },
 ]
 
 export default function Header({ coll, setColl, onSettings, lang, setLang }) {

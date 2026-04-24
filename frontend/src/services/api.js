@@ -70,6 +70,28 @@ export const deletePin    = ()      => api.delete('/api/config/pin').then(r => r
 export const fetchPurchaseInfo = (url) =>
   api.post('/api/covers/fetch-purchase', { url }).then(r => r.data)
 
+// ── SESIONES ──────────────────────────────────────────────────────────────────
+
+const seHeader = (token) => token ? { 'x-client-token': token } : {}
+
+export const getSessionCatalogVinyls  = ()  => api.get('/api/sessions/catalog/vinyls').then(r => r.data)
+export const getSessionCatalogSpirits = ()  => api.get('/api/sessions/catalog/spirits').then(r => r.data)
+
+export const registerClient      = (email, name)            => api.post('/api/sessions/clients', { email, name }).then(r => r.data)
+export const getSessionTemplates = ()                        => api.get('/api/sessions/templates').then(r => r.data)
+export const getSessions         = (token)                   => api.get('/api/sessions/', { headers: seHeader(token) }).then(r => r.data)
+export const createSession       = (token, data)             => api.post('/api/sessions/', data, { headers: seHeader(token) }).then(r => r.data)
+export const updateSession       = (token, id, data)         => api.patch(`/api/sessions/${id}`, data, { headers: seHeader(token) }).then(r => r.data)
+export const deleteSession       = (token, id)               => api.delete(`/api/sessions/${id}`, { headers: seHeader(token) })
+export const getSessionTracks    = (token, sid)              => api.get(`/api/sessions/${sid}/tracks`, { headers: seHeader(token) }).then(r => r.data)
+export const addSessionTrack     = (token, sid, data)        => api.post(`/api/sessions/${sid}/tracks`, data, { headers: seHeader(token) }).then(r => r.data)
+export const removeSessionTrack  = (token, sid, tid)         => api.delete(`/api/sessions/${sid}/tracks/${tid}`, { headers: seHeader(token) })
+export const getSessionSpirits   = (token, sid)              => api.get(`/api/sessions/${sid}/spirits`, { headers: seHeader(token) }).then(r => r.data)
+export const addSessionSpirit    = (token, sid, data)        => api.post(`/api/sessions/${sid}/spirits`, data, { headers: seHeader(token) }).then(r => r.data)
+export const removeSessionSpirit = (token, sid, spiritId)    => api.delete(`/api/sessions/${sid}/spirits/${spiritId}`, { headers: seHeader(token) })
+export const getSessionPreview   = (token, sid)              => api.get(`/api/sessions/${sid}/preview`, { headers: seHeader(token) }).then(r => r.data)
+export const getVinylSessionTracks = (vinylId)               => api.get(`/api/sessions/vinyls/${vinylId}/tracks`).then(r => r.data)
+
 // Busca portada en Discogs y la persiste en el vinilo
 export const fetchAndSaveDiscogsCover = (index, q) => {
   const token = localStorage.getItem('discogs_token')
