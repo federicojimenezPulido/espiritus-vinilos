@@ -107,29 +107,28 @@ Esta feature se vuelve significativamente más valiosa después de ARCH-01 (migr
 - ✅ Exportar CSV en StatsView — descarga `enlt-{coll}-{fecha}.csv` compatible con Excel
 - ✅ robots.txt mejorado con Disallow /api/ y Crawl-delay
 
-### Pendiente
-- 🔲 **Imagen hero para Rones** — usar `hero-1.png` como placeholder. Generar imagen dedicada con el prompt abajo.
-- 🔲 README.md — actualizar con arquitectura actual, instrucciones de deploy y features implementados
+### Completado
+- ✅ **Imágenes hero** — `hero-1.png` para Rones, `hero-2.png` para Whiskies — funcionan correctamente en producción
+- ✅ README.md — reescrito con arquitectura, stack, estructura, instrucciones de deploy y features
 
-### Prompt para imagen hero — Rones
+### Prompts de referencia (para reemplazar imágenes en el futuro si se desea)
+
+**Hero Rones:**
 ```
 Editorial photography, analog warmth. A worn wooden table in a dimly lit bar or home library. 
-Center: a glass of dark amber rum, slightly backlit, with condensation. Behind it: a vinyl record sleeve leaning against a rum bottle from the Caribbean (no brand visible). 
-Warm candlelight source from the right. Dark background with bokeh. Film grain texture. 
-Color palette: deep amber, burnt sienna, dark mahogany. Overhead or 3/4 angle. No people.
-Mood: after midnight, ritual, Latin Caribbean soul.
-Aspect ratio: 16:9 or wider. High resolution.
+Center: a glass of dark amber rum, slightly backlit, with condensation. Behind it: a vinyl record 
+sleeve leaning against a rum bottle from the Caribbean (no brand visible). Warm candlelight from 
+the right. Dark background with bokeh. Film grain. Palette: deep amber, burnt sienna, dark mahogany.
+Overhead or 3/4 angle. No people. Mood: after midnight, ritual, Latin Caribbean soul. 16:9+.
 ```
 
-### Prompt para imagen hero — Whiskies (alternativa a hero-2.png)
+**Hero Whiskies:**
 ```
 Editorial photography, Scottish/Japanese whisky aesthetic. A glass of pale gold whisky neat, 
-resting on a thick leather-bound book or atlas. Behind it: a copper still or whisky barrel detail, 
-slightly out of focus. Cool morning light from a window. Mist or smoke effect. Vinyl record barely 
-visible in the background, leaning against the wall. 
-Color palette: gold, slate grey, deep charcoal, copper tones. Minimal, architectural composition.
-Mood: patience, process, craft over marketing.
-Aspect ratio: 16:9 or wider. High resolution.
+resting on a thick leather-bound book or atlas. Copper still or whisky barrel detail slightly 
+out of focus. Cool morning light from a window. Mist or smoke effect. Vinyl record barely visible 
+in the background. Palette: gold, slate grey, deep charcoal, copper. Minimal, architectural.
+Mood: patience, process, craft over marketing. 16:9+.
 ```
 
 ---
