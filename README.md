@@ -1,5 +1,7 @@
 # Espíritus & Vinilos — En Las Nubes Trepao
 
+![Version](https://img.shields.io/badge/version-v2.0.0-7c3aed?style=flat-square) ![Stack](https://img.shields.io/badge/stack-React%20%2B%20FastAPI-4a90e2?style=flat-square) ![Hosting](https://img.shields.io/badge/hosting-GitHub%20Pages-222?style=flat-square&logo=github)
+
 Dashboard personal para gestionar y compartir colecciones de vinilos, rones y whiskies. Construido con React en el frontend y FastAPI en el backend, desplegado en GitHub Pages + Render.com.
 
 **Live:** [enlasnubestrepao.com](https://enlasnubestrepao.com)
@@ -345,7 +347,7 @@ El free tier duerme el servicio tras 15 minutos de inactividad. El primer reques
 
 ## Historial de fases
 
-> **Última actualización:** 2026-04-24 · commit `e80bd85`
+> **Última actualización:** 2026-04-24 · commit `486fd58`
 
 | Fase | Qué se construyó |
 |------|-----------------|

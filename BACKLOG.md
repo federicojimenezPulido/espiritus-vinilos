@@ -1,6 +1,6 @@
 # Backlog — En Las Nubes Trepao
 
-> **Última actualización:** 2026-04-24 · commit `41d0601`
+> **Última actualización:** 2026-04-24 · commit `486fd58`
 
 ---
 
