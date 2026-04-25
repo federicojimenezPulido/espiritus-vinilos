@@ -10,7 +10,7 @@ function spotifyEmbedUrl(id) {
   return `https://open.spotify.com/embed/album/${id}?utm_source=generator&theme=0`
 }
 
-export default function SpotifyModal({ item, index, coll, onClose }) {
+export default function SpotifyModal({ item, index, coll, onClose, requirePin }) {
   const [spotifyId,    setSpotifyId]    = useState(item?.spotify_id || null)
   const [fetching,     setFetching]     = useState(false)
   const [msg,          setMsg]          = useState('')
@@ -150,10 +150,16 @@ export default function SpotifyModal({ item, index, coll, onClose }) {
               <div className={styles.footer}>
                 {!showManual
                   ? <div className={styles.footerBtns}>
-                      <button className={styles.wrongBtn} onClick={() => setShowManual(true)}>
+                      <button className={styles.wrongBtn} onClick={() => {
+                        if (requirePin) requirePin('Corregir álbum Spotify', () => setShowManual(true))
+                        else setShowManual(true)
+                      }}>
                         ¿Álbum incorrecto? Corregir
                       </button>
-                      <button className={styles.refreshBtn} onClick={doRefresh}>
+                      <button className={styles.refreshBtn} onClick={() => {
+                        if (requirePin) requirePin('Buscar otro álbum', doRefresh)
+                        else doRefresh()
+                      }}>
                         🔄 Buscar otro
                       </button>
                     </div>

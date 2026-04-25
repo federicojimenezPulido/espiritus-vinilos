@@ -219,6 +219,7 @@ export default function Dashboard({ coll, pinIsSet }) {
           index={spotifyItem.index}
           coll={coll}
           onClose={() => setSpotifyItem(null)}
+          requirePin={(label, cb) => requirePin(label, cb)}
         />
       )}
 
