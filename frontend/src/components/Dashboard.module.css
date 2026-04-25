@@ -477,8 +477,10 @@
   .pill        { font-size: .56rem; }
   .year        { font-size: .58rem; }
 
-  /* Ocultar hover overlay en touch (no hay hover) */
-  .hoverActions { display: none; }
+  /* En mobile: acciones visibles solo cuando la card está "touched" */
+  .hoverActions { opacity: 0; pointer-events: none; }
+  .cardTouched .hoverActions { opacity: 1; pointer-events: auto; }
+  .cardTouched .cardOverlay  { opacity: 0; }
 
   /* Detail modal full-width en mobile */
   .detailBox   { padding: 16px; }

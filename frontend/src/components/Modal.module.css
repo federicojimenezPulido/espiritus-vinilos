@@ -314,10 +314,10 @@
   border-top: 1px solid var(--border);
 }
 
-/* Grid 3 columnas iguales — acciones secundarias de contenido */
+/* Grid 2 columnas — Compartir + Discogs */
 .actionsGrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 7px;
 }
 
@@ -494,11 +494,8 @@
 
   .row { flex-direction: column; gap: 6px; }
 
-  .actionsGrid,
-  .actionsAdmin {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 6px;
-  }
+  .actionsGrid  { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+  .actionsAdmin { grid-template-columns: repeat(3, 1fr); gap: 6px; }
   .btn {
     font-size: .72rem;
     padding: 8px 8px;

@@ -414,7 +414,8 @@ export default function Dashboard({ coll, pinIsSet }) {
 
 // ── CARD ─────────────────────────────────────────────────────────────────────
 function Card({ item, coll, onClick, onSpotify, onShare, onIgStory, onTikTok, onBuy, onDistillery }) {
-  const [copied, setCopied] = useState(false)
+  const [copied,  setCopied]  = useState(false)
+  const [touched, setTouched] = useState(false)  // mobile tap-to-reveal
 
   const title = coll === 'vinyl' ? item.artista : item.brand
   const sub   = coll === 'vinyl' ? item.album   : (item.name || item.version || '')
@@ -432,8 +433,23 @@ function Card({ item, coll, onClick, onSpotify, onShare, onIgStory, onTikTok, on
     setTimeout(() => setCopied(false), 1800)
   }
 
+  function handleCardClick(e) {
+    // En mobile: primer tap muestra acciones, segundo tap abre modal
+    if (window.matchMedia('(hover: none)').matches && !touched) {
+      e.stopPropagation()
+      setTouched(true)
+      return
+    }
+    setTouched(false)
+    onClick(e)
+  }
+
   return (
-    <div className={`${styles.card} ${styles[coll]}`} onClick={onClick}>
+    <div
+      className={`${styles.card} ${styles[coll]} ${touched ? styles.cardTouched : ''}`}
+      onClick={handleCardClick}
+      onMouseLeave={() => setTouched(false)}
+    >
       <div className={styles.cardArt}>
         {coll === 'vinyl'
           ? item.cover_url
@@ -450,7 +466,7 @@ function Card({ item, coll, onClick, onSpotify, onShare, onIgStory, onTikTok, on
         {item.fuera     && <span className={styles.lentBadge} title="Prestado">📤</span>}
         {item.terminado && <span className={styles.lentBadge} title="Ya consumí">🫗</span>}
 
-        {/* ── Hover overlay con acciones rápidas ── */}
+        {/* ── Hover/tap overlay con acciones rápidas ── */}
         {(onSpotify || onShare || onIgStory || onTikTok || onBuy || onDistillery) && (
           <div className={styles.hoverActions}>
             {onSpotify && (

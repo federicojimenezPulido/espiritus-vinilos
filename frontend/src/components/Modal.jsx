@@ -258,23 +258,6 @@ export default function Modal({ item, coll, index, onClose, onEdit, onSetFeature
                   {copied ? t('copied') : t('share')}
                 </button>
 
-                {item.ig_url
-                  ? <a
-                      href={item.ig_url} target="_blank" rel="noreferrer"
-                      className={`${styles.btn} ${styles.btnIg}`}
-                      title="Ver publicación de ENLT en Instagram"
-                    >
-                      <IgIcon /> {t('viewIG')}
-                    </a>
-                  : <button
-                      className={`${styles.btn} ${igCopied ? styles.btnIgCopied : styles.btnIgCopy}`}
-                      onClick={handleIgCopy}
-                      title="Copiar texto para pegar en IG Stories"
-                    >
-                      {igCopied ? t('copied') : <><IgIcon /> {t('copyIG')}</>}
-                    </button>
-                }
-
                 <a
                   href={url || `https://www.discogs.com/search/?q=${encodeURIComponent(`${item.artista} ${item.album}`)}&type=master`}
                   target="_blank" rel="noreferrer"
