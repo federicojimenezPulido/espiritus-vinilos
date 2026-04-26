@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { useLang } from '../LangContext'
 import styles from './StatsView.module.css'
 
 /* ── CSV export ── */
@@ -38,6 +39,7 @@ function countBy(arr, key) {
 }
 
 function BarChart({ title, entries, accent, filterKey, onBarClick }) {
+  const { t } = useLang()
   if (!entries || entries.length === 0) return null
   const max     = entries[0][1]
   const total   = entries.reduce((s, [, c]) => s + c, 0)
@@ -53,7 +55,7 @@ function BarChart({ title, entries, accent, filterKey, onBarClick }) {
               key={label}
               className={`${styles.barRow} ${clickable ? styles.barRowClickable : ''}`}
               onClick={() => clickable && onBarClick(filterKey, label)}
-              title={clickable ? `Ver ${count} registros de "${label}"` : undefined}
+              title={clickable ? `${t('view')} ${count} ${t('records')} — "${label}"` : undefined}
             >
               <span className={styles.barLabel}>{label}</span>
               <div className={styles.barTrack}>
@@ -74,6 +76,7 @@ function BarChart({ title, entries, accent, filterKey, onBarClick }) {
 
 /* ── Stat cell helper ── */
 function Stat({ num, lbl, items, title, onStatClick, missing }) {
+  const { t } = useLang()
   const clickable = !!(items && onStatClick)
   return (
     <div
@@ -83,7 +86,7 @@ function Stat({ num, lbl, items, title, onStatClick, missing }) {
         missing   ? styles.statMissing   : '',
       ].join(' ')}
       onClick={clickable ? () => onStatClick(title || lbl, items) : undefined}
-      title={clickable ? `Ver ${items.length} registros` : undefined}
+      title={clickable ? `${t('view')} ${items.length} ${t('records')}` : undefined}
     >
       <span className={styles.statNum}>{num}</span>
       <span className={styles.statLbl}>{lbl}</span>
@@ -93,6 +96,7 @@ function Stat({ num, lbl, items, title, onStatClick, missing }) {
 
 /* ── Vinyl stats ── */
 function VinylStats({ data, onBarClick, onStatClick }) {
+  const { t } = useLang()
   const genres     = useMemo(() => countBy(data, 'agrupador'), [data])
   const categories = useMemo(() => countBy(data, 'genero'),    [data])
   const sellos     = useMemo(() => countBy(data, 'sello'),     [data])
@@ -121,32 +125,32 @@ function VinylStats({ data, onBarClick, onStatClick }) {
 
   return (
     <>
-      {/* Summary card */}
       <div className={styles.card}>
-        <h3 className={styles.cardTitle}>Resumen</h3>
+        <h3 className={styles.cardTitle}>{t('summary')}</h3>
         <div className={styles.summaryGrid}>
-          <Stat num={data.length}   lbl="Álbumes"    items={data}                        title="Todos los álbumes"      onStatClick={onStatClick} />
-          <Stat num={totalArtists}  lbl="Artistas"   />
-          <Stat num={withDiscogs}   lbl="En Discogs" items={data.filter(r => r.discogs)} title="Con Discogs"            onStatClick={onStatClick} />
-          <Stat num={`${pctDiscogs}%`} lbl="Sin Discogs" items={noDiscogs}               title={`Sin Discogs (${noDiscogs.length})`} onStatClick={onStatClick} missing={noDiscogs.length > 0} />
-          <Stat num={withCover}     lbl="Con portada" items={data.filter(r => r.cover_url)} title="Con portada"         onStatClick={onStatClick} />
-          <Stat num={`${pctCover}%`} lbl="Sin portada"  items={noCover}                  title={`Sin portada (${noCover.length})`}   onStatClick={onStatClick} missing={noCover.length > 0} />
+          <Stat num={data.length}      lbl={t('albums')}          items={data}                          title={t('allAlbums')}                                        onStatClick={onStatClick} />
+          <Stat num={totalArtists}     lbl={t('artists')} />
+          <Stat num={withDiscogs}      lbl={t('onDiscogs')}        items={data.filter(r => r.discogs)}   title={t('withDiscogs')}                                      onStatClick={onStatClick} />
+          <Stat num={`${pctDiscogs}%`} lbl={t('withoutDiscogs')}   items={noDiscogs}                     title={`${t('withoutDiscogs')} (${noDiscogs.length})`}         onStatClick={onStatClick} missing={noDiscogs.length > 0} />
+          <Stat num={withCover}        lbl={t('withCover')}        items={data.filter(r => r.cover_url)} title={t('withCover')}                                        onStatClick={onStatClick} />
+          <Stat num={`${pctCover}%`}   lbl={t('withoutCover')}     items={noCover}                       title={`${t('withoutCover')} (${noCover.length})`}             onStatClick={onStatClick} missing={noCover.length > 0} />
           {prestados > 0 && (
-            <Stat num={prestados} lbl="Prestados" items={data.filter(r => r.fuera)} title="Prestados" onStatClick={onStatClick} />
+            <Stat num={prestados} lbl={t('lentOut')} items={data.filter(r => r.fuera)} title={t('lentOut')} onStatClick={onStatClick} />
           )}
         </div>
       </div>
 
-      <BarChart title="Géneros principales" entries={genres}     accent="var(--v-acc2)" filterKey="agrupador" onBarClick={onBarClick} />
-      <BarChart title="Categorías"          entries={categories} accent="var(--v-gold)" filterKey="genero"    onBarClick={onBarClick} />
-      <BarChart title="Sellos"              entries={sellos}     accent="var(--v-acc)"  filterKey="sello"     onBarClick={onBarClick} />
-      <BarChart title="Por Década"          entries={decades}    accent="var(--v-acc2)" filterKey="decade"    onBarClick={onBarClick} />
+      <BarChart title={t('topGenres')}   entries={genres}     accent="var(--v-acc2)" filterKey="agrupador" onBarClick={onBarClick} />
+      <BarChart title={t('categories')}  entries={categories} accent="var(--v-gold)" filterKey="genero"    onBarClick={onBarClick} />
+      <BarChart title={t('labels')}      entries={sellos}     accent="var(--v-acc)"  filterKey="sello"     onBarClick={onBarClick} />
+      <BarChart title={t('byDecade')}    entries={decades}    accent="var(--v-acc2)" filterKey="decade"    onBarClick={onBarClick} />
     </>
   )
 }
 
 /* ── Rum stats ── */
 function RumStats({ data, onBarClick, onStatClick }) {
+  const { t } = useLang()
   const countries = useMemo(() => countBy(data, 'country'), [data])
   const types     = useMemo(() => countBy(data, 'type'),    [data])
   const regions   = useMemo(() => countBy(data, 'region'),  [data])
@@ -172,29 +176,30 @@ function RumStats({ data, onBarClick, onStatClick }) {
   return (
     <>
       <div className={styles.card}>
-        <h3 className={styles.cardTitle}>Resumen</h3>
+        <h3 className={styles.cardTitle}>{t('summary')}</h3>
         <div className={styles.summaryGrid}>
-          <Stat num={data.length}      lbl="Rones"       items={data}                        title="Todos los rones"       onStatClick={onStatClick} />
-          <Stat num={countries.length} lbl="Países" />
-          <Stat num={types.length}     lbl="Tipos" />
-          <Stat num={avgScale}         lbl="Escala prom" />
-          <Stat num={withCover}        lbl="Con portada" items={data.filter(r => r.cover_url)} title="Con portada"          onStatClick={onStatClick} />
-          <Stat num={`${pctCover}%`}   lbl="Sin portada" items={noCover}                      title={`Sin portada (${noCover.length})`} onStatClick={onStatClick} missing={noCover.length > 0} />
+          <Stat num={data.length}      lbl={t('rums')}        items={data}                          title={t('allRums')}                                 onStatClick={onStatClick} />
+          <Stat num={countries.length} lbl={t('countries')} />
+          <Stat num={types.length}     lbl={t('types')} />
+          <Stat num={avgScale}         lbl={t('avgScale')} />
+          <Stat num={withCover}        lbl={t('withCover')}   items={data.filter(r => r.cover_url)} title={t('withCover')}                               onStatClick={onStatClick} />
+          <Stat num={`${pctCover}%`}   lbl={t('withoutCover')} items={noCover}                      title={`${t('withoutCover')} (${noCover.length})`}   onStatClick={onStatClick} missing={noCover.length > 0} />
           {terminados > 0 && (
-            <Stat num={terminados} lbl="Ya consumí" items={data.filter(r => r.terminado)} title="Ya consumí" onStatClick={onStatClick} />
+            <Stat num={terminados} lbl={t('finishedStat')} items={data.filter(r => r.terminado)} title={t('finishedStat')} onStatClick={onStatClick} />
           )}
         </div>
       </div>
-      <BarChart title="Países"        entries={countries} accent="var(--ru-acc2)" filterKey="country" onBarClick={onBarClick} />
-      <BarChart title="Tipos"         entries={types}     accent="var(--ru-gold)" filterKey="type"    onBarClick={onBarClick} />
-      <BarChart title="Regiones"      entries={regions}   accent="var(--ru-acc)"  filterKey="region"  onBarClick={onBarClick} />
-      <BarChart title="Blend vs Single" entries={blends}  accent="var(--ru-acc)" />
+      <BarChart title={t('countries')}    entries={countries} accent="var(--ru-acc2)" filterKey="country" onBarClick={onBarClick} />
+      <BarChart title={t('types')}        entries={types}     accent="var(--ru-gold)" filterKey="type"    onBarClick={onBarClick} />
+      <BarChart title={t('regions')}      entries={regions}   accent="var(--ru-acc)"  filterKey="region"  onBarClick={onBarClick} />
+      <BarChart title={t('blendVsSingle')} entries={blends}   accent="var(--ru-acc)" />
     </>
   )
 }
 
 /* ── Whisky stats ── */
 function WhiskyStats({ data, onBarClick, onStatClick }) {
+  const { t } = useLang()
   const countries  = useMemo(() => countBy(data, 'country'),    [data])
   const types      = useMemo(() => countBy(data, 'type'),       [data])
   const regions    = useMemo(() => countBy(data, 'region'),     [data])
@@ -211,46 +216,48 @@ function WhiskyStats({ data, onBarClick, onStatClick }) {
   return (
     <>
       <div className={styles.card}>
-        <h3 className={styles.cardTitle}>Resumen</h3>
+        <h3 className={styles.cardTitle}>{t('summary')}</h3>
         <div className={styles.summaryGrid}>
-          <Stat num={data.length}      lbl="Whiskies"    items={data}                        title="Todos los whiskies"    onStatClick={onStatClick} />
-          <Stat num={countries.length} lbl="Países" />
-          <Stat num={regions.length}   lbl="Regiones" />
-          <Stat num={withAge}          lbl="Con edad"    items={data.filter(r => r.years)}   title="Con edad declarada"    onStatClick={onStatClick} />
-          <Stat num={nas}              lbl="NAS"         items={data.filter(r => !r.years)}  title="NAS (sin edad)"        onStatClick={onStatClick} />
-          <Stat num={withCover}        lbl="Con portada" items={data.filter(r => r.cover_url)} title="Con portada"         onStatClick={onStatClick} />
-          <Stat num={`${pctCover}%`}   lbl="Sin portada" items={noCover}                     title={`Sin portada (${noCover.length})`} onStatClick={onStatClick} missing={noCover.length > 0} />
+          <Stat num={data.length}      lbl={t('whiskies')}    items={data}                          title={t('allWhiskies')}                              onStatClick={onStatClick} />
+          <Stat num={countries.length} lbl={t('countries')} />
+          <Stat num={regions.length}   lbl={t('regions')} />
+          <Stat num={withAge}          lbl={t('withAge')}     items={data.filter(r => r.years)}     title={t('ageDeclared')}                              onStatClick={onStatClick} />
+          <Stat num={nas}              lbl="NAS"              items={data.filter(r => !r.years)}    title={t('nas')}                                      onStatClick={onStatClick} />
+          <Stat num={withCover}        lbl={t('withCover')}   items={data.filter(r => r.cover_url)} title={t('withCover')}                                onStatClick={onStatClick} />
+          <Stat num={`${pctCover}%`}   lbl={t('withoutCover')} items={noCover}                      title={`${t('withoutCover')} (${noCover.length})`}   onStatClick={onStatClick} missing={noCover.length > 0} />
           {terminados > 0 && (
-            <Stat num={terminados} lbl="Ya consumí" items={data.filter(r => r.terminado)} title="Ya consumí" onStatClick={onStatClick} />
+            <Stat num={terminados} lbl={t('finishedStat')} items={data.filter(r => r.terminado)} title={t('finishedStat')} onStatClick={onStatClick} />
           )}
         </div>
       </div>
-      <BarChart title="Países"   entries={countries} accent="var(--wh-acc2)" filterKey="country" onBarClick={onBarClick} />
-      <BarChart title="Tipos"    entries={types}     accent="var(--wh-gold)" filterKey="type"    onBarClick={onBarClick} />
-      <BarChart title="Regiones" entries={regions}   accent="var(--wh-acc2)" filterKey="region"  onBarClick={onBarClick} />
-      <BarChart title="Origen"   entries={origins}   accent="var(--wh-acc)"  filterKey="origin"  onBarClick={onBarClick} />
+      <BarChart title={t('countries')} entries={countries} accent="var(--wh-acc2)" filterKey="country" onBarClick={onBarClick} />
+      <BarChart title={t('types')}     entries={types}     accent="var(--wh-gold)" filterKey="type"    onBarClick={onBarClick} />
+      <BarChart title={t('regions')}   entries={regions}   accent="var(--wh-acc2)" filterKey="region"  onBarClick={onBarClick} />
+      <BarChart title={t('origin')}    entries={origins}   accent="var(--wh-acc)"  filterKey="origin"  onBarClick={onBarClick} />
     </>
   )
 }
 
 /* ── Main component ── */
 export default function StatsView({ data, coll, onBarClick, onStatClick }) {
+  const { t } = useLang()
+
   if (!data || data.length === 0) {
-    return <div className={styles.empty}>Sin datos para mostrar estadísticas</div>
+    return <div className={styles.empty}>{t('noStats')}</div>
   }
 
-  const collLabel = { vinyl: 'Vinilos', rum: 'Rones', whisky: 'Whiskies' }[coll] || coll
+  const collLabel = { vinyl: t('vinyls'), rum: t('rums'), whisky: t('whiskies') }[coll] || coll
 
   return (
     <div className={styles.container}>
       <div className={styles.exportBar}>
-        <span className={styles.exportLabel}>{data.length} registros — {collLabel}</span>
+        <span className={styles.exportLabel}>{data.length} {t('records')} — {collLabel}</span>
         <button
           className={styles.exportBtn}
           onClick={() => downloadCSV(data, coll)}
-          title="Descargar como CSV (compatible con Excel)"
+          title={t('exportCsvTitle')}
         >
-          ↓ Exportar CSV
+          {t('exportCsvBtn')}
         </button>
       </div>
       {coll === 'vinyl'  && <VinylStats  data={data} onBarClick={onBarClick} onStatClick={onStatClick} />}

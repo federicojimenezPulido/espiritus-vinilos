@@ -9,6 +9,7 @@
  */
 
 import { useState, useEffect, useCallback } from 'react'
+import { useLang } from '../LangContext'
 import styles from './SessionesView.module.css'
 import {
   registerClient,
@@ -61,6 +62,7 @@ function LoadingDots() {
 // ── Main component ────────────────────────────────────────────────────────────
 
 export default function SessionesView() {
+  const { t } = useLang()
   const [clientToken, setClientToken] = useState(() => localStorage.getItem(TOKEN_KEY))
   const [clientName,  setClientName_]  = useState(() => localStorage.getItem(NAME_KEY) || '')
 
@@ -553,9 +555,9 @@ export default function SessionesView() {
         {/* Tabs */}
         <div className={styles.tabs}>
           {[
-            { id: 'tracks',  label: `Vinilos (${sessionTracks.length})` },
-            { id: 'spirits', label: `Espíritus (${sessionSpirits.length}/3)` },
-            { id: 'preview', label: 'Vista previa' },
+            { id: 'tracks',  label: `${t('vinyls')} (${sessionTracks.length})` },
+            { id: 'spirits', label: `${t('spirits')} (${sessionSpirits.length}/3)` },
+            { id: 'preview', label: t('preview') },
           ].map(tab => (
             <button
               key={tab.id}
@@ -596,7 +598,7 @@ export default function SessionesView() {
 
             {/* Vinyl picker */}
             <div className={styles.section}>
-              <h3 className={styles.sectionTitle}>Agregar desde colección</h3>
+              <h3 className={styles.sectionTitle}>{t('addFromCollection')}</h3>
               {vinyls.length === 0 ? (
                 <p className={styles.dim}>Cargando vinilos <LoadingDots /></p>
               ) : (

@@ -1,35 +1,43 @@
 import { forwardRef } from 'react'
+import { useLang } from '../LangContext'
 import styles from './HeroSection.module.css'
 
-const HERO_CONTENT = {
-  vinyl: {
-    img:     '/hero-4.png',
-    imgPos:  'center top',
-    eyebrow: 'En Las Nubes Trepao',
-    headline: ['Para escuchar', 'con algo', 'en la mano.'],
-    tagline:  'Afinando el vinilo entre espíritus.\nUna colección personal desde Medellín, Colombia.',
-    cta:     'La colección',
-  },
-  rum: {
-    img:     '/hero-1.png',
-    imgPos:  'center 30%',
-    eyebrow: 'La colección — Rones',
-    headline: ['Caña destilada.', 'Tiempo.', 'Identidad.'],
-    tagline:  'Saboreando la barrica entre melodías.\nDesde el Caribe hasta Latinoamérica.',
-    cta:     'Los rones',
-  },
-  whisky: {
-    img:     '/hero-2.png',
-    imgPos:  'center 40%',
-    eyebrow: 'La colección — Whiskies',
-    headline: ['Turba, madera', 'y tiempo', 'en la copa.'],
-    tagline:  'Saboreando la barrica entre melodías.\nDestilerías que priorizan el proceso.',
-    cta:     'Los whiskies',
-  },
+const HERO_IMGS = {
+  vinyl:  { img: '/hero-4.png', imgPos: 'center top'  },
+  rum:    { img: '/hero-1.png', imgPos: 'center 30%'  },
+  whisky: { img: '/hero-2.png', imgPos: 'center 40%'  },
 }
 
 const HeroSection = forwardRef(function HeroSection({ coll = 'vinyl', onScrollDown }, ref) {
-  const content = HERO_CONTENT[coll] || HERO_CONTENT.vinyl
+  const { t } = useLang()
+
+  const { img, imgPos } = HERO_IMGS[coll] || HERO_IMGS.vinyl
+
+  const content = {
+    vinyl:  {
+      eyebrow:  t('heroVinylEyebrow'),
+      headline: t('heroVinylHeadline').split('\n'),
+      tagline:  t('heroVinylTagline'),
+      cta:      t('heroVinylCta'),
+    },
+    rum:    {
+      eyebrow:  t('heroRumEyebrow'),
+      headline: t('heroRumHeadline').split('\n'),
+      tagline:  t('heroRumTagline'),
+      cta:      t('heroRumCta'),
+    },
+    whisky: {
+      eyebrow:  t('heroWhiskyEyebrow'),
+      headline: t('heroWhiskyHeadline').split('\n'),
+      tagline:  t('heroWhiskyTagline'),
+      cta:      t('heroWhiskyCta'),
+    },
+  }[coll] || {
+    eyebrow:  t('heroVinylEyebrow'),
+    headline: t('heroVinylHeadline').split('\n'),
+    tagline:  t('heroVinylTagline'),
+    cta:      t('heroVinylCta'),
+  }
 
   return (
     <section className={`${styles.hero} ${styles[coll]}`} ref={ref}>
@@ -37,11 +45,11 @@ const HeroSection = forwardRef(function HeroSection({ coll = 'vinyl', onScrollDo
       {/* Foto de fondo */}
       <div className={styles.photoBg} aria-hidden="true">
         <img
-          src={content.img}
+          src={img}
           alt=""
           className={styles.photoImg}
-          style={{ objectPosition: content.imgPos }}
-          key={content.img}
+          style={{ objectPosition: imgPos }}
+          key={img}
         />
         <div className={styles.photoOverlay} />
       </div>
@@ -66,7 +74,7 @@ const HeroSection = forwardRef(function HeroSection({ coll = 'vinyl', onScrollDo
         <button
           className={styles.scrollCue}
           onClick={onScrollDown}
-          aria-label={`Ver ${content.cta}`}
+          aria-label={`${t('view')} ${content.cta}`}
         >
           <span className={styles.scrollLabel}>{content.cta}</span>
           <span className={styles.scrollArrow}>↓</span>

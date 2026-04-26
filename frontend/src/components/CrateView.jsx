@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useLang } from '../LangContext'
 import styles from './CrateView.module.css'
 
 /* ── Color por agrupador ── */
@@ -73,6 +74,7 @@ function Shelf({ items, onSelect }) {
 /* ── Vista principal ── */
 export default function CrateView({ data, onSelect }) {
   const [activeGenre, setActiveGenre] = useState(null)
+  const { t } = useLang()
 
   // Géneros presentes en la colección actual
   const genres = Object.entries(LABEL_COLORS).filter(([genre]) =>
@@ -100,7 +102,7 @@ export default function CrateView({ data, onSelect }) {
           onClick={() => setActiveGenre(null)}
         >
           <span className={styles.legendDot} style={{ background: 'var(--text3)' }} />
-          Todos ({data.length})
+          {t('all')} ({data.length})
         </button>
         {genres.map(([genre, color]) => {
           const count = data.filter(r => r.agrupador === genre).length
@@ -122,8 +124,8 @@ export default function CrateView({ data, onSelect }) {
       {/* Contador */}
       <p className={styles.filterInfo}>
         {activeGenre
-          ? <><strong style={{ color: LABEL_COLORS[activeGenre] }}>{activeGenre}</strong> · {visible.length} discos</>
-          : <>{visible.length} discos en la colección</>
+          ? <><strong style={{ color: LABEL_COLORS[activeGenre] }}>{activeGenre}</strong> · {visible.length} {t('discs')}</>
+          : <>{visible.length} {t('discs')} {t('inCollection')}</>
         }
       </p>
 
@@ -134,11 +136,11 @@ export default function CrateView({ data, onSelect }) {
               <Shelf key={i} items={shelf} onSelect={onSelect} />
             ))}
           </div>
-        : <div className={styles.empty}>Sin discos en este género</div>
+        : <div className={styles.empty}>{t('noResults')}</div>
       }
 
       <p className={styles.hint}>
-        Pasá el cursor sobre un disco para ver la portada · Clic para ver el detalle
+        {t('crateHint')}
       </p>
     </div>
   )

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { fetchSpotifyId, saveSpotifyId, refreshSpotifyId } from '../services/api'
+import { useLang } from '../LangContext'
 import styles from './SpotifyModal.module.css'
 
 // Soporta "album/ID", "playlist/ID", "track/ID" (nuevo) o solo "ID" (legacy album)
@@ -17,6 +18,7 @@ export default function SpotifyModal({ item, index, coll, onClose, requirePin })
   const [manualId,     setManualId]     = useState('')
   const [showManual,   setShowManual]   = useState(false)
   const queryClient = useQueryClient()
+  const { t } = useLang()
 
   useEffect(() => {
     const handler = e => { if (e.key === 'Escape') onClose() }
@@ -50,11 +52,11 @@ export default function SpotifyModal({ item, index, coll, onClose, requirePin })
         // fetchSpotifyId ya guarda en BD; solo refrescamos el cache
         if (coll) queryClient.invalidateQueries({ queryKey: [coll] })
       } else {
-        setMsg('⚠ Este álbum no se encontró en Spotify')
+        setMsg(t('spotifyNotFound'))
         setShowManual(true)
       }
     } catch {
-      setMsg('⚠ Error conectando con Spotify')
+      setMsg(t('spotifyError'))
       setShowManual(true)
     } finally {
       setFetching(false)
@@ -72,11 +74,11 @@ export default function SpotifyModal({ item, index, coll, onClose, requirePin })
         setSpotifyId(result.spotify_id)
         if (coll) queryClient.invalidateQueries({ queryKey: [coll] })
       } else {
-        setMsg('⚠ No se encontró otro álbum — pegá la URL manualmente')
+        setMsg(t('spotifyNoOther'))
         setShowManual(true)
       }
     } catch {
-      setMsg('⚠ Error al buscar')
+      setMsg(t('spotifySearchError'))
       setShowManual(true)
     } finally {
       setFetching(false)
@@ -125,14 +127,14 @@ export default function SpotifyModal({ item, index, coll, onClose, requirePin })
         <div className={styles.body}>
           {fetching && (
             <div className={styles.searching}>
-              <span className={styles.spinner}>🎵</span> Buscando en Spotify...
+              <span className={styles.spinner}>🎵</span> {t('searchingSpotify')}
             </div>
           )}
 
           {msg && !fetching && (
             <div className={styles.msg}>
               {msg}
-              <button className={styles.retryBtn} onClick={doSearch}>Reintentar</button>
+              <button className={styles.retryBtn} onClick={doSearch}>{t('retry')}</button>
             </div>
           )}
 
@@ -151,29 +153,29 @@ export default function SpotifyModal({ item, index, coll, onClose, requirePin })
                 {!showManual
                   ? <div className={styles.footerBtns}>
                       <button className={styles.wrongBtn} onClick={() => {
-                        if (requirePin) requirePin('Corregir álbum Spotify', () => setShowManual(true))
+                        if (requirePin) requirePin(t('wrongAlbum'), () => setShowManual(true))
                         else setShowManual(true)
                       }}>
-                        ¿Álbum incorrecto? Corregir
+                        {t('wrongAlbum')}
                       </button>
                       <button className={styles.refreshBtn} onClick={() => {
-                        if (requirePin) requirePin('Buscar otro álbum', doRefresh)
+                        if (requirePin) requirePin(t('searchAnother'), doRefresh)
                         else doRefresh()
                       }}>
-                        🔄 Buscar otro
+                        {t('searchAnother')}
                       </button>
                     </div>
                   : <div className={styles.manualRow}>
                       <input
                         className={styles.manualInput}
-                        placeholder="URL de Spotify (álbum, playlist o canción)..."
+                        placeholder={t('spotifyUrlPlaceholder')}
                         value={manualId}
                         onChange={e => setManualId(e.target.value)}
                         onKeyDown={e => e.key === 'Enter' && applyManualId()}
                         autoFocus
                       />
                       <button className={styles.applyBtn} onClick={applyManualId} disabled={!manualId.trim()}>
-                        Aplicar
+                        {t('apply')}
                       </button>
                       <button className={styles.cancelBtn} onClick={() => { setShowManual(false); setManualId('') }}>
                         ✕

@@ -18,14 +18,15 @@ import styles         from './Dashboard.module.css'
 
 const FETCHERS = { vinyl: getVinyls, rum: getRums, whisky: getWhiskies }
 
-const COLL_LABELS = { vinyl: 'Vinilos', rum: 'Rones', whisky: 'Whiskies' }
-const VIEW_LABELS  = { collection: null, stats: 'Estadísticas', crate: 'Anaquel', atlas: 'Atlas' }
 
 function Breadcrumb({ coll, view, activeFilters }) {
-  const viewLabel = VIEW_LABELS[view]
+  const { t } = useLang()
+  const collLabels = { vinyl: t('vinyls'), rum: t('rums'), whisky: t('whiskies') }
+  const viewLabels = { collection: null, stats: t('stats'), crate: t('crate'), atlas: t('atlas') }
+  const viewLabel = viewLabels[view]
   return (
     <nav className={styles.breadcrumb} aria-label="Ubicación">
-      <span className={`${styles.bcRoot} ${styles[coll]}`}>{COLL_LABELS[coll]}</span>
+      <span className={`${styles.bcRoot} ${styles[coll]}`}>{collLabels[coll]}</span>
       {viewLabel && (
         <><span className={styles.bcSep}>›</span><span className={styles.bcCrumb}>{viewLabel}</span></>
       )}
@@ -423,6 +424,7 @@ export default function Dashboard({ coll, pinIsSet }) {
 function Card({ item, coll, onClick, onSpotify, onShare, onIgStory, onTikTok, onBuy, onDistillery }) {
   const [copied,  setCopied]  = useState(false)
   const [touched, setTouched] = useState(false)  // mobile tap-to-reveal
+  const { t } = useLang()
 
   const title = coll === 'vinyl' ? item.artista : item.brand
   const sub   = coll === 'vinyl' ? item.album   : (item.name || item.version || '')
@@ -430,7 +432,7 @@ function Card({ item, coll, onClick, onSpotify, onShare, onIgStory, onTikTok, on
   const year  = coll === 'vinyl'
     ? item.anio
     : coll === 'whisky'
-      ? (item.years ? `${item.years} años` : 'NAS')
+      ? (item.years ? `${item.years} ${t('yearsUnit')}` : 'NAS')
       : (item.abv   ? `${item.abv}%`       : '')
 
   function handleShare(e) {
@@ -468,10 +470,10 @@ function Card({ item, coll, onClick, onSpotify, onShare, onIgStory, onTikTok, on
         }
         <span className={`${styles.dot} ${item.cover_url ? styles.dotGreen : styles.dotRed}`} />
         {(item.tiktok_url || item.ig_url) && (
-          <span className={styles.dotEnlt} title="ENLT publicó sobre este disco" />
+          <span className={styles.dotEnlt} title={t('enltPostedTitle')} />
         )}
-        {item.fuera     && <span className={styles.lentBadge} title="Prestado">📤</span>}
-        {item.terminado && <span className={styles.lentBadge} title="Ya consumí">🫗</span>}
+        {item.fuera     && <span className={styles.lentBadge} title={t('lent')}>📤</span>}
+        {item.terminado && <span className={styles.lentBadge} title={t('finished')}>🫗</span>}
 
         {/* ── Hover/tap overlay con acciones rápidas ── */}
         {(onSpotify || onShare || onIgStory || onTikTok || onBuy || onDistillery) && (
@@ -480,14 +482,14 @@ function Card({ item, coll, onClick, onSpotify, onShare, onIgStory, onTikTok, on
               <button
                 className={`${styles.haBtn} ${styles.haBtnSpotify}`}
                 onClick={onSpotify}
-                title="Escuchar en Spotify"
+                title={t('listenSpotifyShort')}
               >▶</button>
             )}
             {onBuy && (
               <button
                 className={`${styles.haBtn} ${styles.haBtnBuy}`}
                 onClick={onBuy}
-                title="¿Dónde comprar?"
+                title={t('whereToBuy')}
               >
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/>
@@ -498,7 +500,7 @@ function Card({ item, coll, onClick, onSpotify, onShare, onIgStory, onTikTok, on
               <button
                 className={`${styles.haBtn} ${styles.haBtnDistillery}`}
                 onClick={onDistillery}
-                title="Sitio de la destilería"
+                title={t('distillerySite')}
               >
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
@@ -509,14 +511,14 @@ function Card({ item, coll, onClick, onSpotify, onShare, onIgStory, onTikTok, on
               <button
                 className={`${styles.haBtn} ${copied ? styles.haBtnCopied : ''}`}
                 onClick={handleShare}
-                title={copied ? '¡Link copiado!' : 'Copiar link'}
+                title={copied ? t('linkCopied') : t('copyLink')}
               >{copied ? '✓' : '🔗'}</button>
             )}
             {onIgStory && (
               <button
                 className={`${styles.haBtn} ${styles.haBtnIg}`}
                 onClick={onIgStory}
-                title="Ver en Instagram"
+                title={t('viewInstagram')}
               >
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
@@ -527,7 +529,7 @@ function Card({ item, coll, onClick, onSpotify, onShare, onIgStory, onTikTok, on
               <button
                 className={`${styles.haBtn} ${styles.haBtnTikTok}`}
                 onClick={onTikTok}
-                title="Ver en TikTok"
+                title={t('viewTikTok')}
               >
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.17 8.17 0 0 0 4.78 1.52V6.75a4.85 4.85 0 0 1-1.01-.06z"/>

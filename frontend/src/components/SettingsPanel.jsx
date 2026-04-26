@@ -1,25 +1,27 @@
 import { useState, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { getVinyls, savePin, deletePin, getPinStatus } from '../services/api'
+import { useLang } from '../LangContext'
 import styles from './SettingsPanel.module.css'
 
-// Campos auditados por vinilo
-const AUDIT_FIELDS = [
-  { key: 'cover_url',  label: 'Portada'   },
-  { key: 'genero',     label: 'Género'    },
-  { key: 'agrupador',  label: 'Categoría' },
-  { key: 'sello',      label: 'Sello'     },
-  { key: 'pais_sello', label: 'P.Sello'   },
-  { key: 'anio',       label: 'Año'       },
-  { key: 'cat_num',    label: 'Cat.Nº'    },
-  { key: 'pais',       label: 'País'      },
-  { key: 'url',        label: 'Discogs'   },
-  { key: 'spotify_id', label: 'Spotify'   },
-  { key: 'tiktok_url', label: 'TikTok'    },
-  { key: 'ig_url',     label: 'Instagram' },
+// Field definitions — labels resolved via t() inside component
+const AUDIT_FIELDS_DEF = [
+  { key: 'cover_url',  tKey: 'afCover'       },
+  { key: 'genero',     tKey: 'afGenre'       },
+  { key: 'agrupador',  tKey: 'afCategory'    },
+  { key: 'sello',      tKey: 'afLabel'       },
+  { key: 'pais_sello', tKey: 'afLabelCountry'},
+  { key: 'anio',       tKey: 'afYear'        },
+  { key: 'cat_num',    tKey: 'afCatNum'      },
+  { key: 'pais',       tKey: 'afCountry'     },
+  { key: 'url',        tKey: 'afDiscogs'     },
+  { key: 'spotify_id', tKey: 'afSpotify'     },
+  { key: 'tiktok_url', tKey: 'afTikTok'      },
+  { key: 'ig_url',     tKey: 'afInstagram'   },
 ]
 
 export default function SettingsPanel({ onClose, onPinChange }) {
+  const { t } = useLang()
   const [tab, setTab] = useState('config')
 
   // ── Config state ──
@@ -36,8 +38,8 @@ export default function SettingsPanel({ onClose, onPinChange }) {
   }, [])
 
   // ── Audit state ──
-  const [auditFilter, setAuditFilter] = useState('incomplete') // 'incomplete' | 'all'
-  const [auditSort,   setAuditSort]   = useState('missing')    // 'missing' | 'artista'
+  const [auditFilter, setAuditFilter] = useState('incomplete')
+  const [auditSort,   setAuditSort]   = useState('missing')
 
   const { data: vinyls = [], isLoading } = useQuery({
     queryKey: ['vinyl'],
@@ -45,14 +47,16 @@ export default function SettingsPanel({ onClose, onPinChange }) {
     staleTime: 60_000,
   })
 
+  const AUDIT_FIELDS = AUDIT_FIELDS_DEF.map(f => ({ ...f, label: t(f.tKey) }))
+
   // ── Handlers ──
   function saveToken() {
     if (token.trim()) {
       localStorage.setItem('discogs_token', token.trim())
-      setTokenMsg('✅ Token guardado')
+      setTokenMsg(t('tokenSaved'))
     } else {
       localStorage.removeItem('discogs_token')
-      setTokenMsg('Token eliminado')
+      setTokenMsg(t('tokenDeleted'))
     }
     setTimeout(() => setTokenMsg(''), 2200)
   }
@@ -63,9 +67,9 @@ export default function SettingsPanel({ onClose, onPinChange }) {
       await deletePin()
       setHasPin(false)
       setPin1(''); setPin2('')
-      setPinMsg('PIN eliminado')
+      setPinMsg(t('pinDeleted'))
       onPinChange?.()
-    } catch { setPinMsg('⚠ Error al eliminar') }
+    } catch { setPinMsg(t('pinDeleteError')) }
     finally { setPinSaving(false) }
     setTimeout(() => setPinMsg(''), 2200)
   }
@@ -76,21 +80,21 @@ export default function SettingsPanel({ onClose, onPinChange }) {
       try {
         await deletePin()
         setHasPin(false)
-        setPinMsg('PIN eliminado')
+        setPinMsg(t('pinDeleted'))
         onPinChange?.()
-      } catch { setPinMsg('⚠ Error al eliminar') }
+      } catch { setPinMsg(t('pinDeleteError')) }
       finally { setPinSaving(false) }
     } else if (pin1 !== pin2) {
-      setPinMsg('⚠ Los PINs no coinciden')
+      setPinMsg(t('pinMismatch'))
       return
     } else {
       setPinSaving(true)
       try {
         await savePin(pin1)
         setHasPin(true)
-        setPinMsg('✅ PIN guardado')
+        setPinMsg(t('pinSaved'))
         onPinChange?.()
-      } catch { setPinMsg('⚠ Error al guardar') }
+      } catch { setPinMsg(t('pinSaveError')) }
       finally { setPinSaving(false) }
     }
     setPin1(''); setPin2('')
@@ -128,7 +132,7 @@ export default function SettingsPanel({ onClose, onPinChange }) {
 
         {/* ── Header ── */}
         <div className={styles.hdr}>
-          <span className={styles.hdrTitle}>⚙ Configuración</span>
+          <span className={styles.hdrTitle}>{t('settingsTitle')}</span>
           <button className={styles.closeBtn} onClick={onClose}>✕</button>
         </div>
 
@@ -137,15 +141,15 @@ export default function SettingsPanel({ onClose, onPinChange }) {
           <button
             className={`${styles.tab} ${tab === 'config' ? styles.tabActive : ''}`}
             onClick={() => setTab('config')}
-          >Config</button>
+          >{t('tabConfig')}</button>
           <button
             className={`${styles.tab} ${tab === 'audit' ? styles.tabActive : ''}`}
             onClick={() => setTab('audit')}
-          >📋 Auditor</button>
+          >📋 {t('tabAudit')}</button>
           <button
             className={`${styles.tab} ${tab === 'docs' ? styles.tabActive : ''}`}
             onClick={() => setTab('docs')}
-          >📖 Docs</button>
+          >📖 {t('tabDocs')}</button>
         </div>
 
         {/* ══════════════ CONFIG TAB ══════════════ */}
@@ -153,32 +157,32 @@ export default function SettingsPanel({ onClose, onPinChange }) {
           <div className={styles.body}>
 
             <div className={styles.section}>
-              <div className={styles.sectionTitle}>🛡 Acceso admin</div>
+              <div className={styles.sectionTitle}>{t('adminAccess')}</div>
               <div className={styles.fieldLabel}>
-                PIN Admin — {hasPin ? '✅ configurado' : '⚠ sin PIN (acceso libre)'}
+                {t('pinStatus')} — {hasPin ? t('pinSet') : t('pinNotSet')}
               </div>
               <div className={styles.fieldRow}>
                 <input
                   type="password"
-                  placeholder="PIN nuevo…"
+                  placeholder={t('pinNew')}
                   value={pin1}
                   onChange={e => { setPin1(e.target.value); setPinMsg('') }}
                   className={styles.input}
                 />
                 <input
                   type="password"
-                  placeholder="Confirmar…"
+                  placeholder={t('pinConfirm')}
                   value={pin2}
                   onChange={e => { setPin2(e.target.value); setPinMsg('') }}
                   onKeyDown={e => e.key === 'Enter' && handleSavePin()}
                   className={styles.input}
                 />
                 <button className={styles.btn} onClick={handleSavePin} disabled={pinSaving}>
-                  {pinSaving ? '…' : 'Guardar'}
+                  {pinSaving ? '…' : t('pinSave')}
                 </button>
                 {hasPin && (
                   <button className={styles.btnDanger} onClick={handleDeletePin} disabled={pinSaving}>
-                    {pinSaving ? '…' : 'Eliminar PIN'}
+                    {pinSaving ? '…' : t('pinDelete')}
                   </button>
                 )}
               </div>
@@ -186,20 +190,20 @@ export default function SettingsPanel({ onClose, onPinChange }) {
             </div>
 
             <div className={styles.section}>
-              <div className={styles.sectionTitle}>🔑 Integraciones</div>
+              <div className={styles.sectionTitle}>{t('integrations')}</div>
               <div className={styles.fieldLabel}>
-                Token Discogs — {hasToken ? '✅ configurado' : '⚠ sin token (portadas manuales)'}
+                {t('tokenStatus')} — {hasToken ? t('tokenSet') : t('tokenNotSet')}
               </div>
               <div className={styles.fieldRow}>
                 <input
                   type="password"
-                  placeholder="Token de Discogs…"
+                  placeholder={t('tokenPlaceholder')}
                   value={token}
                   onChange={e => setToken(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && saveToken()}
                   className={`${styles.input} ${styles.inputWide}`}
                 />
-                <button className={styles.btn} onClick={saveToken}>Guardar</button>
+                <button className={styles.btn} onClick={saveToken}>{t('pinSave')}</button>
               </div>
               {tokenMsg && <div className={styles.msg}>{tokenMsg}</div>}
             </div>
@@ -211,51 +215,50 @@ export default function SettingsPanel({ onClose, onPinChange }) {
         {tab === 'audit' && (
           <div className={styles.body}>
 
-            {/* Global score */}
             <div className={styles.auditSummary}>
               <div className={styles.auditScore}>
                 <span className={styles.auditScoreNum}>{globalScore}%</span>
-                <span className={styles.auditScoreLabel}>completitud global · {totalMissing} campos vacíos en {vinyls.length} discos</span>
+                <span className={styles.auditScoreLabel}>
+                  {t('auditGlobal')} · {totalMissing} {t('auditEmpty')} {vinyls.length} {t('auditDiscs')}
+                </span>
               </div>
               <div className={styles.auditScoreBar}>
                 <div className={styles.auditScoreFill} style={{ width: `${globalScore}%` }} />
               </div>
             </div>
 
-            {/* Controls */}
             <div className={styles.auditControls}>
               <div className={styles.btnGroup}>
                 <button
                   className={`${styles.filterBtn} ${auditFilter === 'incomplete' ? styles.filterActive : ''}`}
                   onClick={() => setAuditFilter('incomplete')}
-                >Incompletos ({auditRows.filter(r => r.missing.length > 0).length})</button>
+                >{t('incomplete')} ({auditRows.filter(r => r.missing.length > 0).length})</button>
                 <button
                   className={`${styles.filterBtn} ${auditFilter === 'all' ? styles.filterActive : ''}`}
                   onClick={() => setAuditFilter('all')}
-                >Todos ({auditRows.length})</button>
+                >{t('all')} ({auditRows.length})</button>
               </div>
               <div className={styles.btnGroup}>
                 <button
                   className={`${styles.filterBtn} ${auditSort === 'missing' ? styles.filterActive : ''}`}
                   onClick={() => setAuditSort('missing')}
-                >↓ Más vacíos</button>
+                >{t('mostEmpty')}</button>
                 <button
                   className={`${styles.filterBtn} ${auditSort === 'artista' ? styles.filterActive : ''}`}
                   onClick={() => setAuditSort('artista')}
-                >A–Z</button>
+                >{t('az')}</button>
               </div>
             </div>
 
-            {/* Table */}
             {isLoading
-              ? <div className={styles.loading}>Cargando colección…</div>
+              ? <div className={styles.loading}>{t('loadingCollection')}</div>
               : (
                 <div className={styles.auditWrap}>
                   <table className={styles.auditTable}>
                     <thead>
                       <tr>
-                        <th className={styles.thArtista}>Artista</th>
-                        <th className={styles.thAlbum}>Álbum</th>
+                        <th className={styles.thArtista}>{t('artist')}</th>
+                        <th className={styles.thAlbum}>{t('album')}</th>
                         <th className={styles.thScore}>%</th>
                         {AUDIT_FIELDS.map(f => (
                           <th key={f.key} className={styles.thField} title={f.label}>
@@ -282,7 +285,7 @@ export default function SettingsPanel({ onClose, onPinChange }) {
                             <td key={f.key} className={styles.tdField}>
                               <span
                                 className={item[f.key] ? styles.dotFilled : styles.dotEmpty}
-                                title={`${f.label}: ${item[f.key] ? '✓ OK' : '✗ vacío'}`}
+                                title={`${f.label}: ${item[f.key] ? t('auditOk') : t('auditMissing')}`}
                               />
                             </td>
                           ))}
@@ -301,34 +304,34 @@ export default function SettingsPanel({ onClose, onPinChange }) {
         {tab === 'docs' && (
           <div className={styles.body}>
             <div className={styles.section}>
-              <div className={styles.sectionTitle}>🏗 Arquitectura</div>
+              <div className={styles.sectionTitle}>{t('docsArch')}</div>
               <div className={styles.docsGrid}>
                 <div className={styles.docsCard}>
-                  <div className={styles.docsCardTitle}>Frontend</div>
+                  <div className={styles.docsCardTitle}>{t('docsFrontend')}</div>
                   <div className={styles.docsCardText}>React 19 + Vite · GitHub Pages · React Query v5</div>
                 </div>
                 <div className={styles.docsCard}>
-                  <div className={styles.docsCardTitle}>Backend</div>
+                  <div className={styles.docsCardTitle}>{t('docsBackend')}</div>
                   <div className={styles.docsCardText}>FastAPI · Render.com · Supabase PostgreSQL</div>
                 </div>
                 <div className={styles.docsCard}>
-                  <div className={styles.docsCardTitle}>Integraciones</div>
+                  <div className={styles.docsCardTitle}>{t('docsIntegrations')}</div>
                   <div className={styles.docsCardText}>Discogs API · Spotify API · Zapier webhook</div>
                 </div>
               </div>
             </div>
             <div className={styles.section}>
-              <div className={styles.sectionTitle}>⌨ Acciones rápidas</div>
+              <div className={styles.sectionTitle}>{t('docsActions')}</div>
               <div className={styles.docsTable}>
                 {[
-                  ['Buscar',      'Escribir en el campo de búsqueda'],
-                  ['Filtrar',     'Click en Categoría / Género / Sello en el sidebar'],
-                  ['Ver detalle', 'Click en cualquier card'],
-                  ['Editar',      'Modal → Editar (requiere PIN)'],
-                  ['Destacar',    'Modal → Destacar del mes (requiere PIN)'],
-                  ['Compartir',   'Modal → Compartir · copia link directo al vinilo'],
-                  ['Anaquel',     'Botón 🗄 Anaquel en la barra superior'],
-                  ['Stats',       'Botón 📊 Stats en la barra superior'],
+                  [t('docsSearch'),  t('docsSearchDesc')],
+                  [t('docsFilter'),  t('docsFilterDesc')],
+                  [t('docsDetail'),  t('docsDetailDesc')],
+                  [t('docsEdit'),    t('docsEditDesc')],
+                  [t('docsFeature'), t('docsFeatureDesc')],
+                  [t('docsShare'),   t('docsShareDesc')],
+                  [t('docsCrate'),   t('docsCrateDesc')],
+                  [t('docsStats'),   t('docsStatsDesc')],
                 ].map(([acc, desc]) => (
                   <div key={acc} className={styles.docsRow}>
                     <span className={styles.docsKey}>{acc}</span>

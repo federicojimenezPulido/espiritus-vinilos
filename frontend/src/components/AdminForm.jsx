@@ -122,19 +122,19 @@ export default function AdminForm({ coll, item, index, data, onClose, onRequestP
     const q = `${vinylItem.artista || ''} ${vinylItem.album || ''}`.trim()
     if (!q) return
     setFetchingCover(true)
-    setCoverMsg('Buscando portada en Discogs...')
+    setCoverMsg(t('fetchingCover'))
     try {
       const result = await fetchAndSaveDiscogsCover(vinylIndex, q)
       if (result.cover) {
         setForm(prev => ({ ...prev, cover_url: result.cover }))
-        setCoverMsg('✅ Portada encontrada')
+        setCoverMsg(t('coverFound'))
         setShowManualUrl(false)
       } else {
-        setCoverMsg('⚠ No encontrada en Discogs — podés pegar la URL manualmente')
+        setCoverMsg(t('coverNotFound'))
         setShowManualUrl(true)
       }
     } catch {
-      setCoverMsg('⚠ Error buscando portada')
+      setCoverMsg(t('coverError'))
       setShowManualUrl(true)
     } finally {
       setFetchingCover(false)
@@ -179,19 +179,19 @@ export default function AdminForm({ coll, item, index, data, onClose, onRequestP
     const url = form.buy_url?.trim()
     if (!url) return
     setFetchingPurchase(true)
-    setPurchaseMsg('Buscando...')
+    setPurchaseMsg(t('searching'))
     try {
       const result = await fetchPurchaseInfo(url)
       if (result.price) {
         setField('buy_price', result.price)
         if (result.currency) setField('buy_currency', result.currency)
         if (result.availability) setField('buy_availability', result.availability)
-        setPurchaseMsg('✅ Info encontrada')
+        setPurchaseMsg(t('imageFound'))
       } else {
-        setPurchaseMsg('⚠ No se encontró precio — completá manualmente')
+        setPurchaseMsg(t('imageNotFound'))
       }
     } catch {
-      setPurchaseMsg('⚠ Error al buscar — completá manualmente')
+      setPurchaseMsg(t('imageError'))
     } finally {
       setFetchingPurchase(false)
     }
@@ -211,14 +211,14 @@ export default function AdminForm({ coll, item, index, data, onClose, onRequestP
       }
       if (result.cover) {
         setField('cover_url', result.cover)
-        setCoverMsg('✅ Imagen encontrada')
+        setCoverMsg(t('imageFound'))
         setShowManualUrl(false)
       } else {
-        setCoverMsg('⚠ No se encontró imagen')
+        setCoverMsg(t('imageNotFound'))
         setShowManualUrl(true)
       }
     } catch {
-      setCoverMsg('⚠ Error al buscar imagen — pegá la URL manualmente')
+      setCoverMsg(t('imageError'))
       setShowManualUrl(true)
     } finally {
       setFetchingCover(false)
@@ -236,31 +236,31 @@ export default function AdminForm({ coll, item, index, data, onClose, onRequestP
       (url.includes('/release/') || url.includes('/master/'))
 
     if (isDiscogsRelease) {
-      setCoverMsg('🔍 Extrayendo imagen del release de Discogs...')
+      setCoverMsg(t('extractingDiscogs'))
       try {
         const result = await scrapeUrl(url)
         if (result.cover) {
           setField('cover_url', result.cover)
-          setCoverMsg('✅ Imagen extraída de Discogs — guardá para confirmar')
+          setCoverMsg(t('extractedDiscogs'))
           setShowManualUrl(false)
           setManualUrl('')
         } else {
-          setCoverMsg('⚠ No se pudo extraer la imagen de esa página. Pegá la URL directa de la imagen (i.discogs.com/...)')
+          setCoverMsg(t('extractFailed'))
         }
       } catch {
-        setCoverMsg('⚠ Error al acceder a Discogs')
+        setCoverMsg(t('extractError'))
       }
     } else {
       // URL directa de imagen → usar tal cual
       setField('cover_url', url)
-      setCoverMsg('✅ URL aplicada — guardá para confirmar')
+      setCoverMsg(t('urlApplied'))
       setShowManualUrl(false)
       setManualUrl('')
     }
   }
 
   const isSaving = add.isPending || update.isPending
-  const fields   = getFields(coll, data)
+  const fields   = getFields(coll, data, t)
   const canFetchCover = isEdit && (
     (coll === 'vinyl' && (form.artista || form.album)) ||
     ((coll === 'rum' || coll === 'whisky') && form.url)
@@ -270,7 +270,7 @@ export default function AdminForm({ coll, item, index, data, onClose, onRequestP
     <div className={styles.overlay} onClick={e => e.target === e.currentTarget && onClose()}>
       <div className={styles.box}>
         <div className={`${styles.hdr} ${styles[coll]}`}>
-          <h2>{isEdit ? '✏ Editar registro' : '+ Agregar registro'}</h2>
+          <h2>{isEdit ? t('editRecord') : t('addRecord')}</h2>
           <button className={styles.closeBtn} onClick={onClose}>✕</button>
         </div>
 
@@ -318,7 +318,7 @@ export default function AdminForm({ coll, item, index, data, onClose, onRequestP
             <div className={styles.purchaseSection}>
               <div className={styles.purchaseUrlRow}>
                 <div className={styles.fgroup} style={{ flex: 1 }}>
-                  <label>¿Dónde comprar? (URL)</label>
+                  <label>{t('whereToBuy')} (URL)</label>
                   <input
                     type="text"
                     value={form.buy_url ?? ''}
@@ -408,7 +408,7 @@ export default function AdminForm({ coll, item, index, data, onClose, onRequestP
                     onClick={handleApplyManualUrl}
                     disabled={!manualUrl.trim()}
                   >
-                    Aplicar
+                    {t('apply')}
                   </button>
                 </div>
               </div>
@@ -425,7 +425,7 @@ export default function AdminForm({ coll, item, index, data, onClose, onRequestP
               onClick={handleSave}
               disabled={isSaving}
             >
-              {isSaving ? 'Guardando...' : '💾 Guardar'}
+              {isSaving ? t('saving') : t('save')}
             </button>
             {canFetchCover && (
               <button
@@ -433,7 +433,7 @@ export default function AdminForm({ coll, item, index, data, onClose, onRequestP
                 onClick={handleFetchCover}
                 disabled={fetchingCover}
               >
-                {fetchingCover ? 'Buscando...' : coll === 'vinyl' ? '🔄 Re-buscar portada' : '🖼 Obtener imagen'}
+                {fetchingCover ? t('searchingCover') : coll === 'vinyl' ? t('refetchCover') : t('getCover')}
               </button>
             )}
             {isEdit && (
@@ -442,11 +442,11 @@ export default function AdminForm({ coll, item, index, data, onClose, onRequestP
                 onClick={handleDelete}
                 disabled={remove.isPending}
               >
-                🗑 Eliminar
+                {t('delete')}
               </button>
             )}
             <button className={`${styles.btn} ${styles.btnSecondary}`} onClick={onClose}>
-              Cancelar
+              {t('cancel')}
             </button>
           </div>
         </div>
@@ -456,53 +456,53 @@ export default function AdminForm({ coll, item, index, data, onClose, onRequestP
 }
 
 // ── Campos por colección ──────────────────────────────────────────────────────
-function getFields(coll, data) {
+function getFields(coll, data, t) {
   const uniq = (key) => [...new Set((data || []).map(r => r[key]).filter(Boolean))].sort()
 
   if (coll === 'vinyl') return [
-    { key: 'artista',    label: 'Artista' },
-    { key: 'album',      label: 'Álbum' },
-    { key: 'agrupador',  label: 'Categoría',    options: uniq('agrupador') },
-    { key: 'genero',     label: 'Género',        options: uniq('genero') },
-    { key: 'sello',      label: 'Sello' },
-    { key: 'pais_sello', label: 'País sello' },
-    { key: 'anio',       label: 'Año',           type: 'number' },
-    { key: 'pais',       label: 'País prensado' },
-    { key: 'cat_num',    label: 'Cat. Nº' },
-    { key: 'origen',     label: 'Origen',         type: 'origen', options: uniq('origen') },
-    { key: 'fuera',      label: 'Prestado',       options: ['No', 'Sí'] },
-    { key: 'discogs',    label: 'En Discogs',     options: ['true', 'false'] },
-    { key: 'url',             label: 'URL Discogs (página del release)' },
-    { key: 'spotify_album_id', label: '🎵 Spotify Album ID (para sesiones)' },
-    { key: 'tiktok_url',      label: '🎵 TikTok ENLT (URL del video)' },
-    { key: 'ig_url',          label: '📷 Instagram ENLT (URL del post/reel)' },
+    { key: 'artista',    label: t('artist') },
+    { key: 'album',      label: t('album') },
+    { key: 'agrupador',  label: t('category'),       options: uniq('agrupador') },
+    { key: 'genero',     label: t('genre'),           options: uniq('genero') },
+    { key: 'sello',      label: t('label') },
+    { key: 'pais_sello', label: t('labelCountry') },
+    { key: 'anio',       label: t('year'),            type: 'number' },
+    { key: 'pais',       label: t('pressedCountry') },
+    { key: 'cat_num',    label: t('catNum') },
+    { key: 'origen',     label: t('origin'),          type: 'origen', options: uniq('origen') },
+    { key: 'fuera',      label: t('lent'),            options: ['No', 'Sí'] },
+    { key: 'discogs',    label: t('inDiscogs'),       options: ['true', 'false'] },
+    { key: 'url',             label: t('discogsUrl') },
+    { key: 'spotify_album_id', label: '🎵 Spotify Album ID' },
+    { key: 'tiktok_url',      label: t('tiktokField') },
+    { key: 'ig_url',          label: t('igField') },
   ]
   if (coll === 'rum') return [
-    { key: 'brand',      label: 'Marca' },
-    { key: 'name',       label: 'Nombre' },
-    { key: 'type',       label: 'Tipo',         options: uniq('type') },
-    { key: 'country',    label: 'País',          options: uniq('country') },
-    { key: 'abv',        label: 'ABV %',         type: 'number' },
-    { key: 'blend',      label: 'Blend',         options: ['Si', 'No'] },
-    { key: 'age_low',    label: 'Edad mín',      type: 'number' },
-    { key: 'age_max',    label: 'Edad máx',      type: 'number' },
-    { key: 'region',     label: 'Región',        suggestions: uniq('region') },
-    { key: 'scale',      label: 'Escala (1-5)',  type: 'number' },
-    { key: 'url',        label: 'URL' },
-    { key: 'terminado',  label: 'Ya consumí',    options: ['No', 'Sí'] },
+    { key: 'brand',      label: t('brand') },
+    { key: 'name',       label: t('name') },
+    { key: 'type',       label: t('type'),            options: uniq('type') },
+    { key: 'country',    label: t('country'),         options: uniq('country') },
+    { key: 'abv',        label: t('abv'),             type: 'number' },
+    { key: 'blend',      label: t('blend'),           options: ['Si', 'No'] },
+    { key: 'age_low',    label: t('ageMin'),          type: 'number' },
+    { key: 'age_max',    label: t('ageMax'),          type: 'number' },
+    { key: 'region',     label: t('region'),          suggestions: uniq('region') },
+    { key: 'scale',      label: t('scale'),           type: 'number' },
+    { key: 'url',        label: t('url') },
+    { key: 'terminado',  label: t('finished'),        options: ['No', 'Sí'] },
   ]
   return [
-    { key: 'brand',      label: 'Marca' },
-    { key: 'version',    label: 'Expresión' },
-    { key: 'type',       label: 'Tipo',          options: uniq('type') },
-    { key: 'origin',     label: 'Origen',        suggestions: uniq('origin') },
-    { key: 'country',    label: 'País',          options: uniq('country') },
-    { key: 'abv',        label: 'ABV %',         type: 'number' },
-    { key: 'years',      label: 'Años (0 = NAS)', type: 'number' },
-    { key: 'region',     label: 'Región',        suggestions: uniq('region') },
-    { key: 'distillery', label: 'Destilería' },
-    { key: 'url',        label: 'URL' },
-    { key: 'terminado',  label: 'Ya consumí',    options: ['No', 'Sí'] },
+    { key: 'brand',      label: t('brand') },
+    { key: 'version',    label: t('expression') },
+    { key: 'type',       label: t('type'),            options: uniq('type') },
+    { key: 'origin',     label: t('origin'),          suggestions: uniq('origin') },
+    { key: 'country',    label: t('country'),         options: uniq('country') },
+    { key: 'abv',        label: t('abv'),             type: 'number' },
+    { key: 'years',      label: t('years'),           type: 'number' },
+    { key: 'region',     label: t('region'),          suggestions: uniq('region') },
+    { key: 'distillery', label: t('distillery') },
+    { key: 'url',        label: t('url') },
+    { key: 'terminado',  label: t('finished'),        options: ['No', 'Sí'] },
   ]
 }
 

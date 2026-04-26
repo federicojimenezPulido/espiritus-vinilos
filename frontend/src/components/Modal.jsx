@@ -31,7 +31,7 @@ export default function Modal({ item, coll, index, onClose, onEdit, onSetFeature
   async function handleSpotify() {
     if (spotifyId) { setShowPlayer(p => !p); return }
     setFetchingSpot(true)
-    setSpotifyMsg('Buscando en Spotify...')
+    setSpotifyMsg(t('searchingSpotify'))
     try {
       const result = await fetchSpotifyId(index)
       if (result.spotify_id) {
@@ -39,10 +39,10 @@ export default function Modal({ item, coll, index, onClose, onEdit, onSetFeature
         setShowPlayer(true)
         setSpotifyMsg('')
       } else {
-        setSpotifyMsg('No encontrado en Spotify')
+        setSpotifyMsg(t('notFoundSpotify'))
       }
     } catch {
-      setSpotifyMsg('Error conectando con Spotify')
+      setSpotifyMsg(t('errorSpotify'))
     } finally {
       setFetchingSpot(false)
     }
@@ -118,11 +118,11 @@ export default function Modal({ item, coll, index, onClose, onEdit, onSetFeature
                 {item.abv     && <span className={styles.hdrPillYear}>{item.abv}%</span>}
                 {coll === 'rum' && (item.age_low || item.age_max) && (
                   <span className={styles.hdrPillYear}>
-                    {item.age_low}{item.age_max && item.age_max !== item.age_low ? `–${item.age_max}` : ''} años
+                    {item.age_low}{item.age_max && item.age_max !== item.age_low ? `–${item.age_max}` : ''} {t('yearsUnit')}
                   </span>
                 )}
                 {coll === 'whisky' && item.years !== undefined && (
-                  <span className={styles.hdrPillYear}>{item.years > 0 ? `${item.years} años` : 'NAS'}</span>
+                  <span className={styles.hdrPillYear}>{item.years > 0 ? `${item.years} ${t('yearsUnit')}` : 'NAS'}</span>
                 )}
               </div>
               <h2 className={styles.spiritHdrTitle}>{title}</h2>
@@ -162,7 +162,7 @@ export default function Modal({ item, coll, index, onClose, onEdit, onSetFeature
           {/* ── ¿Dónde comprar? ── */}
           {coll !== 'vinyl' && item.buy_url && (
             <div className={styles.buySection}>
-              <div className={styles.buyLabel}>¿Dónde comprar?</div>
+              <div className={styles.buyLabel}>{t('whereToBuy')}</div>
               <div className={styles.buyContent}>
                 {(item.buy_price || item.buy_currency) && (
                   <span className={styles.buyPrice}>
@@ -175,7 +175,7 @@ export default function Modal({ item, coll, index, onClose, onEdit, onSetFeature
                   </span>
                 )}
                 <a href={item.buy_url} target="_blank" rel="noreferrer" className={styles.buyLink}>
-                  Ver en tienda →
+                  {t('viewStore')}
                 </a>
               </div>
             </div>
@@ -230,7 +230,7 @@ export default function Modal({ item, coll, index, onClose, onEdit, onSetFeature
               />
               {onOpenSpotify && (
                 <button className={styles.spotifyCorrect} onClick={() => onOpenSpotify(item, index)}>
-                  ¿Álbum incorrecto? Corregir
+                  {t('wrongAlbum')}
                 </button>
               )}
             </div>
@@ -345,7 +345,7 @@ function getSpiritsGroups(item, coll, t) {
   const yearsLabel = t('years').replace(' (0 = NAS)', '')
   if (coll === 'rum') return [
     {
-      label: 'Producción',
+      label: t('production'),
       rows: [
         [[t('type'), item.type], [t('country'), item.country]],
         [[t('region'), item.region], [t('blend'), item.blend]],
@@ -362,7 +362,7 @@ function getSpiritsGroups(item, coll, t) {
   ]
   return [
     {
-      label: 'Producción',
+      label: t('production'),
       rows: [
         [[t('type'), item.type], [t('country'), item.country]],
         [[t('region'), item.region], [t('origin'), item.origin]],

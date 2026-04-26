@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react'
 import { ComposableMap, Geographies, Geography } from 'react-simple-maps'
+import { useLang } from '../LangContext'
 import styles from './AtlasView.module.css'
 
 const GEO_URL = 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json'
@@ -108,6 +109,7 @@ const BASE_COLOR = {
 
 export default function AtlasView({ data, coll, onSelect }) {
   const [activeIso, setActiveIso] = useState(null)
+  const { t } = useLang()
 
   // Agrupar espíritus por ISO
   const byIso = useMemo(() => {
@@ -187,7 +189,7 @@ export default function AtlasView({ data, coll, onSelect }) {
 
         {/* Contador de países */}
         <div className={styles.countryStat}>
-          {Object.keys(byIso).length} países · {data.length} {coll === 'rum' ? 'rones' : 'whiskies'}
+          {Object.keys(byIso).length} {t('countries').toLowerCase()} · {data.length} {t(coll === 'rum' ? 'rums' : 'whiskies').toLowerCase()}
         </div>
       </div>
 
@@ -204,7 +206,7 @@ export default function AtlasView({ data, coll, onSelect }) {
             <button className={styles.panelClose} onClick={() => setActiveIso(null)}>✕</button>
             <div className={styles.panelHeroContent}>
               <h3 className={styles.panelTitle}>{activeEntry.label}</h3>
-              <p className={styles.panelSub}>{activeEntry.items.length} {activeEntry.items.length === 1 ? 'expresión' : 'expresiones'}</p>
+              <p className={styles.panelSub}>{activeEntry.items.length} {activeEntry.items.length === 1 ? t('atlasExpression') : t('atlasExpressions')}</p>
             </div>
           </div>
           {/* Nota editorial de producción */}
@@ -230,7 +232,7 @@ export default function AtlasView({ data, coll, onSelect }) {
                   <div className={styles.cardMeta}>
                     {item.type && <span className={`${styles.pill} ${styles[coll]}`}>{item.type}</span>}
                     {item.abv  && <span className={styles.abv}>{item.abv}%</span>}
-                    {item.terminado && <span className={styles.finished} title="Ya consumí">🫗</span>}
+                    {item.terminado && <span className={styles.finished} title={t('finished')}>🫗</span>}
                   </div>
                 </div>
               </div>

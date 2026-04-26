@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { fetchSpotifyId } from '../services/api'
+import { useLang } from '../LangContext'
 import styles from './ShareView.module.css'
 
 function spotifyEmbedUrl(id) {
@@ -24,6 +25,7 @@ export default function ShareView({ item, index, onClose, onOpenCollection }) {
   const [fetching,   setFetching]   = useState(false)
   const [showPlayer, setShowPlayer] = useState(false)
   const [spinning,   setSpinning]   = useState(false)
+  const { t } = useLang()
 
   useEffect(() => {
     const handler = e => { if (e.key === 'Escape') onClose() }
@@ -58,7 +60,7 @@ export default function ShareView({ item, index, onClose, onOpenCollection }) {
           <span className={styles.brandDot} style={{ background: accentColor }} />
           <span className={styles.brandName}>En Las Nubes Trepao</span>
         </div>
-        <button className={styles.closeBtn} onClick={onClose} title="Cerrar">✕</button>
+        <button className={styles.closeBtn} onClick={onClose} title={t('close')}>✕</button>
       </header>
 
       <main className={styles.stage}>
@@ -79,7 +81,7 @@ export default function ShareView({ item, index, onClose, onOpenCollection }) {
         </div>
 
         <div className={styles.infoPanel}>
-          <p className={styles.fromLabel}>🎵 COMPARTIDO DESDE</p>
+          <p className={styles.fromLabel}>{t('sharedFrom')}</p>
           <h1 className={styles.albumTitle}>{item.album}</h1>
           <h2 className={styles.artistName}>{item.artista}</h2>
 
@@ -114,19 +116,19 @@ export default function ShareView({ item, index, onClose, onOpenCollection }) {
               onClick={handleSpotify}
               disabled={fetching}
             >
-              {fetching ? '⏳ Buscando...' : showPlayer ? '⏹ Cerrar player' : '▶  Escuchar álbum'}
+              {fetching ? t('searching') : showPlayer ? t('closePlayer') : t('listenAlbum')}
             </button>
             <button className={styles.btnCollection} onClick={onOpenCollection}>
-              Ver en colección →
+              {t('viewInCollection')}
             </button>
           </div>
         </div>
       </main>
 
       <footer className={styles.footer}>
-        <span>Colección de vinilos y espíritus</span>
+        <span>{t('collectionSubtitle')}</span>
         <span className={styles.footerDot}>·</span>
-        <span>{item.genero && `${item.genero} · `}{item.origen && `Origen: ${item.origen}`}</span>
+        <span>{item.genero && `${item.genero} · `}{item.origen && `${t('origin')}: ${item.origen}`}</span>
       </footer>
     </div>
   )

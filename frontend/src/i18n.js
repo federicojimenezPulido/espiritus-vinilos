@@ -144,6 +144,20 @@ const T = {
   listen:               { es: '▶ Escuchar',                     en: '▶ Listen' },
   viewRecord:           { es: 'Ver disco',                      en: 'View record' },
 
+  // ── HeroSection ───────────────────────────────────────────────────────────
+  heroVinylEyebrow:   { es: 'En Las Nubes Trepao',                         en: 'En Las Nubes Trepao' },
+  heroVinylHeadline:  { es: 'Para escuchar\ncon algo\nen la mano.',         en: 'To listen\nwith something\nin hand.' },
+  heroVinylTagline:   { es: 'Afinando el vinilo entre espíritus.\nUna colección personal desde Medellín, Colombia.', en: 'Tuning the vinyl between spirits.\nA personal collection from Medellín, Colombia.' },
+  heroVinylCta:       { es: 'La colección',                                 en: 'The collection' },
+  heroRumEyebrow:     { es: 'La colección — Rones',                         en: 'The collection — Rums' },
+  heroRumHeadline:    { es: 'Caña destilada.\nTiempo.\nIdentidad.',         en: 'Distilled cane.\nTime.\nIdentity.' },
+  heroRumTagline:     { es: 'Saboreando la barrica entre melodías.\nDesde el Caribe hasta Latinoamérica.', en: 'Savoring the barrel between melodies.\nFrom the Caribbean to Latin America.' },
+  heroRumCta:         { es: 'Los rones',                                    en: 'The rums' },
+  heroWhiskyEyebrow:  { es: 'La colección — Whiskies',                      en: 'The collection — Whiskies' },
+  heroWhiskyHeadline: { es: 'Turba, madera\ny tiempo\nen la copa.',         en: 'Peat, oak\nand time\nin the glass.' },
+  heroWhiskyTagline:  { es: 'Saboreando la barrica entre melodías.\nDestilerías que priorizan el proceso.', en: 'Savoring the barrel between melodies.\nDistilleries that prioritize process.' },
+  heroWhiskyCta:      { es: 'Los whiskies',                                 en: 'The whiskies' },
+
   // ── StatsView ─────────────────────────────────────────────────────────────
   noStats:              { es: 'Sin datos para mostrar estadísticas', en: 'No data to show statistics' },
   summary:              { es: 'Resumen',                        en: 'Summary' },
@@ -167,6 +181,16 @@ const T = {
   blendVsSingle:        { es: 'Blend vs Single',                en: 'Blend vs Single' },
   withAge:              { es: 'Con edad',                       en: 'With age' },
   nas:                  { es: 'NAS (sin edad)',                 en: 'NAS (no age)' },
+
+  // ── Sesiones ──────────────────────────────────────────────────────────────
+  spirits:           { es: 'Espíritus',         en: 'Spirits' },
+  preview:           { es: 'Vista previa',       en: 'Preview' },
+  addFromCollection: { es: 'Agregar desde colección', en: 'Add from collection' },
+
+  // ── CrateView ─────────────────────────────────────────────────────────────
+  discs:             { es: 'discos',               en: 'records' },
+  inCollection:      { es: 'en la colección',      en: 'in the collection' },
+  crateHint:         { es: 'Pasá el cursor sobre un disco para ver la portada · Clic para ver el detalle', en: 'Hover over a record to see the cover · Click to view details' },
 
   // ── ShareView ─────────────────────────────────────────────────────────────
   sharedFrom:           { es: '🎵 COMPARTIDO DESDE',            en: '🎵 SHARED FROM' },
@@ -263,6 +287,32 @@ const T = {
   searchAnother:        { es: '🔄 Buscar otro',                 en: '🔄 Search another' },
   spotifyUrlPlaceholder:{ es: 'URL de Spotify (álbum, playlist o canción)...', en: 'Spotify URL (album, playlist or track)...' },
   apply:                { es: 'Aplicar',                        en: 'Apply' },
+
+  // ── StatsView ─────────────────────────────────────────────────────────────
+  view:              { es: 'Ver',                                          en: 'View' },
+  exportCsvTitle:    { es: 'Descargar como CSV (compatible con Excel)',     en: 'Download as CSV (Excel compatible)' },
+  exportCsvBtn:      { es: '↓ Exportar CSV',                               en: '↓ Export CSV' },
+  allAlbums:         { es: 'Todos los álbumes',                            en: 'All albums' },
+  allRums:           { es: 'Todos los rones',                              en: 'All rums' },
+  allWhiskies:       { es: 'Todos los whiskies',                           en: 'All whiskies' },
+  ageDeclared:       { es: 'Con edad declarada',                           en: 'With declared age' },
+
+  // ── Modal spirits / buy section ───────────────────────────────────────────
+  whereToBuy:           { es: '¿Dónde comprar?',               en: 'Where to buy?' },
+  viewStore:            { es: 'Ver en tienda →',               en: 'Visit store →' },
+  production:           { es: 'Producción',                    en: 'Production' },
+  yearsUnit:            { es: 'años',                          en: 'yrs' },
+
+  // ── Atlas ─────────────────────────────────────────────────────────────────
+  atlasExpression:      { es: 'expresión',                     en: 'expression' },
+  atlasExpressions:     { es: 'expresiones',                   en: 'expressions' },
+
+  // ── Card tooltips ─────────────────────────────────────────────────────────
+  distillerySite:       { es: 'Sitio de la destilería',        en: 'Distillery site' },
+  linkCopied:           { es: '¡Link copiado!',                en: 'Link copied!' },
+  copyLink:             { es: 'Copiar link',                   en: 'Copy link' },
+  listenSpotifyShort:   { es: 'Escuchar en Spotify',           en: 'Listen on Spotify' },
+  enltPostedTitle:      { es: 'ENLT publicó sobre este disco', en: 'ENLT posted about this record' },
 }
 
 export function t(key, lang = 'es') {
