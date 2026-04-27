@@ -420,7 +420,7 @@ function getFields(coll, data, t) {
     { key: 'fuera',      label: t('lent'),            options: ['No', 'Sí'] },
     { key: 'discogs',    label: t('inDiscogs'),       options: ['true', 'false'] },
     { key: 'url',             label: t('discogsUrl') },
-    { key: 'spotify_album_id', label: '🎵 Spotify Album ID' },
+    { key: 'spotify_id',       label: '🎵 Spotify Album ID' },
     { key: 'tiktok_url',      label: t('tiktokField') },
     { key: 'ig_url',          label: t('igField') },
   ]

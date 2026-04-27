@@ -177,11 +177,9 @@ function RumStats({ data, onBarClick, onStatClick }) {
   const noCover     = data.filter(r => !r.cover_url)
 
   const kpis = [
-    { num: countries.length, lbl: t('countries') },
-    { num: types.length,     lbl: t('types') },
-    { num: avgScale,         lbl: t('avgScale') },
-    { num: `${pctCover}%`,   lbl: t('withCover'),    clickable: true, items: data.filter(r => r.cover_url), title: t('withCover') },
-    { num: `${100 - pctCover}%`, lbl: t('withoutCover'), clickable: true, items: noCover, title: t('withoutCover'), alert: noCover.length > 0 },
+    { num: countries.length, lbl: t('countries'), desc: t('countriesDesc') },
+    { num: types.length,     lbl: t('types'),     desc: t('typesDesc') },
+    { num: avgScale,         lbl: t('avgScale'),  desc: t('avgScaleDesc') },
     ...(terminados > 0 ? [{ num: terminados, lbl: t('finishedStat'), clickable: true, items: data.filter(r => r.terminado), title: t('finishedStat') }] : []),
   ]
 
@@ -215,11 +213,10 @@ function WhiskyStats({ data, onBarClick, onStatClick }) {
   const noCover    = data.filter(r => !r.cover_url)
 
   const kpis = [
-    { num: countries.length, lbl: t('countries') },
-    { num: regions.length,   lbl: t('regions') },
-    { num: withAge,          lbl: t('withAge'),    clickable: true, items: data.filter(r => r.years),    title: t('ageDeclared') },
-    { num: nas,              lbl: 'NAS',            clickable: true, items: data.filter(r => !r.years),   title: t('nas') },
-    { num: `${100 - pctCover}%`, lbl: t('withoutCover'), clickable: true, items: noCover, title: t('withoutCover'), alert: noCover.length > 0 },
+    { num: countries.length, lbl: t('countries'), desc: t('countriesDesc') },
+    { num: regions.length,   lbl: t('regions'),   desc: t('regionsDesc') },
+    { num: withAge,          lbl: t('withAge'),   desc: t('ageDesc'),  clickable: true, items: data.filter(r => r.years),  title: t('ageDeclared') },
+    { num: nas,              lbl: 'NAS',                               clickable: true, items: data.filter(r => !r.years), title: t('nas') },
     ...(terminados > 0 ? [{ num: terminados, lbl: t('finishedStat'), clickable: true, items: data.filter(r => r.terminado), title: t('finishedStat') }] : []),
   ]
 
