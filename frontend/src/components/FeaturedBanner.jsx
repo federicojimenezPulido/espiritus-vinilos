@@ -86,7 +86,7 @@ export default function FeaturedBanner({ onOpen }) {
                 {t('viewRecord')}
               </button>
               {featured.ig_url && (
-                <button className={styles.btnPost} onClick={() => onOpen(featured)} title="ENLT publicó sobre este disco">
+                <button className={styles.btnPost} onClick={() => onOpen(featured)} title={t('enltPostedTitle')}>
                   <span className={styles.btnPostDot} />
                   {t('viewIG')}
                 </button>
@@ -97,7 +97,7 @@ export default function FeaturedBanner({ onOpen }) {
               >
                 {copied ? t('copied') : t('share')}
               </button>
-              <button className={styles.btnClear} onClick={clearFeatured} title="Quitar destacado">✕</button>
+              <button className={styles.btnClear} onClick={clearFeatured} title={t('removeFeatured')}>✕</button>
             </div>
           </div>
         </>
@@ -112,7 +112,7 @@ export default function FeaturedBanner({ onOpen }) {
                 🎵 En Las Nubes Trepao · Playlist
               </span>
             )}
-            <button className={styles.playerClose} onClick={handleClosePlayer} title="Cerrar player">✕</button>
+            <button className={styles.playerClose} onClick={handleClosePlayer} title={t('closePlayerTitle')}>✕</button>
           </div>
           <iframe
             key={playerId}

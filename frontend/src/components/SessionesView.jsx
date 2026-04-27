@@ -181,7 +181,7 @@ export default function SessionesView() {
       setClientName_(name || regEmail.trim())
       setView('list')
     } catch (err) {
-      setRegError(err.response?.data?.detail || 'Error al registrar. Intenta de nuevo.')
+      setRegError(err.response?.data?.detail || t('sessionsRegError'))
     } finally {
       setRegistering(false)
     }
@@ -207,7 +207,7 @@ export default function SessionesView() {
       setVinylTracks([])
       setView('detail')
     } catch (err) {
-      setCreateErr(err.response?.data?.detail || 'Error al crear la sesión.')
+      setCreateErr(err.response?.data?.detail || t('createSessionErr'))
     } finally {
       setCreating(false)
     }
@@ -232,7 +232,7 @@ export default function SessionesView() {
 
   async function handleDeleteSession(sessId, e) {
     e.stopPropagation()
-    if (!confirm('¿Eliminar esta sesión? Esta acción no se puede deshacer.')) return
+    if (!confirm(t('deleteSessionConfirm'))) return
     await deleteSession(clientToken, sessId).catch(() => {})
     setSessions(prev => prev.filter(s => s.id !== sessId))
   }
@@ -270,7 +270,7 @@ export default function SessionesView() {
       })
       setSessionTracks(prev => [...prev, added])
     } catch (err) {
-      setTrackErr(err.response?.data?.detail || 'Error al agregar la canción.')
+      setTrackErr(err.response?.data?.detail || t('trackErr'))
     } finally {
       setAddingTrack(null)
     }
@@ -283,7 +283,7 @@ export default function SessionesView() {
 
   async function handleAddSpirit(spirit) {
     if (sessionSpirits.length >= 3) {
-      setSpiritErr('Máximo 3 espíritus por sesión.')
+      setSpiritErr(t('max3SpiritsErr'))
       return
     }
     setAddingSpirit(spirit.id)
@@ -297,7 +297,7 @@ export default function SessionesView() {
       })
       setSessionSpirits(prev => [...prev, added])
     } catch (err) {
-      setSpiritErr(err.response?.data?.detail || 'Error al agregar el espíritu.')
+      setSpiritErr(err.response?.data?.detail || t('spiritErr'))
     } finally {
       setAddingSpirit(null)
     }
@@ -319,11 +319,11 @@ export default function SessionesView() {
 
   // ── derived ───────────────────────────────────────────────────────────────
 
-  const totalMs    = sessionTracks.reduce((s, t) => s + (t.duration_ms || 0), 0)
+  const totalMs    = sessionTracks.reduce((s, track) => s + (track.duration_ms || 0), 0)
   const maxMs      = 7_200_000
   const pctUsed    = Math.min((totalMs / maxMs) * 100, 100)
-  const addedIds   = new Set(sessionTracks.map(t => t.spotify_track_id))
-  const tpl        = templates.find(t => t.id === (activeSession?.template_id))
+  const addedIds   = new Set(sessionTracks.map(track => track.spotify_track_id))
+  const tpl        = templates.find(tmpl => tmpl.id === (activeSession?.template_id))
 
   // ── RENDERS ───────────────────────────────────────────────────────────────
 
@@ -334,18 +334,15 @@ export default function SessionesView() {
         <div className={styles.registerWrap}>
           <div className={styles.registerCard}>
             <div className={styles.registerIcon}>♪</div>
-            <h2 className={styles.registerTitle}>Sesiones</h2>
-            <p className={styles.registerSub}>
-              Armá tu playlist de vinilo con los espíritus perfectos para la noche.
-              Dejá tu correo para guardar tus sesiones.
-            </p>
+            <h2 className={styles.registerTitle}>{t('sessions')}</h2>
+            <p className={styles.registerSub}>{t('sessionsRegSub')}</p>
             <form onSubmit={handleRegister} className={styles.registerForm}>
               <div className={styles.field}>
-                <label className={styles.label}>Correo electrónico</label>
+                <label className={styles.label}>{t('sessionsEmailLbl')}</label>
                 <input
                   type="email"
                   className={styles.input}
-                  placeholder="tu@correo.com"
+                  placeholder={t('sessionsEmailPh')}
                   value={regEmail}
                   onChange={e => setRegEmail(e.target.value)}
                   required
@@ -353,18 +350,18 @@ export default function SessionesView() {
                 />
               </div>
               <div className={styles.field}>
-                <label className={styles.label}>¿Cómo te llamás? <span className={styles.optional}>(opcional)</span></label>
+                <label className={styles.label}>{t('sessionsNameLbl')} <span className={styles.optional}>{t('optional')}</span></label>
                 <input
                   type="text"
                   className={styles.input}
-                  placeholder="Tu nombre"
+                  placeholder={t('sessionsNamePh')}
                   value={regName}
                   onChange={e => setRegName(e.target.value)}
                 />
               </div>
               {regError && <p className={styles.error}>{regError}</p>}
               <button type="submit" className={styles.primaryBtn} disabled={registering}>
-                {registering ? <LoadingDots /> : 'Entrar'}
+                {registering ? <LoadingDots /> : t('enter')}
               </button>
             </form>
           </div>
@@ -379,54 +376,54 @@ export default function SessionesView() {
       <div className={styles.page}>
         <div className={styles.listHeader}>
           <div>
-            <h2 className={styles.pageTitle}>Mis sesiones</h2>
-            {clientName && <p className={styles.pageSub}>Hola, {clientName}</p>}
+            <h2 className={styles.pageTitle}>{t('mySessions')}</h2>
+            {clientName && <p className={styles.pageSub}>{t('hello')} {clientName}</p>}
           </div>
           <div className={styles.listHeaderActions}>
             <button
               className={styles.primaryBtn}
               onClick={() => { setNewName(''); setNewTemplate(null); setNewNotes(''); setNewPeople(4); setCreateErr(''); setView('create') }}
               disabled={sessions.length >= 5}
-              title={sessions.length >= 5 ? 'Máximo 5 sesiones' : ''}
+              title={sessions.length >= 5 ? t('max5Sessions') : ''}
             >
-              + Nueva sesión
+              {t('newSession')}
             </button>
-            <button className={styles.ghostBtn} onClick={logout}>Salir</button>
+            <button className={styles.ghostBtn} onClick={logout}>{t('logout')}</button>
           </div>
         </div>
 
         {loadingSessions ? (
-          <p className={styles.dim}>Cargando sesiones <LoadingDots /></p>
+          <p className={styles.dim}>{t('loadingSessions')} <LoadingDots /></p>
         ) : sessions.length === 0 ? (
           <div className={styles.emptyState}>
             <div className={styles.emptyIcon}>♫</div>
-            <p className={styles.emptyText}>Todavía no tenés sesiones.</p>
-            <p className={styles.emptyHint}>Creá una y empezá a construir tu noche.</p>
+            <p className={styles.emptyText}>{t('sessionsEmpty')}</p>
+            <p className={styles.emptyHint}>{t('sessionsEmptyHint')}</p>
           </div>
         ) : (
           <div className={styles.sessionGrid}>
             {sessions.map(s => {
-              const t = templates.find(t => t.id === s.template_id)
+              const cardTpl = templates.find(tmpl => tmpl.id === s.template_id)
               return (
                 <div
                   key={s.id}
                   className={styles.sessionCard}
-                  style={{ '--card-acc': t?.accent_color || 'var(--se-acc)' }}
+                  style={{ '--card-acc': cardTpl?.accent_color || 'var(--se-acc)' }}
                   onClick={() => openSession(s)}
                 >
                   <div className={styles.sessionCardAccent} />
                   <div className={styles.sessionCardBody}>
-                    <p className={styles.sessionTemplate}>{t?.name_es || 'Sesión'}</p>
+                    <p className={styles.sessionTemplate}>{cardTpl?.name_es || t('sessionDefault')}</p>
                     <h3 className={styles.sessionName}>{s.name}</h3>
                     <p className={styles.sessionMeta}>
-                      {s.people_count} personas
+                      {s.people_count} {t('people')}
                       {s.notes && <> · <span className={styles.dim}>{s.notes.slice(0, 40)}{s.notes.length > 40 && '…'}</span></>}
                     </p>
                   </div>
                   <button
                     className={styles.deleteCardBtn}
                     onClick={(e) => handleDeleteSession(s.id, e)}
-                    title="Eliminar sesión"
+                    title={t('deleteSession')}
                   >✕</button>
                 </div>
               )
@@ -434,7 +431,7 @@ export default function SessionesView() {
           </div>
         )}
         {sessions.length >= 5 && (
-          <p className={styles.dim} style={{ marginTop: 8 }}>Alcanzaste el límite de 5 sesiones. Eliminá una para crear otra.</p>
+          <p className={styles.dim} style={{ marginTop: 8 }}>{t('sessions5Limit')}</p>
         )}
       </div>
     )
@@ -444,24 +441,24 @@ export default function SessionesView() {
   if (view === 'create') {
     return (
       <div className={styles.page}>
-        <BackBtn onClick={() => setView('list')} label="Mis sesiones" />
-        <h2 className={styles.pageTitle}>Nueva sesión</h2>
+        <BackBtn onClick={() => setView('list')} label={t('mySessions')} />
+        <h2 className={styles.pageTitle}>{t('newSessionTitle')}</h2>
 
         <form onSubmit={handleCreate} className={styles.createForm}>
           {/* Template selector */}
           <div className={styles.field}>
-            <label className={styles.label}>Tipo de noche</label>
+            <label className={styles.label}>{t('nightType')}</label>
             <div className={styles.templateGrid}>
-              {templates.map(t => (
+              {templates.map(tpl => (
                 <button
-                  key={t.id}
+                  key={tpl.id}
                   type="button"
-                  className={`${styles.templateCard} ${newTemplate === t.id ? styles.templateSelected : ''}`}
-                  style={{ '--tpl-color': t.accent_color }}
-                  onClick={() => setNewTemplate(t.id)}
+                  className={`${styles.templateCard} ${newTemplate === tpl.id ? styles.templateSelected : ''}`}
+                  style={{ '--tpl-color': tpl.accent_color }}
+                  onClick={() => setNewTemplate(tpl.id)}
                 >
-                  <span className={styles.templateName}>{t.name_es}</span>
-                  <span className={styles.templateTagline}>{t.tagline_es}</span>
+                  <span className={styles.templateName}>{tpl.name_es}</span>
+                  <span className={styles.templateTagline}>{tpl.tagline_es}</span>
                 </button>
               ))}
             </div>
@@ -469,18 +466,18 @@ export default function SessionesView() {
 
           <div className={styles.formRow}>
             <div className={styles.field} style={{ flex: 2 }}>
-              <label className={styles.label}>Nombre de la sesión</label>
+              <label className={styles.label}>{t('sessionNameLabel')}</label>
               <input
                 type="text"
                 className={styles.input}
-                placeholder="Ej: Noche de Coltrane y Diplomático"
+                placeholder={t('sessionNamePh')}
                 value={newName}
                 onChange={e => setNewName(e.target.value)}
                 required
               />
             </div>
             <div className={styles.field}>
-              <label className={styles.label}>Personas (2–8)</label>
+              <label className={styles.label}>{t('peopleLabel')}</label>
               <div className={styles.counter}>
                 <button type="button" className={styles.counterBtn}
                   onClick={() => setNewPeople(p => Math.max(2, p - 1))}>−</button>
@@ -492,10 +489,10 @@ export default function SessionesView() {
           </div>
 
           <div className={styles.field}>
-            <label className={styles.label}>Nota <span className={styles.optional}>(opcional)</span></label>
+            <label className={styles.label}>{t('noteLabel')} <span className={styles.optional}>{t('optional')}</span></label>
             <textarea
               className={styles.textarea}
-              placeholder="Casa de alguien, vinilo en mente, ocasión especial…"
+              placeholder={t('notePh')}
               value={newNotes}
               onChange={e => setNewNotes(e.target.value)}
               rows={2}
@@ -509,7 +506,7 @@ export default function SessionesView() {
             className={styles.primaryBtn}
             disabled={creating || !newTemplate || !newName.trim()}
           >
-            {creating ? <LoadingDots /> : 'Crear sesión →'}
+            {creating ? <LoadingDots /> : t('createSessionBtn')}
           </button>
         </form>
       </div>
@@ -523,16 +520,16 @@ export default function SessionesView() {
 
     return (
       <div className={styles.page}>
-        <BackBtn onClick={() => { setView('list'); loadSessions() }} label="Mis sesiones" />
+        <BackBtn onClick={() => { setView('list'); loadSessions() }} label={t('mySessions')} />
 
         {/* Session header */}
         <div className={styles.detailHeader} style={{ '--card-acc': tpl?.accent_color || 'var(--se-acc)' }}>
           <div className={styles.detailAccentBar} />
           <div>
-            <p className={styles.sessionTemplate}>{tpl?.name_es || 'Sesión'}</p>
+            <p className={styles.sessionTemplate}>{tpl?.name_es || t('sessionDefault')}</p>
             <h2 className={styles.detailTitle}>{activeSession.name}</h2>
             <p className={styles.detailMeta}>
-              {activeSession.people_count} personas
+              {activeSession.people_count} {t('people')}
               {activeSession.notes && <> · {activeSession.notes}</>}
             </p>
           </div>
@@ -541,7 +538,7 @@ export default function SessionesView() {
         {/* Time budget bar */}
         <div className={styles.timeBudget}>
           <span className={styles.timeBudgetLabel}>
-            Música: <strong>{fmtMins(totalMs)}</strong> / 2 h
+            {t('music')}: <strong>{fmtMins(totalMs)}</strong> / 2 h
           </span>
           <div className={styles.timeBudgetTrack}>
             <div
@@ -575,20 +572,20 @@ export default function SessionesView() {
             {/* Current track list */}
             {sessionTracks.length > 0 && (
               <div className={styles.section}>
-                <h3 className={styles.sectionTitle}>En la sesión</h3>
+                <h3 className={styles.sectionTitle}>{t('inSession')}</h3>
                 <div className={styles.trackList}>
-                  {sessionTracks.map(t => (
-                    <div key={t.id} className={styles.trackRow}>
-                      <span className={styles.trackNum}>{t.track_number || '·'}</span>
+                  {sessionTracks.map(track => (
+                    <div key={track.id} className={styles.trackRow}>
+                      <span className={styles.trackNum}>{track.track_number || '·'}</span>
                       <div className={styles.trackInfo}>
-                        <span className={styles.trackName}>{t.track_name}</span>
-                        <span className={styles.trackArtist}>{t.artist_name}</span>
+                        <span className={styles.trackName}>{track.track_name}</span>
+                        <span className={styles.trackArtist}>{track.artist_name}</span>
                       </div>
-                      <span className={styles.trackDur}>{fmtMs(t.duration_ms)}</span>
+                      <span className={styles.trackDur}>{fmtMs(track.duration_ms)}</span>
                       <button
                         className={styles.removeBtn}
-                        onClick={() => handleRemoveTrack(t.id)}
-                        title="Quitar"
+                        onClick={() => handleRemoveTrack(track.id)}
+                        title={t('removeItem')}
                       >✕</button>
                     </div>
                   ))}
@@ -600,7 +597,7 @@ export default function SessionesView() {
             <div className={styles.section}>
               <h3 className={styles.sectionTitle}>{t('addFromCollection')}</h3>
               {vinyls.length === 0 ? (
-                <p className={styles.dim}>Cargando vinilos <LoadingDots /></p>
+                <p className={styles.dim}>{t('loadingVinyls')} <LoadingDots /></p>
               ) : (
                 <div className={styles.vinylPicker}>
                   {vinyls.map(v => (
@@ -624,26 +621,26 @@ export default function SessionesView() {
                       {selectedVinyl?.id === v.id && (
                         <div className={styles.vinylTrackList}>
                           {loadingVT ? (
-                            <p className={styles.dim}>Cargando tracks <LoadingDots /></p>
+                            <p className={styles.dim}>{t('loadingTracks')} <LoadingDots /></p>
                           ) : vinylTracks.length === 0 ? (
-                            <p className={styles.dim}>Sin tracks disponibles en Spotify.</p>
+                            <p className={styles.dim}>{t('noTracksSpotify')}</p>
                           ) : (
-                            vinylTracks.map(t => {
-                              const inSession = addedIds.has(t.spotify_track_id)
-                              const isAdding  = addingTrack === t.spotify_track_id
+                            vinylTracks.map(tr => {
+                              const inSession = addedIds.has(tr.spotify_track_id)
+                              const isAdding  = addingTrack === tr.spotify_track_id
                               return (
-                                <div key={t.spotify_track_id} className={`${styles.vtRow} ${inSession ? styles.vtRowAdded : ''}`}>
-                                  <span className={styles.vtNum}>{t.track_number}</span>
-                                  <span className={styles.vtName}>{t.name}</span>
-                                  <span className={styles.vtDur}>{fmtMs(t.duration_ms)}</span>
+                                <div key={tr.spotify_track_id} className={`${styles.vtRow} ${inSession ? styles.vtRowAdded : ''}`}>
+                                  <span className={styles.vtNum}>{tr.track_number}</span>
+                                  <span className={styles.vtName}>{tr.name}</span>
+                                  <span className={styles.vtDur}>{fmtMs(tr.duration_ms)}</span>
                                   <button
                                     className={styles.addBtn}
-                                    disabled={inSession || isAdding || totalMs + t.duration_ms > maxMs}
-                                    onClick={() => handleAddTrack(t)}
+                                    disabled={inSession || isAdding || totalMs + tr.duration_ms > maxMs}
+                                    onClick={() => handleAddTrack(tr)}
                                     title={
-                                      inSession ? 'Ya está en la sesión' :
-                                      totalMs + t.duration_ms > maxMs ? 'Superaría las 2h' :
-                                      'Agregar'
+                                      inSession ? t('alreadyInSession') :
+                                      totalMs + tr.duration_ms > maxMs ? t('wouldExceed2h') :
+                                      t('add')
                                     }
                                   >
                                     {isAdding ? '···' : inSession ? '✓' : '+'}
@@ -669,12 +666,12 @@ export default function SessionesView() {
             {/* Current spirits */}
             {sessionSpirits.length > 0 && (
               <div className={styles.section}>
-                <h3 className={styles.sectionTitle}>En la sesión ({sessionSpirits.length}/3)</h3>
+                <h3 className={styles.sectionTitle}>{t('inSession')} ({sessionSpirits.length}/3)</h3>
                 <div className={styles.spiritList}>
                   {sessionSpirits.map(s => (
                     <div key={s.id} className={styles.spiritRow}>
                       <span className={`${styles.spiritType} ${s.spirit_type === 'rum' ? styles.spiritRum : styles.spiritWhisky}`}>
-                        {s.spirit_type === 'rum' ? 'Ron' : 'Whisky'}
+                        {s.spirit_type === 'rum' ? t('rum') : 'Whisky'}
                       </span>
                       <div className={styles.spiritInfo}>
                         <span className={styles.spiritBrand}>{s.brand}</span>
@@ -689,10 +686,10 @@ export default function SessionesView() {
 
             {sessionSpirits.length < 3 && (
               <div className={styles.section}>
-                <h3 className={styles.sectionTitle}>Agregar espíritu</h3>
+                <h3 className={styles.sectionTitle}>{t('addSpirit')}</h3>
                 {spiritErr && <p className={styles.error}>{spiritErr}</p>}
                 {allSpirits.length === 0 ? (
-                  <p className={styles.dim}>Cargando espíritus <LoadingDots /></p>
+                  <p className={styles.dim}>{t('loadingSpirits')} <LoadingDots /></p>
                 ) : (
                   <div className={styles.spiritPicker}>
                     {allSpirits.map(s => {
@@ -704,7 +701,7 @@ export default function SessionesView() {
                           className={`${styles.spiritPickerRow} ${added ? styles.spiritPickerAdded : ''}`}
                         >
                           <span className={`${styles.spiritType} ${s._type === 'rum' ? styles.spiritRum : styles.spiritWhisky}`}>
-                            {s._type === 'rum' ? 'Ron' : 'Whisky'}
+                            {s._type === 'rum' ? t('rum') : 'Whisky'}
                           </span>
                           <div className={styles.spiritInfo}>
                             <span className={styles.spiritBrand}>{s.brand}</span>
@@ -727,7 +724,7 @@ export default function SessionesView() {
             )}
 
             {sessionSpirits.length >= 3 && (
-              <p className={styles.dim}>Alcanzaste el máximo de 3 espíritus por sesión.</p>
+              <p className={styles.dim}>{t('max3Spirits')}</p>
             )}
           </div>
         )}
@@ -736,7 +733,7 @@ export default function SessionesView() {
         {detailTab === 'preview' && (
           <div className={styles.tabContent}>
             {loadingPreview ? (
-              <p className={styles.dim}>Cargando vista previa <LoadingDots /></p>
+              <p className={styles.dim}>{t('loadingPreview')} <LoadingDots /></p>
             ) : (
               <div className={styles.previewWrap}>
                 <div className={styles.previewCard}>
@@ -744,7 +741,7 @@ export default function SessionesView() {
                     <div className={styles.previewAccentBar} />
                     <h3 className={styles.previewTitle}>{activeSession.name}</h3>
                     <p className={styles.previewMeta}>
-                      {tpl?.name_es} · {activeSession.people_count} personas
+                      {tpl?.name_es} · {activeSession.people_count} {t('people')}
                     </p>
                   </div>
 
@@ -752,25 +749,25 @@ export default function SessionesView() {
                     {/* Time summary */}
                     <div className={styles.previewStat}>
                       <span className={styles.previewStatNum}>{fmtMins(totalMs)}</span>
-                      <span className={styles.previewStatLabel}>de música</span>
+                      <span className={styles.previewStatLabel}>{t('ofMusic')}</span>
                     </div>
                     <div className={styles.previewStat}>
                       <span className={styles.previewStatNum}>{sessionTracks.length}</span>
-                      <span className={styles.previewStatLabel}>canciones</span>
+                      <span className={styles.previewStatLabel}>{t('songs')}</span>
                     </div>
                     <div className={styles.previewStat}>
                       <span className={styles.previewStatNum}>{sessionSpirits.length}</span>
-                      <span className={styles.previewStatLabel}>espíritus</span>
+                      <span className={styles.previewStatLabel}>{t('spirits').toLowerCase()}</span>
                     </div>
                   </div>
 
                   {sessionSpirits.length > 0 && (
                     <div className={styles.previewSection}>
-                      <p className={styles.previewSectionTitle}>Espíritus</p>
+                      <p className={styles.previewSectionTitle}>{t('spirits')}</p>
                       {sessionSpirits.map(s => (
                         <div key={s.id} className={styles.previewSpiritRow}>
                           <span className={`${styles.spiritType} ${s.spirit_type === 'rum' ? styles.spiritRum : styles.spiritWhisky}`}>
-                            {s.spirit_type === 'rum' ? 'Ron' : 'Whisky'}
+                            {s.spirit_type === 'rum' ? t('rum') : 'Whisky'}
                           </span>
                           <span>{s.brand} {s.name}</span>
                         </div>
@@ -781,14 +778,14 @@ export default function SessionesView() {
                   {sessionTracks.length > 0 && (
                     <div className={styles.previewSection}>
                       <p className={styles.previewSectionTitle}>Playlist</p>
-                      {sessionTracks.map((t, i) => (
-                        <div key={t.id} className={styles.previewTrackRow}>
+                      {sessionTracks.map((track, i) => (
+                        <div key={track.id} className={styles.previewTrackRow}>
                           <span className={styles.previewTrackNum}>{i + 1}</span>
                           <div className={styles.trackInfo}>
-                            <span className={styles.trackName}>{t.track_name}</span>
-                            <span className={styles.trackArtist}>{t.artist_name}</span>
+                            <span className={styles.trackName}>{track.track_name}</span>
+                            <span className={styles.trackArtist}>{track.artist_name}</span>
                           </div>
-                          <span className={styles.trackDur}>{fmtMs(t.duration_ms)}</span>
+                          <span className={styles.trackDur}>{fmtMs(track.duration_ms)}</span>
                         </div>
                       ))}
                     </div>
@@ -796,7 +793,7 @@ export default function SessionesView() {
 
                   {sessionTracks.length === 0 && sessionSpirits.length === 0 && (
                     <p className={styles.dim} style={{ padding: '24px 0', textAlign: 'center' }}>
-                      Todavía no hay nada en esta sesión. Agregá vinilos y espíritus.
+                      {t('sessionsEmptyPreview')}
                     </p>
                   )}
                 </div>

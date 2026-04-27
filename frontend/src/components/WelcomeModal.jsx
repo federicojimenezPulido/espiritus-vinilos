@@ -44,7 +44,7 @@ export default function WelcomeModal({ onClose }) {
             <div className={styles.heroBgOverlay} />
           </div>
           <div className={styles.heroTitle}>En Las Nubes Trepao</div>
-          <div className={styles.heroSub}>Espíritus &amp; Vinilos</div>
+          <div className={styles.heroSub}>{t('heroSubtitle')}</div>
           <div className={styles.heroTagline}>{t('welcomeTagline')}</div>
         </div>
 

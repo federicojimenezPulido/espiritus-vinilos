@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { t as translate } from '../i18n'
 import styles from './Header.module.css'
 
 const LOGO_SRC = '/espiritus-vinilos/logo-enlt.jpeg'
@@ -134,7 +135,7 @@ export default function Header({ coll, setColl, onSettings, lang, setLang }) {
       </button>
 
       {/* Settings */}
-      <button className={styles.settingsBtn} onClick={onSettings} title="Configuración">
+      <button className={styles.settingsBtn} onClick={onSettings} title={translate('settingsTooltip', lang)}>
         <GearIcon />
       </button>
 

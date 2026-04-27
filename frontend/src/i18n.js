@@ -313,6 +313,72 @@ const T = {
   copyLink:             { es: 'Copiar link',                   en: 'Copy link' },
   listenSpotifyShort:   { es: 'Escuchar en Spotify',           en: 'Listen on Spotify' },
   enltPostedTitle:      { es: 'ENLT publicó sobre este disco', en: 'ENLT posted about this record' },
+
+  // ── FeaturedBanner (additions) ────────────────────────────────────────────────
+  removeFeatured:       { es: 'Quitar destacado',               en: 'Remove featured' },
+  closePlayerTitle:     { es: 'Cerrar player',                  en: 'Close player' },
+
+  // ── Header (additions) ────────────────────────────────────────────────────────
+  settingsTooltip:      { es: 'Configuración',                  en: 'Settings' },
+
+  // ── WelcomeModal (additions) ──────────────────────────────────────────────────
+  heroSubtitle:         { es: 'Espíritus & Vinilos',            en: 'Spirits & Records' },
+
+  // ── Sidebar (additions) ───────────────────────────────────────────────────────
+  noYear:               { es: 'Sin año',                        en: 'No year' },
+
+  // ── Sesiones (extended) ───────────────────────────────────────────────────────
+  sessions:             { es: 'Sesiones',                       en: 'Sessions' },
+  back:                 { es: 'Volver',                         en: 'Back' },
+  enter:                { es: 'Entrar',                         en: 'Enter' },
+  optional:             { es: '(opcional)',                     en: '(optional)' },
+  people:               { es: 'personas',                       en: 'people' },
+  add:                  { es: 'Agregar',                        en: 'Add' },
+  songs:                { es: 'canciones',                      en: 'tracks' },
+  ofMusic:              { es: 'de música',                      en: 'of music' },
+  rum:                  { es: 'Ron',                            en: 'Rum' },
+  inSession:            { es: 'En la sesión',                   en: 'In session' },
+  mySessions:           { es: 'Mis sesiones',                   en: 'My sessions' },
+  newSession:           { es: '+ Nueva sesión',                 en: '+ New session' },
+  newSessionTitle:      { es: 'Nueva sesión',                   en: 'New session' },
+  logout:               { es: 'Salir',                          en: 'Log out' },
+  nightType:            { es: 'Tipo de noche',                  en: 'Night type' },
+  sessionNameLabel:     { es: 'Nombre de la sesión',            en: 'Session name' },
+  sessionNamePh:        { es: 'Ej: Noche de Coltrane y Diplomático', en: 'Ex: Coltrane night with Diplomático' },
+  peopleLabel:          { es: 'Personas (2–8)',                 en: 'People (2–8)' },
+  noteLabel:            { es: 'Nota',                           en: 'Note' },
+  notePh:               { es: 'Casa de alguien, vinilo en mente, ocasión especial…', en: "Someone's place, a record in mind, special occasion…" },
+  createSessionBtn:     { es: 'Crear sesión →',                 en: 'Create session →' },
+  createSessionErr:     { es: 'Error al crear la sesión.',      en: 'Error creating session.' },
+  loadingSessions:      { es: 'Cargando sesiones',              en: 'Loading sessions' },
+  loadingVinyls:        { es: 'Cargando vinilos',               en: 'Loading records' },
+  loadingTracks:        { es: 'Cargando tracks',                en: 'Loading tracks' },
+  loadingSpirits:       { es: 'Cargando espíritus',             en: 'Loading spirits' },
+  loadingPreview:       { es: 'Cargando vista previa',          en: 'Loading preview' },
+  sessionsEmpty:        { es: 'Todavía no tenés sesiones.',     en: 'No sessions yet.' },
+  sessionsEmptyHint:    { es: 'Creá una y empezá a construir tu noche.', en: 'Create one and start building your night.' },
+  sessions5Limit:       { es: 'Alcanzaste el límite de 5 sesiones. Eliminá una para crear otra.', en: "You've reached the 5-session limit. Delete one to create another." },
+  max5Sessions:         { es: 'Máximo 5 sesiones',              en: 'Maximum 5 sessions' },
+  sessionDefault:       { es: 'Sesión',                         en: 'Session' },
+  deleteSession:        { es: 'Eliminar sesión',                en: 'Delete session' },
+  deleteSessionConfirm: { es: '¿Eliminar esta sesión? Esta acción no se puede deshacer.', en: 'Delete this session? This action cannot be undone.' },
+  sessionsRegError:     { es: 'Error al registrar. Intenta de nuevo.', en: 'Registration error. Please try again.' },
+  sessionsRegSub:       { es: 'Armá tu playlist de vinilo con los espíritus perfectos para la noche. Dejá tu correo para guardar tus sesiones.', en: 'Build your vinyl playlist with the perfect spirits for the night. Leave your email to save your sessions.' },
+  sessionsEmailLbl:     { es: 'Correo electrónico',             en: 'Email address' },
+  sessionsEmailPh:      { es: 'tu@correo.com',                  en: 'your@email.com' },
+  sessionsNameLbl:      { es: '¿Cómo te llamás?',               en: "What's your name?" },
+  sessionsNamePh:       { es: 'Tu nombre',                      en: 'Your name' },
+  hello:                { es: 'Hola,',                          en: 'Hello,' },
+  removeItem:           { es: 'Quitar',                         en: 'Remove' },
+  noTracksSpotify:      { es: 'Sin tracks disponibles en Spotify.', en: 'No tracks available on Spotify.' },
+  alreadyInSession:     { es: 'Ya está en la sesión',           en: 'Already in session' },
+  wouldExceed2h:        { es: 'Superaría las 2h',               en: 'Would exceed 2h' },
+  trackErr:             { es: 'Error al agregar la canción.',   en: 'Error adding the track.' },
+  addSpirit:            { es: 'Agregar espíritu',               en: 'Add spirit' },
+  spiritErr:            { es: 'Error al agregar el espíritu.',  en: 'Error adding spirit.' },
+  max3Spirits:          { es: 'Alcanzaste el máximo de 3 espíritus por sesión.', en: 'Maximum of 3 spirits per session reached.' },
+  max3SpiritsErr:       { es: 'Máximo 3 espíritus por sesión.', en: 'Maximum 3 spirits per session.' },
+  sessionsEmptyPreview: { es: 'Todavía no hay nada en esta sesión. Agregá vinilos y espíritus.', en: 'Nothing in this session yet. Add records and spirits.' },
 }
 
 export function t(key, lang = 'es') {

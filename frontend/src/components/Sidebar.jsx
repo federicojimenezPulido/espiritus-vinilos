@@ -12,16 +12,16 @@ function countBy(arr, key) {
 }
 
 // countByDecade — agrupa vinilos por década usando el campo anio
-function countByDecade(arr) {
+function countByDecade(arr, noYearLabel) {
   const map = {}
   arr.forEach(r => {
     const y = parseInt(r.anio)
-    const key = (!r.anio || isNaN(y)) ? 'Sin año' : `${Math.floor(y / 10) * 10}s`
+    const key = (!r.anio || isNaN(y)) ? noYearLabel : `${Math.floor(y / 10) * 10}s`
     map[key] = (map[key] || 0) + 1
   })
   return Object.entries(map).sort((a, b) => {
-    if (a[0] === 'Sin año') return 1
-    if (b[0] === 'Sin año') return -1
+    if (a[0] === noYearLabel) return 1
+    if (b[0] === noYearLabel) return -1
     return parseInt(a[0]) - parseInt(b[0])
   })
 }
@@ -61,7 +61,7 @@ function getSections(data, coll, t) {
     return [
       { title: `🎵 ${t('sidebarCategory')}`, key: 'agrupador', entries: countBy(data, 'agrupador') },
       { title: `🎼 ${t('sidebarGenre')}`,    key: 'genero',    entries: countBy(data, 'genero') },
-      { title: `📅 ${t('sidebarDecade')}`,   key: 'decade',    entries: countByDecade(data) },
+      { title: `📅 ${t('sidebarDecade')}`,   key: 'decade',    entries: countByDecade(data, t('noYear')) },
     ]
   }
   if (coll === 'rum') {
