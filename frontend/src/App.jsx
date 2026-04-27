@@ -56,9 +56,10 @@ function AppInner() {
           <HeroSection coll={coll} onScrollDown={() => dashboardRef.current?.scrollIntoView({ behavior: 'smooth' })} />
 
           {/* Franja de transición — surco de vinilo */}
-          <div className="grooveStrip" aria-hidden="true">
+          <div className="grooveStrip">
             <img src="/hero-3.png" alt="" className="grooveStripImg" />
             <div className="grooveStripOverlay" />
+            <img src="/logo-enlt.jpeg" alt="En Las Nubes Trepao" className="grooveLogo" />
           </div>
 
           <div ref={dashboardRef}>
