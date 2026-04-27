@@ -38,14 +38,43 @@ function countBy(arr, key) {
   return Object.entries(map).sort((a, b) => b[1] - a[1])
 }
 
-function BarChart({ title, entries, accent, filterKey, onBarClick }) {
+/* ── Hero summary — número protagonista + KPI strip ── */
+function HeroSummary({ heroNum, heroLbl, heroAccent, kpis, onStatClick }) {
+  const { t } = useLang()
+  return (
+    <div className={styles.heroWrap}>
+      {/* Número principal */}
+      <div className={styles.heroMain}>
+        <span className={styles.heroNum} style={{ color: heroAccent }}>{heroNum}</span>
+        <span className={styles.heroLbl}>{heroLbl}</span>
+      </div>
+      {/* KPIs secundarios */}
+      <div className={styles.kpiStrip}>
+        {kpis.map((kpi, i) => (
+          <div
+            key={i}
+            className={[styles.kpi, kpi.clickable && onStatClick ? styles.kpiClickable : '', kpi.alert ? styles.kpiAlert : ''].join(' ')}
+            onClick={kpi.clickable && onStatClick ? () => onStatClick(kpi.title, kpi.items) : undefined}
+            title={kpi.clickable && onStatClick ? `${t('view')} ${kpi.items?.length} ${t('records')}` : undefined}
+          >
+            <span className={styles.kpiNum}>{kpi.num}</span>
+            <span className={styles.kpiLbl}>{kpi.lbl}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+/* ── Bar chart ── */
+function BarChart({ title, entries, accent, filterKey, onBarClick, accentTop }) {
   const { t } = useLang()
   if (!entries || entries.length === 0) return null
   const max     = entries[0][1]
   const total   = entries.reduce((s, [, c]) => s + c, 0)
   const clickable = !!(filterKey && onBarClick)
   return (
-    <div className={styles.card}>
+    <div className={styles.card} style={{ '--card-accent': accentTop || accent }}>
       <h3 className={styles.cardTitle}>{title}</h3>
       <div className={styles.bars}>
         {entries.slice(0, 10).map(([label, count]) => {
@@ -70,26 +99,6 @@ function BarChart({ title, entries, accent, filterKey, onBarClick }) {
           )
         })}
       </div>
-    </div>
-  )
-}
-
-/* ── Stat cell helper ── */
-function Stat({ num, lbl, items, title, onStatClick, missing }) {
-  const { t } = useLang()
-  const clickable = !!(items && onStatClick)
-  return (
-    <div
-      className={[
-        styles.stat,
-        clickable ? styles.statClickable : '',
-        missing   ? styles.statMissing   : '',
-      ].join(' ')}
-      onClick={clickable ? () => onStatClick(title || lbl, items) : undefined}
-      title={clickable ? `${t('view')} ${items.length} ${t('records')}` : undefined}
-    >
-      <span className={styles.statNum}>{num}</span>
-      <span className={styles.statLbl}>{lbl}</span>
     </div>
   )
 }
@@ -119,31 +128,27 @@ function VinylStats({ data, onBarClick, onStatClick }) {
   const pctDiscogs   = data.length ? Math.round((withDiscogs / data.length) * 100) : 0
   const pctCover     = data.length ? Math.round((withCover  / data.length) * 100) : 0
   const prestados    = data.filter(r => r.fuera).length
+  const noDiscogs    = data.filter(r => !r.discogs)
+  const noCover      = data.filter(r => !r.cover_url)
 
-  const noDiscogs = data.filter(r => !r.discogs)
-  const noCover   = data.filter(r => !r.cover_url)
+  const kpis = [
+    { num: totalArtists,     lbl: t('artists') },
+    { num: `${pctDiscogs}%`, lbl: t('onDiscogs'),   clickable: true, items: data.filter(r => r.discogs),   title: t('withDiscogs') },
+    { num: `${pctCover}%`,   lbl: t('withCover'),   clickable: true, items: data.filter(r => r.cover_url), title: t('withCover') },
+    { num: `${100 - pctCover}%`, lbl: t('withoutCover'), clickable: true, items: noCover, title: t('withoutCover'), alert: noCover.length > 0 },
+    ...(prestados > 0 ? [{ num: prestados, lbl: t('lentOut'), clickable: true, items: data.filter(r => r.fuera), title: t('lentOut') }] : []),
+  ]
 
   return (
     <>
-      <div className={styles.card}>
-        <h3 className={styles.cardTitle}>{t('summary')}</h3>
-        <div className={styles.summaryGrid}>
-          <Stat num={data.length}      lbl={t('albums')}          items={data}                          title={t('allAlbums')}                                        onStatClick={onStatClick} />
-          <Stat num={totalArtists}     lbl={t('artists')} />
-          <Stat num={withDiscogs}      lbl={t('onDiscogs')}        items={data.filter(r => r.discogs)}   title={t('withDiscogs')}                                      onStatClick={onStatClick} />
-          <Stat num={`${pctDiscogs}%`} lbl={t('withoutDiscogs')}   items={noDiscogs}                     title={`${t('withoutDiscogs')} (${noDiscogs.length})`}         onStatClick={onStatClick} missing={noDiscogs.length > 0} />
-          <Stat num={withCover}        lbl={t('withCover')}        items={data.filter(r => r.cover_url)} title={t('withCover')}                                        onStatClick={onStatClick} />
-          <Stat num={`${pctCover}%`}   lbl={t('withoutCover')}     items={noCover}                       title={`${t('withoutCover')} (${noCover.length})`}             onStatClick={onStatClick} missing={noCover.length > 0} />
-          {prestados > 0 && (
-            <Stat num={prestados} lbl={t('lentOut')} items={data.filter(r => r.fuera)} title={t('lentOut')} onStatClick={onStatClick} />
-          )}
-        </div>
-      </div>
-
-      <BarChart title={t('topGenres')}   entries={genres}     accent="var(--v-acc2)" filterKey="agrupador" onBarClick={onBarClick} />
-      <BarChart title={t('categories')}  entries={categories} accent="var(--v-gold)" filterKey="genero"    onBarClick={onBarClick} />
-      <BarChart title={t('labels')}      entries={sellos}     accent="var(--v-acc)"  filterKey="sello"     onBarClick={onBarClick} />
-      <BarChart title={t('byDecade')}    entries={decades}    accent="var(--v-acc2)" filterKey="decade"    onBarClick={onBarClick} />
+      <HeroSummary
+        heroNum={data.length} heroLbl={t('albums')} heroAccent="var(--v-acc2)"
+        kpis={kpis} onStatClick={onStatClick}
+      />
+      <BarChart title={t('topGenres')}   entries={genres}     accent="var(--v-acc2)" accentTop="var(--v-acc2)" filterKey="agrupador" onBarClick={onBarClick} />
+      <BarChart title={t('categories')}  entries={categories} accent="var(--v-gold)" accentTop="var(--v-gold)" filterKey="genero"    onBarClick={onBarClick} />
+      <BarChart title={t('labels')}      entries={sellos}     accent="var(--v-acc)"  accentTop="var(--v-acc)"  filterKey="sello"     onBarClick={onBarClick} />
+      <BarChart title={t('byDecade')}    entries={decades}    accent="var(--v-acc2)" accentTop="var(--v-acc2)" filterKey="decade"    onBarClick={onBarClick} />
     </>
   )
 }
@@ -170,29 +175,27 @@ function RumStats({ data, onBarClick, onStatClick }) {
     ? (withScale.reduce((s, r) => s + r.scale, 0) / withScale.length).toFixed(1)
     : '—'
   const pctCover    = data.length ? Math.round((withCover / data.length) * 100) : 0
+  const noCover     = data.filter(r => !r.cover_url)
 
-  const noCover = data.filter(r => !r.cover_url)
+  const kpis = [
+    { num: countries.length, lbl: t('countries') },
+    { num: types.length,     lbl: t('types') },
+    { num: avgScale,         lbl: t('avgScale') },
+    { num: `${pctCover}%`,   lbl: t('withCover'),    clickable: true, items: data.filter(r => r.cover_url), title: t('withCover') },
+    { num: `${100 - pctCover}%`, lbl: t('withoutCover'), clickable: true, items: noCover, title: t('withoutCover'), alert: noCover.length > 0 },
+    ...(terminados > 0 ? [{ num: terminados, lbl: t('finishedStat'), clickable: true, items: data.filter(r => r.terminado), title: t('finishedStat') }] : []),
+  ]
 
   return (
     <>
-      <div className={styles.card}>
-        <h3 className={styles.cardTitle}>{t('summary')}</h3>
-        <div className={styles.summaryGrid}>
-          <Stat num={data.length}      lbl={t('rums')}        items={data}                          title={t('allRums')}                                 onStatClick={onStatClick} />
-          <Stat num={countries.length} lbl={t('countries')} />
-          <Stat num={types.length}     lbl={t('types')} />
-          <Stat num={avgScale}         lbl={t('avgScale')} />
-          <Stat num={withCover}        lbl={t('withCover')}   items={data.filter(r => r.cover_url)} title={t('withCover')}                               onStatClick={onStatClick} />
-          <Stat num={`${pctCover}%`}   lbl={t('withoutCover')} items={noCover}                      title={`${t('withoutCover')} (${noCover.length})`}   onStatClick={onStatClick} missing={noCover.length > 0} />
-          {terminados > 0 && (
-            <Stat num={terminados} lbl={t('finishedStat')} items={data.filter(r => r.terminado)} title={t('finishedStat')} onStatClick={onStatClick} />
-          )}
-        </div>
-      </div>
-      <BarChart title={t('countries')}    entries={countries} accent="var(--ru-acc2)" filterKey="country" onBarClick={onBarClick} />
-      <BarChart title={t('types')}        entries={types}     accent="var(--ru-gold)" filterKey="type"    onBarClick={onBarClick} />
-      <BarChart title={t('regions')}      entries={regions}   accent="var(--ru-acc)"  filterKey="region"  onBarClick={onBarClick} />
-      <BarChart title={t('blendVsSingle')} entries={blends}   accent="var(--ru-acc)" />
+      <HeroSummary
+        heroNum={data.length} heroLbl={t('rums')} heroAccent="var(--ru-acc2)"
+        kpis={kpis} onStatClick={onStatClick}
+      />
+      <BarChart title={t('countries')}    entries={countries} accent="var(--ru-acc2)" accentTop="var(--ru-acc2)" filterKey="country" onBarClick={onBarClick} />
+      <BarChart title={t('types')}        entries={types}     accent="var(--ru-gold)" accentTop="var(--ru-gold)" filterKey="type"    onBarClick={onBarClick} />
+      <BarChart title={t('regions')}      entries={regions}   accent="var(--ru-acc)"  accentTop="var(--ru-acc)"  filterKey="region"  onBarClick={onBarClick} />
+      <BarChart title={t('blendVsSingle')} entries={blends}   accent="var(--ru-acc)"  accentTop="var(--ru-acc)" />
     </>
   )
 }
@@ -210,30 +213,27 @@ function WhiskyStats({ data, onBarClick, onStatClick }) {
   const withAge    = data.filter(r => r.years).length
   const nas        = data.length - withAge
   const pctCover   = data.length ? Math.round((withCover / data.length) * 100) : 0
+  const noCover    = data.filter(r => !r.cover_url)
 
-  const noCover = data.filter(r => !r.cover_url)
+  const kpis = [
+    { num: countries.length, lbl: t('countries') },
+    { num: regions.length,   lbl: t('regions') },
+    { num: withAge,          lbl: t('withAge'),    clickable: true, items: data.filter(r => r.years),    title: t('ageDeclared') },
+    { num: nas,              lbl: 'NAS',            clickable: true, items: data.filter(r => !r.years),   title: t('nas') },
+    { num: `${100 - pctCover}%`, lbl: t('withoutCover'), clickable: true, items: noCover, title: t('withoutCover'), alert: noCover.length > 0 },
+    ...(terminados > 0 ? [{ num: terminados, lbl: t('finishedStat'), clickable: true, items: data.filter(r => r.terminado), title: t('finishedStat') }] : []),
+  ]
 
   return (
     <>
-      <div className={styles.card}>
-        <h3 className={styles.cardTitle}>{t('summary')}</h3>
-        <div className={styles.summaryGrid}>
-          <Stat num={data.length}      lbl={t('whiskies')}    items={data}                          title={t('allWhiskies')}                              onStatClick={onStatClick} />
-          <Stat num={countries.length} lbl={t('countries')} />
-          <Stat num={regions.length}   lbl={t('regions')} />
-          <Stat num={withAge}          lbl={t('withAge')}     items={data.filter(r => r.years)}     title={t('ageDeclared')}                              onStatClick={onStatClick} />
-          <Stat num={nas}              lbl="NAS"              items={data.filter(r => !r.years)}    title={t('nas')}                                      onStatClick={onStatClick} />
-          <Stat num={withCover}        lbl={t('withCover')}   items={data.filter(r => r.cover_url)} title={t('withCover')}                                onStatClick={onStatClick} />
-          <Stat num={`${pctCover}%`}   lbl={t('withoutCover')} items={noCover}                      title={`${t('withoutCover')} (${noCover.length})`}   onStatClick={onStatClick} missing={noCover.length > 0} />
-          {terminados > 0 && (
-            <Stat num={terminados} lbl={t('finishedStat')} items={data.filter(r => r.terminado)} title={t('finishedStat')} onStatClick={onStatClick} />
-          )}
-        </div>
-      </div>
-      <BarChart title={t('countries')} entries={countries} accent="var(--wh-acc2)" filterKey="country" onBarClick={onBarClick} />
-      <BarChart title={t('types')}     entries={types}     accent="var(--wh-gold)" filterKey="type"    onBarClick={onBarClick} />
-      <BarChart title={t('regions')}   entries={regions}   accent="var(--wh-acc2)" filterKey="region"  onBarClick={onBarClick} />
-      <BarChart title={t('origin')}    entries={origins}   accent="var(--wh-acc)"  filterKey="origin"  onBarClick={onBarClick} />
+      <HeroSummary
+        heroNum={data.length} heroLbl={t('whiskies')} heroAccent="var(--wh-acc2)"
+        kpis={kpis} onStatClick={onStatClick}
+      />
+      <BarChart title={t('countries')} entries={countries} accent="var(--wh-acc2)" accentTop="var(--wh-acc2)" filterKey="country" onBarClick={onBarClick} />
+      <BarChart title={t('types')}     entries={types}     accent="var(--wh-gold)" accentTop="var(--wh-gold)" filterKey="type"    onBarClick={onBarClick} />
+      <BarChart title={t('regions')}   entries={regions}   accent="var(--wh-acc2)" accentTop="var(--wh-acc2)" filterKey="region"  onBarClick={onBarClick} />
+      <BarChart title={t('origin')}    entries={origins}   accent="var(--wh-acc)"  accentTop="var(--wh-acc)"  filterKey="origin"  onBarClick={onBarClick} />
     </>
   )
 }

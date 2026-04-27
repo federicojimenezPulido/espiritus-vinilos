@@ -4,56 +4,41 @@ import { fetchAndSaveCover, fetchAndSaveDiscogsCover, scrapeUrl, fetchPurchaseIn
 import { useLang } from '../LangContext'
 import styles from './AdminForm.module.css'
 
-// ── Combo de origen con botón "+" para agregar opciones ──────────────────────
-const ORIGEN_STORAGE_KEY = 'vinyl_origen_extras'
-
-// Lista canónica fija — NO se deriva del data (evita que valores viejos del cache reaparezcan)
-const ORIGEN_BASE = [
-  'Al vinilo',
-  'BogotaVinylSelectors',
-  'Discos Cosmos',
-  'La Academia del Vinilo',
-  'Regalado',
-  'Sindicato del Vinilo',
-]
-
-function getOrigenOptions() {
-  let extras = []
-  try { extras = JSON.parse(localStorage.getItem(ORIGEN_STORAGE_KEY) || '[]') } catch {}
-  // Limpiar cualquier valor viejo que pueda estar en localStorage
-  const LEGACY = ['Coleccion Amparo Montoya','Comprado en Espana','Eleonora Jimenez','Regalo']
-  extras = extras.filter(e => !LEGACY.includes(e))
-  return [...new Set([...ORIGEN_BASE, ...extras])].sort()
+// ── localStorage helpers ─────────────────────────────────────────────────────
+function storageKey(coll, field) {
+  return `enlt_opts_${coll}_${field}`
 }
 
-function OrigenCombo({ value, onChange, onRequestPin }) {
-  const [adding,   setAdding]   = useState(false)
-  const [newVal,   setNewVal]   = useState('')
-  const [options,  setOptions]  = useState(() => getOrigenOptions())
+function getExtras(coll, field) {
+  try { return JSON.parse(localStorage.getItem(storageKey(coll, field)) || '[]') } catch { return [] }
+}
+
+function saveExtra(coll, field, value) {
+  const extras = getExtras(coll, field)
+  if (!extras.includes(value)) {
+    extras.push(value)
+    localStorage.setItem(storageKey(coll, field), JSON.stringify(extras))
+  }
+}
+
+// ── DynamicSelect — dropdown con "+" para agregar opciones ──────────────────
+function DynamicSelect({ value, onChange, baseOptions, coll, field }) {
+  const [adding,  setAdding]  = useState(false)
+  const [newVal,  setNewVal]  = useState('')
+  const [options, setOptions] = useState(() => {
+    const extras = getExtras(coll, field)
+    return [...new Set([...baseOptions, ...extras])].sort()
+  })
 
   function handleAdd() {
     const v = newVal.trim()
     if (!v) return
-    // Guardar en localStorage
-    let extras = []
-    try { extras = JSON.parse(localStorage.getItem(ORIGEN_STORAGE_KEY) || '[]') } catch {}
-    if (!extras.includes(v)) {
-      extras.push(v)
-      localStorage.setItem(ORIGEN_STORAGE_KEY, JSON.stringify(extras))
-    }
-    const updated = getOrigenOptions()
+    saveExtra(coll, field, v)
+    const updated = [...new Set([...baseOptions, ...getExtras(coll, field)])].sort()
     setOptions(updated)
     onChange(v)
     setNewVal('')
     setAdding(false)
-  }
-
-  function requestAdd() {
-    if (onRequestPin) {
-      onRequestPin('Agregar opción de origen', () => setAdding(true))
-    } else {
-      setAdding(true)
-    }
   }
 
   return (
@@ -84,7 +69,7 @@ function OrigenCombo({ value, onChange, onRequestPin }) {
             <button className={styles.origenConfirm} onClick={handleAdd} title="Confirmar">✓</button>
             <button className={styles.origenCancel} onClick={() => { setAdding(false); setNewVal('') }} title="Cancelar">✕</button>
           </div>
-        : <button className={styles.origenPlusBtn} onClick={requestAdd} title="Agregar nueva opción">+</button>
+        : <button className={styles.origenPlusBtn} onClick={() => setAdding(true)} title="Agregar nueva opción">+</button>
       }
     </div>
   )
@@ -100,7 +85,6 @@ export default function AdminForm({ coll, item, index, data, onClose, onRequestP
   const [form, setForm] = useState(buildInitial(item, coll))
   const [fetchingCover, setFetchingCover]       = useState(false)
   const [coverMsg, setCoverMsg]                 = useState('')
-  const [showManualUrl, setShowManualUrl]       = useState(false)
   const [manualUrl, setManualUrl]               = useState('')
   const [saveError, setSaveError]               = useState('')
   const [fetchingPurchase, setFetchingPurchase] = useState(false)
@@ -110,7 +94,6 @@ export default function AdminForm({ coll, item, index, data, onClose, onRequestP
   useEffect(() => {
     setForm(buildInitial(item, coll))
     setCoverMsg('')
-    setShowManualUrl(false)
     setManualUrl('')
 
     if (coll === 'vinyl' && item && index !== undefined && !item.cover_url) {
@@ -128,14 +111,11 @@ export default function AdminForm({ coll, item, index, data, onClose, onRequestP
       if (result.cover) {
         setForm(prev => ({ ...prev, cover_url: result.cover }))
         setCoverMsg(t('coverFound'))
-        setShowManualUrl(false)
       } else {
         setCoverMsg(t('coverNotFound'))
-        setShowManualUrl(true)
       }
     } catch {
       setCoverMsg(t('coverError'))
-      setShowManualUrl(true)
     } finally {
       setFetchingCover(false)
     }
@@ -151,7 +131,7 @@ export default function AdminForm({ coll, item, index, data, onClose, onRequestP
       const parsed = parseForm(form, coll)
       if (isEdit) {
         if (index < 0) {
-          setSaveError('Error: no se pudo determinar el índice del registro. Cerrá y volvé a abrir el editor.')
+          setSaveError(t('indexError'))
           return
         }
         await update.mutateAsync({ index, data: parsed })
@@ -161,7 +141,7 @@ export default function AdminForm({ coll, item, index, data, onClose, onRequestP
       onClose()
     } catch (err) {
       const msg = err?.response?.data?.detail || err?.message || 'Error desconocido'
-      setSaveError(`No se pudo guardar: ${msg}`)
+      setSaveError(`${t('saveFailed')}: ${msg}`)
     }
   }
 
@@ -170,7 +150,7 @@ export default function AdminForm({ coll, item, index, data, onClose, onRequestP
       alert(t('requirePinMsg'))
       return
     }
-    if (!confirm(`¿Eliminar este registro? Esta acción no se puede deshacer.`)) return
+    if (!confirm(t('deleteConfirm'))) return
     const doDelete = async () => { await remove.mutateAsync(index); onClose() }
     onRequestPin?.('Eliminar registro', doDelete)
   }
@@ -197,7 +177,6 @@ export default function AdminForm({ coll, item, index, data, onClose, onRequestP
     }
   }
 
-  // Buscar portada manualmente (botón) — vinilos: Discogs | licores: og:image
   async function handleFetchCover() {
     setFetchingCover(true)
     setCoverMsg('')
@@ -212,22 +191,16 @@ export default function AdminForm({ coll, item, index, data, onClose, onRequestP
       if (result.cover) {
         setField('cover_url', result.cover)
         setCoverMsg(t('imageFound'))
-        setShowManualUrl(false)
       } else {
         setCoverMsg(t('imageNotFound'))
-        setShowManualUrl(true)
       }
     } catch {
       setCoverMsg(t('imageError'))
-      setShowManualUrl(true)
     } finally {
       setFetchingCover(false)
     }
   }
 
-  // Usar URL manual ingresada por el usuario
-  // Si es una URL de release de Discogs → raspa og:image automáticamente
-  // Si es una imagen directa → la usa tal cual
   async function handleApplyManualUrl() {
     const url = manualUrl.trim()
     if (!url) return
@@ -242,7 +215,6 @@ export default function AdminForm({ coll, item, index, data, onClose, onRequestP
         if (result.cover) {
           setField('cover_url', result.cover)
           setCoverMsg(t('extractedDiscogs'))
-          setShowManualUrl(false)
           setManualUrl('')
         } else {
           setCoverMsg(t('extractFailed'))
@@ -251,10 +223,8 @@ export default function AdminForm({ coll, item, index, data, onClose, onRequestP
         setCoverMsg(t('extractError'))
       }
     } else {
-      // URL directa de imagen → usar tal cual
       setField('cover_url', url)
       setCoverMsg(t('urlApplied'))
-      setShowManualUrl(false)
       setManualUrl('')
     }
   }
@@ -279,17 +249,14 @@ export default function AdminForm({ coll, item, index, data, onClose, onRequestP
             {fields.map(({ key, label, type, options, suggestions }) => (
               <div className={styles.fgroup} key={key}>
                 <label>{label}</label>
-                {type === 'origen'
-                  ? <OrigenCombo
+                {options
+                  ? <DynamicSelect
                       value={form[key]}
                       onChange={v => setField(key, v)}
-                      onRequestPin={onRequestPin}
+                      baseOptions={options}
+                      coll={coll}
+                      field={key}
                     />
-                  : options
-                  ? <select value={form[key] ?? ''} onChange={e => setField(key, e.target.value)}>
-                      <option value="">—</option>
-                      {options.map(o => <option key={o} value={o}>{o}</option>)}
-                    </select>
                   : suggestions
                     ? <>
                         <input
@@ -335,89 +302,69 @@ export default function AdminForm({ coll, item, index, data, onClose, onRequestP
                 </button>
               </div>
 
-              {purchaseMsg && (
-                <div className={styles.coverMsg}>{purchaseMsg}</div>
-              )}
+              {purchaseMsg && <div className={styles.coverMsg}>{purchaseMsg}</div>}
 
               <div className={styles.purchaseFields}>
                 <div className={styles.fgroup}>
                   <label>Precio</label>
-                  <input
-                    type="text"
-                    value={form.buy_price ?? ''}
-                    onChange={e => setField('buy_price', e.target.value)}
-                    placeholder="—"
-                  />
+                  <input type="text" value={form.buy_price ?? ''} onChange={e => setField('buy_price', e.target.value)} placeholder="—" />
                 </div>
                 <div className={styles.fgroup}>
                   <label>Moneda</label>
-                  <input
-                    type="text"
-                    value={form.buy_currency ?? ''}
-                    onChange={e => setField('buy_currency', e.target.value)}
-                    placeholder="COP, USD..."
-                  />
+                  <input type="text" value={form.buy_currency ?? ''} onChange={e => setField('buy_currency', e.target.value)} placeholder="COP, USD..." />
                 </div>
                 <div className={styles.fgroup}>
                   <label>Disponibilidad</label>
-                  <input
-                    type="text"
-                    value={form.buy_availability ?? ''}
-                    onChange={e => setField('buy_availability', e.target.value)}
-                    placeholder="En stock..."
-                  />
+                  <input type="text" value={form.buy_availability ?? ''} onChange={e => setField('buy_availability', e.target.value)} placeholder="En stock..." />
                 </div>
               </div>
             </div>
           )}
 
-          {/* Sección de portada */}
+          {/* Sección de portada / imagen ── siempre visible */}
           <div className={styles.coverSection}>
-            {/* Preview */}
             {form.cover_url && (
               <div className={styles.coverPreview}>
                 <img src={form.cover_url} alt="cover" />
                 <button
                   className={styles.coverRemove}
-                  onClick={() => { setField('cover_url', ''); setCoverMsg(''); setShowManualUrl(true) }}
+                  onClick={() => { setField('cover_url', ''); setCoverMsg('') }}
                 >✕</button>
               </div>
             )}
 
-            {/* Mensaje de estado */}
             {coverMsg && (
               <div className={styles.coverMsg}>
                 {fetchingCover ? <span className={styles.spinner}>⏳</span> : null} {coverMsg}
               </div>
             )}
 
-            {/* Input URL manual — aparece cuando Discogs no encuentra nada */}
-            {showManualUrl && (
-              <div className={styles.manualUrl}>
-                <label>URL de imagen (pegar directo)</label>
-                <div className={styles.manualUrlRow}>
-                  <input
-                    type="text"
-                    placeholder="https://..."
-                    value={manualUrl}
-                    onChange={e => setManualUrl(e.target.value)}
-                    onKeyDown={e => e.key === 'Enter' && handleApplyManualUrl()}
-                  />
-                  <button
-                    className={`${styles.btn} ${styles.btnSecondary}`}
-                    onClick={handleApplyManualUrl}
-                    disabled={!manualUrl.trim()}
-                  >
-                    {t('apply')}
-                  </button>
-                </div>
+            {/* URL manual — siempre disponible, no solo como fallback */}
+            <div className={styles.manualUrl}>
+              <label>{t('coverUrl')}</label>
+              <div className={styles.manualUrlRow}>
+                <input
+                  type="text"
+                  placeholder="https://... (imagen directa o URL de Discogs release)"
+                  value={manualUrl || form.cover_url || ''}
+                  onChange={e => {
+                    setManualUrl(e.target.value)
+                    setCoverMsg('')
+                  }}
+                  onKeyDown={e => e.key === 'Enter' && handleApplyManualUrl()}
+                />
+                <button
+                  className={`${styles.btn} ${styles.btnSecondary}`}
+                  onClick={handleApplyManualUrl}
+                  disabled={!manualUrl.trim()}
+                >
+                  {t('apply')}
+                </button>
               </div>
-            )}
+            </div>
           </div>
 
-          {saveError && (
-            <div className={styles.saveError}>{saveError}</div>
-          )}
+          {saveError && <div className={styles.saveError}>{saveError}</div>}
 
           <div className={styles.actions}>
             <button
@@ -464,12 +411,12 @@ function getFields(coll, data, t) {
     { key: 'album',      label: t('album') },
     { key: 'agrupador',  label: t('category'),       options: uniq('agrupador') },
     { key: 'genero',     label: t('genre'),           options: uniq('genero') },
-    { key: 'sello',      label: t('label') },
-    { key: 'pais_sello', label: t('labelCountry') },
+    { key: 'sello',      label: t('label'),           options: uniq('sello') },
+    { key: 'pais_sello', label: t('labelCountry'),    options: uniq('pais_sello') },
     { key: 'anio',       label: t('year'),            type: 'number' },
-    { key: 'pais',       label: t('pressedCountry') },
+    { key: 'pais',       label: t('pressedCountry'),  options: uniq('pais') },
     { key: 'cat_num',    label: t('catNum') },
-    { key: 'origen',     label: t('origin'),          type: 'origen', options: uniq('origen') },
+    { key: 'origen',     label: t('origin'),          options: uniq('origen') },
     { key: 'fuera',      label: t('lent'),            options: ['No', 'Sí'] },
     { key: 'discogs',    label: t('inDiscogs'),       options: ['true', 'false'] },
     { key: 'url',             label: t('discogsUrl') },
@@ -495,7 +442,7 @@ function getFields(coll, data, t) {
     { key: 'brand',      label: t('brand') },
     { key: 'version',    label: t('expression') },
     { key: 'type',       label: t('type'),            options: uniq('type') },
-    { key: 'origin',     label: t('origin'),          suggestions: uniq('origin') },
+    { key: 'origin',     label: t('origin'),          options: uniq('origin') },
     { key: 'country',    label: t('country'),         options: uniq('country') },
     { key: 'abv',        label: t('abv'),             type: 'number' },
     { key: 'years',      label: t('years'),           type: 'number' },

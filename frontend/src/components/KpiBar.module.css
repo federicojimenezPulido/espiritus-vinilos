@@ -30,3 +30,17 @@
   letter-spacing: 1px;
   margin-top: 3px;
 }
+
+@media (max-width: 767px) {
+  .bar {
+    padding: 10px 14px;
+    gap: 7px;
+  }
+  .kpi {
+    padding: 8px 12px;
+    min-width: 72px;
+    border-radius: 8px;
+  }
+  .val { font-size: 1.25rem; }
+  .lbl { font-size: .54rem; letter-spacing: .5px; }
+}

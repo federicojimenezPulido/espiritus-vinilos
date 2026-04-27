@@ -45,37 +45,130 @@
   font-size: 1rem;
 }
 
+/* ── Hero summary ── */
+.heroWrap {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+}
+
+.heroMain {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 36px;
+  min-width: 140px;
+  border-right: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.heroNum {
+  font-size: 3.8rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -2px;
+}
+
+.heroLbl {
+  font-size: .65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--text3);
+  margin-top: 4px;
+}
+
+/* ── KPI strip ── */
+.kpiStrip {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  align-items: stretch;
+}
+
+.kpi {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 24px;
+  gap: 4px;
+  border-right: 1px solid var(--border);
+  transition: background .15s;
+  min-width: 90px;
+}
+.kpi:last-child {
+  border-right: none;
+}
+
+.kpiClickable {
+  cursor: pointer;
+}
+.kpiClickable:hover {
+  background: rgba(255,255,255,.05);
+}
+.kpiClickable:hover .kpiNum {
+  opacity: .85;
+}
+
+.kpiAlert .kpiNum {
+  color: #f87171;
+}
+
+.kpiNum {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1;
+}
+
+.kpiLbl {
+  font-size: .58rem;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  text-align: center;
+  white-space: nowrap;
+}
+
 /* ── Chart card ── */
 .card {
   background: var(--bg3);
   border: 1px solid var(--border);
+  border-top: 3px solid var(--card-accent, var(--border));
   border-radius: var(--r);
-  padding: 16px 18px;
+  padding: 18px 20px;
 }
 
 .cardTitle {
-  font-size: .78rem;
+  font-size: .72rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 1.5px;
   color: var(--text2);
-  margin-bottom: 14px;
+  margin-bottom: 16px;
 }
 
 /* ── Bar chart ── */
 .bars {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 9px;
 }
 
 .barRow {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   border-radius: 6px;
-  padding: 3px 4px;
-  margin: 0 -4px;
+  padding: 4px 6px;
+  margin: 0 -6px;
   transition: background .15s;
 }
 
@@ -91,7 +184,7 @@
 
 .barLabel {
   font-size: .72rem;
-  color: var(--text);
+  color: var(--text2);
   width: 130px;
   flex-shrink: 0;
   white-space: nowrap;
@@ -101,92 +194,36 @@
 
 .barTrack {
   flex: 1;
-  height: 10px;
+  height: 14px;
   background: var(--bg4);
-  border-radius: 5px;
+  border-radius: 7px;
   overflow: hidden;
 }
 
 .barFill {
   height: 100%;
-  border-radius: 5px;
+  border-radius: 7px;
   transition: width .4s ease;
-  min-width: 4px;
+  min-width: 6px;
+  opacity: .9;
 }
 
 .barCount {
-  font-size: .68rem;
-  color: var(--text3);
-  width: 24px;
+  font-size: .70rem;
+  font-weight: 600;
+  color: var(--text2);
+  width: 26px;
   text-align: right;
   flex-shrink: 0;
 }
 
 .barPct {
-  font-size: .60rem;
-  color: var(--text3);
-  width: 30px;
-  text-align: right;
-  flex-shrink: 0;
-  opacity: .6;
-}
-
-/* ── Summary card ── */
-.summaryGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-  gap: 10px;
-}
-
-.stat {
-  background: var(--bg4);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 10px 12px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  transition: border-color .15s, background .15s;
-}
-
-.statClickable {
-  cursor: pointer;
-}
-.statClickable:hover {
-  background: rgba(255,255,255,.07);
-  border-color: rgba(255,255,255,.25);
-}
-.statClickable:hover .statNum {
-  opacity: .9;
-}
-
-/* Tag de "sin X" para stats invertidos */
-.statMissing .statNum {
-  color: #f87171;
-}
-.statMissing .statLbl::after {
-  content: ' ↗';
-  opacity: .5;
-}
-
-.statNum {
-  font-size: 1.35rem;
-  font-weight: 700;
-  color: var(--text);
-}
-
-.statLbl {
   font-size: .62rem;
   color: var(--text3);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  text-align: center;
+  width: 32px;
+  text-align: right;
+  flex-shrink: 0;
 }
-
-.statClickable { cursor: pointer; }
-.statClickable:hover { background: rgba(255,255,255,.07); border-color: rgba(255,255,255,.25); }
-.statMissing .statNum { color: #f87171; }
 
 /* ── Responsive: mobile ── */
 @media (max-width: 767px) {
@@ -195,16 +232,50 @@
     padding-bottom: 16px;
   }
 
-  .card { padding: 14px; }
+  .heroWrap {
+    flex-direction: column;
+    align-items: stretch;
+  }
 
-  .barLabel { width: 90px; font-size: .68rem; }
-  .barCount { font-size: .64rem; }
-  .barPct   { display: none; } /* ahorra espacio horizontal */
+  .heroMain {
+    flex-direction: row;
+    gap: 12px;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    padding: 18px 20px;
+    justify-content: flex-start;
+    min-width: unset;
+  }
 
-  .summaryGrid {
+  .heroNum {
+    font-size: 2.8rem;
+  }
+
+  .heroLbl {
+    margin-top: 0;
+    align-self: flex-end;
+    padding-bottom: 6px;
+  }
+
+  .kpiStrip {
+    display: grid;
     grid-template-columns: repeat(3, 1fr);
   }
 
-  .statNum { font-size: 1.1rem; }
-  .statLbl { font-size: .55rem; letter-spacing: .5px; }
+  .kpi {
+    padding: 14px 10px;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .kpiNum { font-size: 1.25rem; }
+  .kpiLbl { font-size: .54rem; }
+
+  .card { padding: 14px 16px; }
+
+  .barLabel { width: 90px; font-size: .68rem; }
+  .barCount { font-size: .64rem; }
+  .barPct   { display: none; }
+
+  .barTrack { height: 11px; }
 }
