@@ -12,31 +12,33 @@ function countBy(arr, key) {
   return Object.entries(map).sort((a, b) => b[1] - a[1])
 }
 
-/* ── Hero summary — número protagonista + KPI strip ── */
+/* ── Hero summary — grilla de tarjetas KPI ── */
 function HeroSummary({ heroNum, heroLbl, heroAccent, kpis, onStatClick }) {
   const { t } = useLang()
   return (
-    <div className={styles.heroWrap}>
-      {/* Número principal */}
-      <div className={styles.heroMain}>
+    <div className={styles.summaryGrid}>
+      {/* Tarjeta protagonista */}
+      <div className={styles.heroCard} style={{ '--hero-accent': heroAccent }}>
         <span className={styles.heroNum} style={{ color: heroAccent }}>{heroNum}</span>
         <span className={styles.heroLbl}>{heroLbl}</span>
       </div>
       {/* KPIs secundarios */}
-      <div className={styles.kpiStrip}>
-        {kpis.map((kpi, i) => (
-          <div
-            key={i}
-            className={[styles.kpi, kpi.clickable && onStatClick ? styles.kpiClickable : '', kpi.alert ? styles.kpiAlert : ''].join(' ')}
-            onClick={kpi.clickable && onStatClick ? () => onStatClick(kpi.title, kpi.items) : undefined}
-            title={kpi.clickable && onStatClick ? `${t('view')} ${kpi.items?.length} ${t('records')}` : undefined}
-          >
-            <span className={styles.kpiNum}>{kpi.num}</span>
-            <span className={styles.kpiLbl}>{kpi.lbl}</span>
-            {kpi.desc && <span className={styles.kpiDesc}>{kpi.desc}</span>}
-          </div>
-        ))}
-      </div>
+      {kpis.map((kpi, i) => (
+        <div
+          key={i}
+          className={[
+            styles.kpiCard,
+            kpi.clickable && onStatClick ? styles.kpiClickable : '',
+            kpi.alert ? styles.kpiAlert : '',
+          ].join(' ')}
+          onClick={kpi.clickable && onStatClick ? () => onStatClick(kpi.title, kpi.items) : undefined}
+          title={kpi.clickable && onStatClick ? `${t('view')} ${kpi.items?.length} ${t('records')}` : undefined}
+        >
+          <span className={styles.kpiNum}>{kpi.num}</span>
+          <span className={styles.kpiLbl}>{kpi.lbl}</span>
+          {kpi.desc && <span className={styles.kpiDesc}>{kpi.desc}</span>}
+        </div>
+      ))}
     </div>
   )
 }
