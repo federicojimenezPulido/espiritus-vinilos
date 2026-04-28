@@ -71,7 +71,6 @@ function AppInner() {
           <div className="grooveStrip">
             <img src="/hero-3.png" alt="" className="grooveStripImg" />
             <div className="grooveStripOverlay" />
-            <img src="/logo-enlt.jpeg" alt="En Las Nubes Trepao" className="grooveLogo" />
           </div>
 
           <div ref={dashboardRef}>

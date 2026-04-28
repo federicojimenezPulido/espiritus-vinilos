@@ -35,12 +35,13 @@
   border-radius: 50%;
   flex-shrink: 0;
   object-fit: cover;
+  mix-blend-mode: screen;
   box-shadow: 0 0 0 1px rgba(255,255,255,.08), 0 2px 12px rgba(0,0,0,.6);
   transition: transform .3s ease, box-shadow .3s ease;
 }
 .logo:hover {
   transform: rotate(-5deg) scale(1.07);
-  box-shadow: 0 0 0 1px rgba(0,212,255,.3), 0 4px 16px rgba(0,212,255,.2);
+  box-shadow: 0 0 0 1px rgba(255,255,255,.2), 0 4px 16px rgba(0,0,0,.4);
 }
 
 .logo_vinyl {
