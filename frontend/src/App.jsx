@@ -7,6 +7,7 @@ import SessionesView from './components/SessionesView'
 import WelcomeModal, { shouldShowWelcome } from './components/WelcomeModal'
 import PinModal      from './components/PinModal'
 import SettingsPanel from './components/SettingsPanel'
+import MiniPlayer    from './components/MiniPlayer'
 import { getPinStatus } from './services/api'
 
 function AppInner() {
@@ -35,6 +36,7 @@ function AppInner() {
 
   return (
     <>
+      <MiniPlayer />
       {showWelcome && <WelcomeModal onClose={() => setShowWelcome(false)} />}
 
       {showSettingsPin && (
