@@ -18,7 +18,7 @@ DATABASE_URL = (os.environ.get("DATABASE_URL") or "").strip()
 _VINYL_COLS = ["artista","album","genero","agrupador","anio","pais",
                "sello","pais_sello","cat_num","origen","fuera",
                "discogs","cover_url","url","spotify_id",
-               "tiktok_url","ig_url"]
+               "tiktok_url","ig_url","notes","credits"]
 
 TABLES = {
     "vinilos":  "vinyls",   # vinyls.py usa "vinilos"

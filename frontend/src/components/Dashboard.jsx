@@ -486,7 +486,13 @@ function Card({ item, coll, onClick, onSpotify, onShare, onIgStory, onTikTok, on
         {item.fuera     && <span className={styles.lentBadge} title={t('lent')}>📤</span>}
         {item.terminado && <span className={styles.lentBadge} title={t('finished')}>🫗</span>}
         {coll === 'vinyl' && item.notes && (
-          <span className={styles.notesBadge} title={item.notes}>❝</span>
+          <span
+            className={styles.notesBadge}
+            title="Ver notas editoriales"
+            onClick={(e) => { e.stopPropagation(); onClick && onClick() }}
+            role="button"
+            aria-label="Ver notas editoriales"
+          >❝</span>
         )}
 
         {/* ── Hover/tap overlay con acciones rápidas ── */}
