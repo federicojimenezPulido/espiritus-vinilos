@@ -101,14 +101,15 @@ export default function Modal({ item, coll, index, onClose, onEdit, onSetFeature
 
   if (!item) return null
 
-  const groups = coll === 'vinyl' ? getVinylGroups(item, t) : getSpiritsGroups(item, coll, t)
-  const title  = coll === 'vinyl' ? item.album   : (item.name || item.version || item.brand)
-  const sub    = coll === 'vinyl' ? item.artista  : `${item.brand} · ${item.country || ''}`
-  const url    = item.url
+  const groups   = coll === 'vinyl' ? getVinylGroups(item, t) : getSpiritsGroups(item, coll, t)
+  const title    = coll === 'vinyl' ? item.album   : (item.name || item.version || item.brand)
+  const sub      = coll === 'vinyl' ? item.artista  : `${item.brand} · ${item.country || ''}`
+  const url      = item.url
+  const hasNotes = coll === 'vinyl' && !!item.notes
 
   return (
     <div className={styles.overlay} onClick={e => e.target === e.currentTarget && onClose()}>
-      <div className={styles.box}>
+      <div className={`${styles.box} ${hasNotes ? styles.boxWide : ''}`}>
 
         {/* ── Header ── */}
         {coll === 'vinyl' ? (
@@ -164,13 +165,8 @@ export default function Modal({ item, coll, index, onClose, onEdit, onSetFeature
           </div>
         )}
 
-        {/* ── Epígrafe editorial — tope del modal, visible de entrada ── */}
-        {coll === 'vinyl' && item.notes && (
-          <div className={styles.epigraph}>
-            <span className={styles.epigraphMark}>❝</span>
-            <p className={styles.epigraphText}>{item.notes}</p>
-          </div>
-        )}
+        {/* ── Content grid — 2 columnas cuando hay notas ── */}
+        <div className={hasNotes ? styles.contentGrid : undefined}>
 
         <div className={styles.body}>
 
@@ -413,6 +409,17 @@ export default function Modal({ item, coll, index, onClose, onEdit, onSetFeature
 
           </div>
         </div>
+
+        {/* ── Panel editorial derecho ── */}
+        {hasNotes && (
+          <div className={styles.notesPanel}>
+            <span className={styles.notesPanelLabel}>Notas editoriales</span>
+            <span className={styles.notesMark}>❝</span>
+            <p className={styles.notesText}>{item.notes}</p>
+          </div>
+        )}
+
+        </div>{/* end contentGrid */}
       </div>
     </div>
   )
