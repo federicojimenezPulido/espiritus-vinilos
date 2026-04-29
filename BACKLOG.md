@@ -1,6 +1,6 @@
 # Backlog — En Las Nubes Trepao
 
-> **Última actualización:** 2026-04-29 · v2.2.0
+> **Última actualización:** 2026-04-29 · v2.3.0
 
 ---
 
@@ -8,13 +8,13 @@
 
 | ID | Feature | Prioridad | Esfuerzo | Estado |
 |---|---|---|---|---|
-| QA-01 | Triage responsive end-to-end v2.2 | 🔴 Alta | Medio | ⏳ Pendiente |
-| ARCH-01 | Migrar SPA a SSG (Astro) | 🔴 Alta | Grande | ⏳ Pendiente decisión |
+| ARCH-01 | Migrar SPA a SSG (Astro) | 🔴 **Crítica — PRÓXIMO** | Grande | ⏳ Pendiente decisión |
+| QA-01 | Triage responsive end-to-end v2.3 | 🔴 Alta | Medio | ⏳ Pendiente |
 | UXUI-02 | Cloudflare fallback hosting | 🟡 Media | Pequeño | ⏳ Pendiente decisión |
 | PROD-01 | Email capture / lista propia | 🔴 Crítica | Pequeño | ⏳ Pendiente decisión |
 | EDIT-01 | Arquitectura por mood/concepto | 🔴 Alta | Grande | ⏳ Pendiente |
 | EDIT-02 | Pairing vinilo + espíritu | 🔴 Alta | Grande | ⏳ Pendiente |
-| EDIT-05 | Profundidad progresiva | 🟡 Media | Grande | 🔶 Parcial — tracklist/créditos en modal, falta ARCH-01 para páginas indexables |
+| EDIT-05 | Profundidad progresiva | 🟡 Media | Grande | 🔶 Parcial — modal 2col con panel editorial, falta ARCH-01 para páginas indexables |
 
 ---
 
@@ -30,10 +30,12 @@ Revisión sistemática de todas las vistas en viewport mobile (375px / 390px). V
 
 ## ARCH-01 — Migrar SPA a Static Site Generator (SSG)
 
-**Status:** ⏳ No iniciado — requiere decisión del owner
-**Priority:** 🔴 Alta — bloquea todo el SEO orgánico de contenido
+**Status:** ⏳ **PRÓXIMO — iniciamos en la siguiente sesión**
+**Priority:** 🔴 Crítica — bloquea todo el SEO orgánico de contenido
 **Effort:** Grande (3–5 días mínimo)
 **Dependency:** Decisión sobre Astro vs Eleventy vs Hugo
+
+**Contexto v2.3:** La plataforma alcanzó madurez editorial. El sitio ya tiene notas, créditos, tracklists, sesiones y pairing cultural. La capa de contenido está lista para ser indexada. Sin SSG, ningún motor de búsqueda ve nada más allá del `<title>`. ARCH-01 es el paso que convierte este proyecto poderoso en uno visible.
 
 Todo el contenido renderiza client-side. Los crawlers (Google, Bing) y los scrapers de redes sociales (WhatsApp, Telegram, iMessage) solo ven el `<title>` tag. Ninguna reseña de disco ni página de colección puede ser indexada ni previsualizada individualmente.
 
@@ -108,5 +110,9 @@ Dos capas de contenido por ítem. La capa 1 (tarjeta/modal) ya existía. La capa
 Lo que falta para completar EDIT-05: páginas individuales indexables por disco (requiere ARCH-01 — SSG).
 
 ---
+
+---
+
+**v2.3.0 — 2026-04-29:** Fix persistencia notes/credits en DB, badge ❝ clickable, modal 2 columnas datos+notas, fix workflow deploy gh-pages. La plataforma editorial está completa y lista para crecer con SEO (ARCH-01).
 
 *Actualizado manualmente en cada sesión de trabajo.*

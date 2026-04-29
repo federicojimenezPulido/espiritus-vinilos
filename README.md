@@ -1,6 +1,6 @@
 # Espíritus & Vinilos — En Las Nubes Trepao
 
-![Version](https://img.shields.io/badge/version-v2.2.0-7c3aed?style=flat-square) ![Stack](https://img.shields.io/badge/stack-React%20%2B%20FastAPI-4a90e2?style=flat-square) ![Hosting](https://img.shields.io/badge/hosting-GitHub%20Pages-222?style=flat-square&logo=github)
+![Version](https://img.shields.io/badge/version-v2.3.0-7c3aed?style=flat-square) ![Stack](https://img.shields.io/badge/stack-React%20%2B%20FastAPI-4a90e2?style=flat-square) ![Hosting](https://img.shields.io/badge/hosting-GitHub%20Pages-222?style=flat-square&logo=github)
 
 Dashboard personal para gestionar y compartir colecciones de vinilos, rones y whiskies. Construido con React en el frontend y FastAPI en el backend, desplegado en GitHub Pages + Render.com.
 
@@ -79,8 +79,9 @@ Esta app es el archivo digital de esas colecciones físicas.
 ```
 
 **Deploy:**
-- Frontend: `cd frontend && npm run deploy` (= `npm run build && npx gh-pages -d dist`)
+- Frontend: `cd frontend && npm run deploy` (= `npm run build && npx gh-pages -d dist` → push a rama `gh-pages`)
 - Backend: push a `main` → auto-deploy en Render.com
+- ⚠️ No commitear `frontend/dist/` a `main` — el deploy del frontend va exclusivamente a la rama `gh-pages`
 
 ---
 
@@ -282,11 +283,13 @@ Tab en SettingsPanel (⚙). Muestra una tabla de todos los vinilos con semáforo
 ### AdminForm con DynamicSelect
 Todos los campos de opciones usan `DynamicSelect`: dropdown estándar + botón "+" para agregar opciones nuevas que se persisten en `localStorage`. Los valores de país/origen se normalizan automáticamente (UK, USA, Europa, Japón, etc.) para eliminar duplicados.
 
-### Voz editorial (Fase 12)
+### Voz editorial (Fases 12–13)
 Tres capas de contenido por vinilo:
-1. **Notas editoriales** (`notes`): textarea en AdminForm, se muestra en Modal con fuente Fraunces itálica y borde rojo izquierdo.
+1. **Notas editoriales** (`notes`): textarea en AdminForm, persistidas en DB. Badge `❝` en card (clickable — abre modal), snippet en hover overlay, panel editorial en modal.
 2. **Tracklist Discogs**: sección colapsable en Modal — fetchea tracklist + créditos (extraartists) en tiempo real desde la API de Discogs. Requiere token y URL de release.
-3. **Créditos manuales** (`credits JSONB`): editor de filas nombre+rol en AdminForm, visible en el mismo colapsable del Modal con separador visual.
+3. **Créditos manuales** (`credits JSONB`): editor de filas nombre+rol en AdminForm, visible en el colapsable del Modal en grid 2 columnas.
+
+**Modal 2 columnas (v2.3):** cuando un vinilo tiene notas, el modal se expande a 900px con layout de 2 columnas — izquierda: datos duros + tracklist + acciones; derecha: panel editorial con Fraunces italic sobre fondo rojo tenue.
 
 ### Sesiones digitales
 Módulo completo: registro de usuario con email + token, creación de sesiones (tipo de noche, personas, nota), picker de tracks desde playlists Spotify, picker de espíritus de la colección. Hasta 5 sesiones activas por usuario.
@@ -352,6 +355,8 @@ npm run dev
 cd espiritus-vinilos/frontend
 npm run deploy
 # = npm run build && npx gh-pages -d dist
+# Publica el contenido de dist/ en la rama gh-pages (que es la que sirve el sitio)
+# NO hacer git add frontend/dist/ en main — eso no actualiza producción
 ```
 
 ### Backend → Render
@@ -378,7 +383,7 @@ Free tier: cold start de ~30s tras 15 min de inactividad.
 
 ## Historial de fases
 
-> **Última actualización:** 2026-04-29 · v2.2.0
+> **Última actualización:** 2026-04-29 · v2.3.0
 
 | Fase | Qué se construyó |
 |------|-----------------|
@@ -395,6 +400,7 @@ Free tier: cold start de ~30s tras 15 min de inactividad.
 | 11 | Stats redesign (grilla KPI equitativa), DynamicSelect + normalización de opciones, Auditor edit-flow, MiniPlayer flotante, idioma persistente en localStorage, CSV en Auditor |
 | 12 | **Voz editorial v2.1**: campo `notes` (liner notes), tracklist Discogs colapsable en modal, créditos manuales `credits JSONB`, editor fila-por-fila en AdminForm, endpoint `/api/covers/discogs-release` |
 | 12b | **Voz editorial v2.2**: importar créditos desde Discogs en AdminForm (merge inteligente), grid 2 columnas para créditos en modal, 3 capas de descubribilidad — badge `❝` en card, snippet hover en overlay, epígrafe editorial al tope del modal |
+| 13 | **Modal editorial v2.3**: fix persistencia `notes`/`credits` en DB (`_VINYL_COLS`), badge `❝` clickable, modal 2 columnas (datos + panel editorial) al detectar notas, fix workflow deploy → rama `gh-pages` |
 
 ---
 
