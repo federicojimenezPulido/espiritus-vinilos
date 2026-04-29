@@ -16,7 +16,6 @@
 | EDIT-02 | Pairing vinilo + espíritu | 🔴 Alta | Grande | ⏳ Pendiente |
 | EDIT-03 | Voz editorial / reseñas | 🔴 Alta | Grande | ⏳ Pendiente contenido |
 | EDIT-05 | Profundidad progresiva | 🟡 Media | Grande | ⏳ Pendiente |
-| EDIT-06 | Integración fotográfica editorial | 🟡 Media | Medio | ⏳ Pendiente |
 
 ---
 
@@ -112,15 +111,6 @@ Primer contenido escrito del sitio: liner notes de discos seleccionados, notas d
 **Effort:** Grande
 
 Dos capas de contenido para cada ítem: la tarjeta/modal actual (curioso) + un artículo largo accesible desde el modal (experto). Requiere ARCH-01 para que los artículos sean páginas indexables.
-
----
-
-### EDIT-06 — Integración fotográfica editorial
-
-**Status:** ⏳ Pendiente
-**Effort:** Medio
-
-Fotografía propia o editorial para artículos, páginas de pairing y sesiones. Los heroes actuales son placeholders — el siguiente nivel es fotografía real del dueño de la colección en contexto.
 
 ---
 
