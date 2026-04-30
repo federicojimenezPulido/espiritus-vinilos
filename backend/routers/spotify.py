@@ -5,6 +5,7 @@ Flujo: Client Credentials → access_token → search → album_id → guardar e
 import os
 import base64
 import httpx
+from typing import Optional
 from fastapi import APIRouter, HTTPException
 from data_store import read_collection, write_collection
 
@@ -39,7 +40,7 @@ def get_access_token() -> str:
     return resp.json()["access_token"]
 
 
-def search_album(token: str, artista: str, album: str) -> str | None:
+def search_album(token: str, artista: str, album: str) -> Optional[str]:
     """Busca el álbum en Spotify y devuelve el ID o None si no encuentra"""
     q = f"album:{album} artist:{artista}"
     resp = httpx.get(

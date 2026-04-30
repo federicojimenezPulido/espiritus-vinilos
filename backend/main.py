@@ -10,6 +10,9 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:5173",
+        "http://localhost:5174",
+        "http://localhost:4173",
+        "http://localhost:4174",
         "https://federicojimenezpulido.github.io",
         "https://enlasnubestrepao.github.io",
         "https://enlasnubestrepao.com",
