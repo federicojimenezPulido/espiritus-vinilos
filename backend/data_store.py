@@ -10,6 +10,7 @@ del resto de la aplicación.
 import os
 import psycopg2
 import psycopg2.extras
+from psycopg2.extras import Json
 from contextlib import contextmanager
 
 DATABASE_URL = (os.environ.get("DATABASE_URL") or "").strip()
@@ -110,5 +111,13 @@ def write_collection(name: str, data: list) -> None:
                 placeholders = ",".join(["%s"] * len(cols))
                 col_names    = ",".join(cols)
                 sql  = f"INSERT INTO {table} ({col_names}) VALUES ({placeholders})"
-                rows = [tuple(row.get(c) for c in cols) for row in data]
+                _JSONB_COLS = {"credits"}
+                rows = [
+                    tuple(
+                        Json(row.get(c)) if c in _JSONB_COLS and row.get(c) is not None
+                        else row.get(c)
+                        for c in cols
+                    )
+                    for row in data
+                ]
                 cur.executemany(sql, rows)
