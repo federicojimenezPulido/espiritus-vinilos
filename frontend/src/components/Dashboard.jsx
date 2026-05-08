@@ -468,16 +468,9 @@ function Card({ item, coll, onClick, onSpotify, onShare, onIgStory, onTikTok, on
     : `/whiskies/${whiskeySlug(item)}/`
 
   function handleCardClick(e) {
-    // En mobile: primer tap muestra acciones, segundo tap abre modal
-    if (window.matchMedia('(hover: none)').matches && !touched) {
-      e.preventDefault()
-      e.stopPropagation()
-      setTouched(true)
-      return
-    }
     // Cmd/Ctrl+click o middle-click → navegar a URL estática (comportamiento <a> normal)
     if (e.metaKey || e.ctrlKey || e.button === 1) return
-    // Click normal → modal
+    // Un solo tap/click → modal
     e.preventDefault()
     setTouched(false)
     onClick(e)

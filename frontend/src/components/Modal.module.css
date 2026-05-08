@@ -7,7 +7,6 @@
   padding: 20px;
   backdrop-filter: blur(6px);
   animation: fadeIn .15s ease;
-  touch-action: none;
 }
 @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
 

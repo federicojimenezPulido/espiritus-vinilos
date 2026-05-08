@@ -24,6 +24,13 @@ export default function Modal({ item, coll, index, onClose, onEdit, onSetFeature
     return () => window.removeEventListener('keydown', handler)
   }, [onClose])
 
+  // Bloquear scroll del body en iOS cuando el modal está abierto
+  useEffect(() => {
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => { document.body.style.overflow = prev }
+  }, [])
+
   useEffect(() => {
     setSpotifyId(item?.spotify_id || null)
     setTlOpen(false)
