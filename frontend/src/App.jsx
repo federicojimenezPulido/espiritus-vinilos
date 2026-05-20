@@ -18,6 +18,7 @@ function AppInner() {
   const [showSettingsPin, setShowSettingsPin] = useState(false)
   const [showSettings,    setShowSettings]    = useState(false)
   const [pinIsSet,        setPinIsSet]        = useState(false)
+  const [adminPin,        setAdminPin]        = useState('')
   const [auditEdit,       setAuditEdit]       = useState(null)  // { item, idx } — desde Auditor
   const [settingsTab,     setSettingsTab]     = useState('config')
 
@@ -42,7 +43,7 @@ function AppInner() {
       {showSettingsPin && (
         <PinModal
           action={t('settingsTitle')}
-          onSuccess={() => { setShowSettingsPin(false); setShowSettings(true) }}
+          onSuccess={(pin) => { setAdminPin(pin); setShowSettingsPin(false); setShowSettings(true) }}
           onCancel={() => setShowSettingsPin(false)}
         />
       )}
@@ -52,6 +53,7 @@ function AppInner() {
           onClose={() => { setShowSettings(false); setSettingsTab('config') }}
           onPinChange={refreshPinStatus}
           initialTab={settingsTab}
+          adminPin={adminPin}
           onEditItem={(item, idx) => {
             setShowSettings(false)
             setAuditEdit({ item, idx })

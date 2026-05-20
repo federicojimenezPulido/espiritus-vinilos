@@ -24,7 +24,7 @@ export default function PinModal({ action, onSuccess, onCancel }) {
     setError('')
     try {
       const { valid } = await verifyPin(pin)
-      if (valid) { onSuccess() }
+      if (valid) { onSuccess(pin) }
       else { setError(t('pinWrong')); setPin('') }
     } catch {
       setError(t('pinConnError'))

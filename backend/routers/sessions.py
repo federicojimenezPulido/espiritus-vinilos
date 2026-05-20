@@ -465,3 +465,81 @@ def get_vinyl_tracks(vinyl_id: int):
             )
 
     return {"tracks": tracks, "cached": False}
+
+
+# ── ADMIN OVERVIEW ────────────────────────────────────────────────────────────
+
+@router.get("/admin/overview")
+def admin_overview(x_admin_pin: Optional[str] = Header(None)):
+    """
+    Panel admin — visión completa de clientes y sesiones.
+    Protegido por PIN admin via header X-Admin-Pin.
+    """
+    from passlib.context import CryptContext
+    _pwd = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+    # Verificar PIN
+    with get_conn() as conn:
+        with conn.cursor(cursor_factory=__import__('psycopg2.extras', fromlist=['RealDictCursor']).RealDictCursor) as cur:
+            cur.execute("SELECT value FROM app_config WHERE key = 'admin_pin'")
+            row = cur.fetchone()
+    if not row or not x_admin_pin or not _pwd.verify(x_admin_pin, row["value"]):
+        raise HTTPException(status_code=401, detail="PIN inválido")
+
+    with get_conn() as conn:
+        with conn.cursor(cursor_factory=__import__('psycopg2.extras', fromlist=['RealDictCursor']).RealDictCursor) as cur:
+
+            # Clientes
+            cur.execute("""
+                SELECT
+                    c.id,
+                    c.email,
+                    c.name,
+                    c.created_at,
+                    COUNT(DISTINCT s.id) AS session_count,
+                    MAX(s.created_at)   AS last_session_at
+                FROM session_clients c
+                LEFT JOIN sessions s ON s.client_id = c.id
+                GROUP BY c.id
+                ORDER BY c.created_at DESC
+            """)
+            clients = [dict(r) for r in cur.fetchall()]
+
+            # Sesiones con detalle
+            cur.execute("""
+                SELECT
+                    s.id,
+                    s.name,
+                    s.created_at,
+                    s.people_count,
+                    s.notes,
+                    c.email  AS client_email,
+                    c.name   AS client_name,
+                    t.name_es AS template_name,
+                    t.accent_color,
+                    (SELECT COUNT(*) FROM session_tracks  st WHERE st.session_id = s.id) AS track_count,
+                    (SELECT COUNT(*) FROM session_spirits ss WHERE ss.session_id = s.id) AS spirit_count
+                FROM sessions s
+                JOIN session_clients c ON c.id = s.client_id
+                JOIN session_templates t ON t.id = s.template_id
+                ORDER BY s.created_at DESC
+            """)
+            sessions = [dict(r) for r in cur.fetchall()]
+
+            # Stats globales
+            cur.execute("SELECT COUNT(*) AS total FROM session_clients")
+            total_clients = cur.fetchone()["total"]
+            cur.execute("SELECT COUNT(*) AS total FROM sessions")
+            total_sessions = cur.fetchone()["total"]
+            cur.execute("SELECT COUNT(*) AS total FROM session_tracks")
+            total_tracks = cur.fetchone()["total"]
+
+    return {
+        "stats": {
+            "total_clients":  total_clients,
+            "total_sessions": total_sessions,
+            "total_tracks":   total_tracks,
+        },
+        "clients":  clients,
+        "sessions": sessions,
+    }

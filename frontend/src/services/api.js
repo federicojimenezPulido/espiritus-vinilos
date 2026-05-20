@@ -108,3 +108,5 @@ export const fetchAndSaveDiscogsCover = (index, q) => {
     headers: token ? { 'x-discogs-token': token } : {},
   }).then(r => r.data)
 }
+
+export const getSessionsAdminOverview = (pin) => api.get('/api/sessions/admin/overview', { headers: { 'x-admin-pin': pin } }).then(r => r.data)

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { getVinyls, savePin, deletePin, getPinStatus } from '../services/api'
 import { useLang } from '../LangContext'
+import SessionesAdmin from './SessionesAdmin'
 import styles from './SettingsPanel.module.css'
 
 // Field definitions — labels resolved via t() inside component
@@ -42,7 +43,7 @@ function downloadCSV(data, coll) {
   URL.revokeObjectURL(url)
 }
 
-export default function SettingsPanel({ onClose, onPinChange, initialTab = 'config', onEditItem }) {
+export default function SettingsPanel({ onClose, onPinChange, initialTab = 'config', adminPin, onEditItem }) {
   const { t } = useLang()
   const [tab, setTab] = useState(initialTab)
 
@@ -172,6 +173,12 @@ export default function SettingsPanel({ onClose, onPinChange, initialTab = 'conf
             className={`${styles.tab} ${tab === 'docs' ? styles.tabActive : ''}`}
             onClick={() => setTab('docs')}
           >📖 {t('tabDocs')}</button>
+          {adminPin && (
+            <button
+              className={`${styles.tab} ${tab === 'sessions' ? styles.tabActive : ''}`}
+              onClick={() => setTab('sessions')}
+            >🎵 Sesiones</button>
+          )}
         </div>
 
         {/* ══════════════ CONFIG TAB ══════════════ */}
@@ -374,6 +381,11 @@ export default function SettingsPanel({ onClose, onPinChange, initialTab = 'conf
               </div>
             </div>
           </div>
+        )}
+
+        {/* ══════════════ SESIONES ADMIN TAB ══════════════ */}
+        {tab === 'sessions' && adminPin && (
+          <SessionesAdmin adminPin={adminPin} onClose={onClose} />
         )}
 
       </div>
