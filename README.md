@@ -1,6 +1,6 @@
 # Espíritus & Vinilos — En Las Nubes Trepao
 
-![Version](https://img.shields.io/badge/version-v3.0.0-7c3aed?style=flat-square) ![Stack](https://img.shields.io/badge/stack-Astro%20%2B%20React%20%2B%20FastAPI-4a90e2?style=flat-square) ![Hosting](https://img.shields.io/badge/hosting-GitHub%20Pages-222?style=flat-square&logo=github)
+![Version](https://img.shields.io/badge/version-v3.1.0-7c3aed?style=flat-square) ![Stack](https://img.shields.io/badge/stack-Astro%20%2B%20React%20%2B%20FastAPI-4a90e2?style=flat-square) ![Hosting](https://img.shields.io/badge/hosting-GitHub%20Pages-222?style=flat-square&logo=github)
 
 Dashboard personal + sitio estático SEO para gestionar y compartir colecciones de vinilos, rones y whiskies. Construido con Astro SSG + React en el frontend y FastAPI en el backend, desplegado en GitHub Pages + Render.com.
 
@@ -66,10 +66,11 @@ Esta app es el archivo digital de esas colecciones físicas.
 ```
 
 **Deploy:**
-- Frontend SSG: `cd frontend-astro && npm run deploy` (= `astro build && gh-pages -d dist` → rama `gh-pages`)
+- Frontend unificado: `./deploy.sh` desde la raíz (React + Astro → merge → `gh-pages`)
 - Backend: push a `main` → auto-deploy en Render.com
 - ⚠️ No commitear `dist/` a `main` — el deploy va exclusivamente a la rama `gh-pages`
-- CI/CD: `.github/workflows/deploy.yml` configurado — requiere PAT con scope `workflow` para activarse
+- CI/CD: `.github/workflows/deploy.yml` configurado y activo
+- Auth: SSH ED25519 configurada (`~/.ssh/id_ed25519`) — pushes y deploys sin credenciales manuales
 
 ---
 
@@ -403,9 +404,10 @@ Free tier: cold start de ~30s tras 15 min de inactividad.
 | 19 | **QA-01 + DATA-01 v2.7.1–2.7.2** *(2026-05-05)*: Auditoría CSS SessionesView post-login — fix `spiritCountry` overflow + `detailTitle` ellipsis. Soporte URLs `/master/` en endpoints Discogs. 104/106 vinilos con tracklist. |
 | 20 | **UX v2.7.3** *(2026-05-05)*: Búsqueda local en vinyl picker dentro de sesiones (filtra artista/álbum sin backend). Botón Spotify removido del hero en páginas estáticas — el embed ya provee enlace nativo. |
 | 21 | **v3.0.0** *(2026-05-05)*: **Email capture** Kit (form `345b76391f`) en las 106 páginas de vinilo. **og:image dinámico** — fallback `hero-1.png`, `og:image:alt` por vinilo, dimensiones hardcodeadas removidas. **GA4** (`G-5VM13PG031`) en 166 páginas. **Fix compartir** — botón Compartir en modal y hover del grid ahora genera URL estática `/vinilos/[slug]/` (WhatsApp preview muestra tapa del disco). **Deploy unificado** `deploy.sh` + CI/CD actualizados — React + Astro mergeados en un único gh-pages, elimina sobreescritura entre builds. |
+| 22 | **v3.1.0** *(2026-05-20)*: **ADMIN-01** — Panel admin Sesiones integrado como tab en SettingsPanel (visible solo con PIN válido). Nuevo endpoint `GET /api/sessions/admin/overview` protegido con `X-Admin-Pin` (bcrypt). `SessionesAdmin.jsx`: KPIs (usuarios/sesiones/tracks) + tabla de sesiones con template/personas/tracks/espíritus + tabla de clientes con historial. `PinModal` propaga el PIN al caller para autenticar llamadas admin. **QA-iOS** — modal bottom sheet: scroll interno con `touch-action: pan-y` + body overflow lock; eliminado double-tap logic (single tap abre modal directamente). **AUTH** — SSH key ED25519 configurada; deploys desde CLI sin intervención manual. |
 
 ---
 
-> **Última actualización:** 2026-05-05 · v3.0.0
+> **Última actualización:** 2026-05-20 · v3.1.0
 
 *Proyecto construido con Claude Code · Abril–Mayo 2026*

@@ -1,17 +1,25 @@
 # Backlog — En Las Nubes Trepao
 
-> **Última actualización:** 2026-05-05 · v3.0.0
+> **Última actualización:** 2026-05-20 · v3.1.0
 
 ---
 
 ## Pendientes activos
 
-| ID | Feature | Prioridad | Estado |
+| ID | Feature | Prioridad | Por qué |
 |---|---|---|---|
-| UX-NEW | Badge "nuevo" / sección recién llegado | 🟡 Media | 💡 Pendiente |
-| QA-ASTRO | QA mobile páginas Astro en teléfono real | 🟡 Media | 💡 Pendiente |
-| EDIT-02 | Pairing vinilo + espíritu | 🔴 Alta | ⏳ Requiere contenido curatorial |
-| UXUI-02 | Cloudflare fallback hosting | 🟡 Media | ⏳ Requiere acceso DNS Porkbun |
+| EDIT-02 | Pairing vinilo + espíritu | 🔴 Alta | Núcleo del concepto editorial "Booze & Vinyl" — diferenciador único del proyecto. Sin esto la colección y las sesiones son módulos separados sin conexión curatorial. |
+| UX-NEW | Badge "nuevo" / sección recién llegado | 🟡 Media | Sin señal de contenido nuevo no hay razón para que un seguidor vuelva. Impacta retención directamente. Bloquea: decidir campo de fecha (`created_at` o fecha de compra). |
+| QA-ASTRO | QA mobile páginas Astro en teléfono real | 🟡 Media | Las 166 páginas estáticas (tracklist, créditos, hero, email capture) no fueron auditadas en dispositivo físico a 375px. Riesgo de regresión visual silenciosa. |
+| UXUI-02 | Cloudflare fallback hosting | 🟢 Baja | GitHub Pages tiene historial de outages breves. Cloudflare Pages como fallback daría resiliencia. Bloquea: acceso DNS en Porkbun. |
+
+---
+
+## EDIT-02 — Pairing vinilo + espíritu
+
+**Priority:** 🔴 Alta — núcleo del concepto editorial
+
+Framework *Booze & Vinyl* digitalizado. Una vista que propone combinaciones concretas: este disco con este espíritu, por qué, qué notas comparten. Requiere contenido curatorial del owner. Sin este feature el proyecto es un catálogo digital; con él es una propuesta editorial única.
 
 ---
 
@@ -24,14 +32,6 @@ Sin señal de "nuevo contenido" no hay motivo para que un seguidor vuelva. Opcio
 ## QA-ASTRO — QA mobile páginas Astro
 
 Las 166 páginas estáticas (tracklist, créditos, hero, email capture) no fueron auditadas en teléfono real a 375px. Revisar manualmente 3-5 páginas representativas en iPhone/Android.
-
----
-
-## EDIT-02 — Pairing vinilo + espíritu
-
-**Priority:** 🔴 Alta — núcleo del concepto editorial
-
-Framework *Booze & Vinyl* digitalizado. Una vista que propone combinaciones concretas: este disco con este espíritu, por qué, qué notas comparten. Requiere contenido curatorial del owner.
 
 ---
 
@@ -55,3 +55,4 @@ Requiere acceso a DNS en Porkbun para configurar Cloudflare Pages como fallback 
 | v2.7.2 | 2026-05-05 | **DATA-01 casi cerrado**: soporte URLs /master/ en endpoints Discogs, 104/106 vinilos con tracklist poblado |
 | v2.7.3 | 2026-05-05 | **UX-SESIONES**: búsqueda local en vinyl picker. **UX**: remover botón Spotify del hero en páginas estáticas |
 | v3.0.0 | 2026-05-05 | **PROD-01**: email capture Kit en 106 páginas. **SEO-01**: og:image dinámico + alt por vinilo. **ANALYTICS-01**: GA4. **FIX**: deploy.sh unificado React+Astro, compartir vinilo usa URL estática |
+| v3.1.0 | 2026-05-20 | **ADMIN-01**: panel admin Sesiones en SettingsPanel (tab protegido por PIN) — KPIs + tabla clientes + tabla sesiones, endpoint `/api/sessions/admin/overview` con auth bcrypt. **QA-iOS**: modal bottom sheet — scroll interno funcional, single-tap para abrir (eliminado double-tap logic). **AUTH**: SSH key configurada para deploys automáticos. |
